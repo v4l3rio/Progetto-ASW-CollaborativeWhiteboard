@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+    # This service starts a static resource web server that will be used by clients
+    client:
+        image: nginx
+        ports:
+            - 8000:80
+        volumes:
+            - ./frontend/src:/usr/share/nginx/html
+    server:
+        
