@@ -1,20 +1,21 @@
 <template>
-    <h2>Utenti connessi</h2>
-    <ul>
-        <li>Gianni</li>
-        <li>Giacominno</li>
-        <li>Fresco Cesco</li>
-    </ul>
+    <h5>Utenti connessi</h5>
+    <div v-for="user in connectedUsers">
+       <p>{{user}}</p>
+    </div>
 </template>
 
 <script>
 export default {
-    name: "ActiveUserInWhiteboard"
+    name: "ActiveUserInWhiteboard",
+    data() {
+        return {
+            connectedUsers: ["Thomas", "Valerio", "Francesco"]
+        };
+    },
 }
 </script>
 
 <style scoped>
-li{
-    list-style-type: none
-}
+
 </style>
