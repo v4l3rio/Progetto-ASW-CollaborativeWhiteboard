@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
-export default class Authenticator {
+exports.Authenticator = class Authenticator {
     constructor(db) {
         this.db = db;
     }
