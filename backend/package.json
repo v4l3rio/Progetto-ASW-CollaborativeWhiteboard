@@ -5,16 +5,19 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "testAuth" : "cd auth; cd test; node auth_test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "socket.io": "^4.6.1"
   },
-
   "devDependencies": {
     "nodemon": "^2.0.20"
   }
