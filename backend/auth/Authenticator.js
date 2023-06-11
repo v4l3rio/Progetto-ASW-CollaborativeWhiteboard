@@ -1,10 +1,10 @@
 
-const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 exports.Authenticator = class Authenticator {
     constructor(db) {
         this.db = db;
+        this.tokenKey = "213918903";//process.env.TOKEN_KEY
     }
 
     async register(userData) {
@@ -12,25 +12,24 @@ exports.Authenticator = class Authenticator {
         try {
             // Get user input
             const { first_name, last_name, username, password } = userData;
-
             // Validate user input
             if (!(username && password && first_name && last_name)) {
-                return {undefined,err:"All input is required"};
+                return {user: "",err:"All input is required"};
             }
 
             // check if user already exist
             // Validate if user exist in our database
-            const oldUser = await db.findOne(username);
+            const oldUser = await this.db.findOne(username);
 
             if (oldUser) {
-                return{undefined,err:"User Already Exist. Please Login"};
+                return{user: "",err:"User Already Exist. Please Login"};
             }
 
             //Encrypt user password
             const encryptedPassword = await bcrypt.hash(password, 10);
 
             // Create user in our database
-            const user = await db.createUser({
+            const user = await this.db.createUser({
                 first_name,
                 last_name,
                 username: username.toLowerCase(), // sanitize: convert email to lowercase
@@ -38,18 +37,17 @@ exports.Authenticator = class Authenticator {
             });
 
             // Create token
-            const token = jwt.sign(
-                { user_id: user._id, username },
-                process.env.TOKEN_KEY,
+            // save user token
+            user.token = jwt.sign(
+                {user_id: user._id, username},
+                this.tokenKey,
                 {
                     expiresIn: "2h",
                 }
             );
-            // save user token
-            user.token = token;
 
             // return new user
-            return {user}
+            return {user: user}
         } catch (err) {
             return {undefined,err}
         }
@@ -66,16 +64,14 @@ exports.Authenticator = class Authenticator {
 
         if (user && (await bcrypt.compare(password, user.password))) {
             // Create token
-            const token = jwt.sign(
+            // save user token
+            user.token = jwt.sign(
                 {user_id: user._id, email},
                 process.env.TOKEN_KEY,
                 {
                     expiresIn: "2h",
                 }
             );
-
-            // save user token
-            user.token = token;
 
             // user
             return {user}
