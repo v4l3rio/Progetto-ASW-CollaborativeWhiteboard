@@ -56,37 +56,38 @@ exports.Authenticator = class Authenticator {
     async login(userData) {
 
         if (!(userData.username && userData.password)) {
-            return {undefined, err:"Please input username and password"};
+            return {user:"", err:"Please input username and password"};
         }
         const {username, password} = userData;
         // Validate if user exist in our database
-        const user = await db.findOne({ username:username });
+        const user = await this.db.findOne(username);
 
         if (user && (await bcrypt.compare(password, user.password))) {
             // Create token
             // save user token
             user.token = jwt.sign(
-                {user_id: user._id, email},
-                process.env.TOKEN_KEY,
+                {user_id: user._id, username},
+                this.tokenKey,
                 {
                     expiresIn: "2h",
                 }
             );
 
             // user
-            return {user}
+            return {user:user, err:""}
         }
+        return {user:"", err: "User not registered or wrong password"}
     }
 
     async validateToken(token) {
         if (!token) {
-            return {undefined,err: "A token is required for authentication"};
+            return {token:undefined,err: "A token is required for authentication"};
         }
         try {
-            const decoded = jwt.verify(token, config.TOKEN_KEY);
-            return {decoded}
+            const decoded = jwt.verify(token, this.tokenKey);
+            return {token:decoded}
         } catch (err) {
-            return {undefined, err:"Invalid Token"};
+            return {token:undefined, err:"Invalid Token"};
         }
     }
 }
