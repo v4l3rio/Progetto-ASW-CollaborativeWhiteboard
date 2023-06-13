@@ -3,9 +3,13 @@ const {Authenticator} = require("../Authenticator");
 const app = express();
 const {serialize} = require("cookie");
 var cookieParser = require('cookie-parser');
+const {requestMethod} = require("../requestMethod");
 app.use(cookieParser());
 app.use(express.json())
+app.use(requestMethod);
 const port = 3000;
+
+const SECURE_COOKIE = false // if set to true, the cookie will be accessible only through https (not development mode)
 
 class Db {
     constructor() {
@@ -73,16 +77,10 @@ app.post("/login", (req, res) => {
                 } else {
                     const logged = result.user;
                     const noPasswordUser = {id: logged.id, username:logged.username};
-                    /*const serialized = serialize('token', logged.token, {
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        sameSite: 'strict',
-                        maxAge: 60 * 60 * 24 * 30,
-                        path: '/',
-                    });
-
-                     */
-                    res.cookie("token", logged.token, {httpOnly: true, secure: true, maxAge:60 * 60 * 24 * 30})
+                    res.cookie("token", logged.token,
+                        {httpOnly: true,
+                                secure: SECURE_COOKIE,
+                                maxAge:60 * 60 * 24 * 30})
 
                     console.log("Logged user " + JSON.stringify(noPasswordUser));
                     res.status(200)
@@ -97,15 +95,22 @@ app.post("/login", (req, res) => {
                 res.status(401).json({"message": "Invalid Token"});
             } else {
                 res.status(200)
-                    .json({"message": "User logged successfully", "decoded": result.token});
+                    .json({"message": "User logged successfully", "username": result.token.username});
             }
         })
     } else {
-        const {cookies} = req;
-        console.log(cookies)
         res.status(400).json({"message" : "Bad input, please provide username and password"})
     }
 });
+
+app.post("/logout", (req, res) => {
+    if (req.cookies?.token) {
+        res.clearCookie("token");
+        res.status(200).end();
+    } else {
+        res.status(405).json({message:"You have to be already logged in to log out"});
+    }
+})
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 
