@@ -56,7 +56,6 @@
             >
 
                 <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
-
             </svg>
 
             <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
@@ -68,6 +67,8 @@
 </template>
 
 <script>
+
+import {interpolate} from "@/scripts/interpolation";
 
 require('../assets/css/freehandDraw.css')
 
@@ -94,7 +95,9 @@ export default {
             radius: 2.5,
             width: 8,
             undo: false,
-            onCanvas: false // mouseout event is not firing, dunno why
+            onCanvas: false, // mouseout event is not firing, dunno why,
+            interpolatingPoints: {},
+            testInterpolation: 0
         }
     },
 
@@ -123,7 +126,7 @@ export default {
             this.board = $('.drawSvg')
             this.cursor = $('#cursor')
             this.gesture = false
-
+            this.testInterpolation = performance.now();
         },
 
         linestart: function () {
@@ -139,9 +142,30 @@ export default {
 
             this.line += 'M' + cursorX + ',' + cursorY
 
-            this.cursor.style.opacity = 1
+           this.createInterpolatingPath("interpolation1", 4); // todo switch id based on the remote user who is drawing
+
+            this.cursor.style.opacity = 0.5
             this.gesture = true
             e.preventDefault()
+        },
+
+        createInterpolatingPath: function (id, strokeWidth) {
+            let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute("id", id);
+            path.setAttributeNS(null, 'd', "");
+            path.setAttributeNS(null, 'fill', 'none');
+            path.setAttributeNS(null, 'stroke-linecap', 'round');
+            path.setAttributeNS(null, 'stroke-linejoin', 'round');
+            path.setAttributeNS(null, 'stroke', this.lineColor);
+            path.setAttributeNS(null, "stroke-opacity", "0.7")
+            path.setAttributeNS(null, 'stroke-width', strokeWidth);
+            this.interpolatingPoints[id] = []
+            this.board.appendChild(path);
+        },
+
+        deleteInterpolatingPath(id) {
+            document.getElementById(id).remove();
+            delete this.interpolatingPoints[id]
         },
 
         lineMove: function () {
@@ -156,7 +180,10 @@ export default {
             if (this.gesture === true) {
                 this.line += 'L' + cursorX + ',' + cursorY
                 // this.line += 'L'+(e.clientX||e.touches[0].clientX)+','+(e.clientY||e.touches[0].clientY)+' '
-                this.trace((e.clientX || e.touches[0].clientX), (e.clientY || e.touches[0].clientY))
+                const x = (e.clientX || e.touches[0].clientX);
+                const y = (e.clientY || e.touches[0].clientY);
+                this.trace(x, y);
+                this.interpolate(cursorX, cursorY, "interpolation1") // todo switch id based on the remote user who is drawing
             }
 
             this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
@@ -180,6 +207,15 @@ export default {
             //setTimeout(function(){document.body.removeChild(dot)},1000);
         },
 
+        interpolate: function (x, y, id) {
+            if (performance.now() - this.testInterpolation > 200) {
+                this.testInterpolation = performance.now();
+                this.interpolatingPoints[id].push(x,y)
+                const path = document.getElementById(id)
+                interpolate(this.interpolatingPoints[id], path)
+            }
+        },
+
         lineEnd: function () {
 
             let e = event;
@@ -200,11 +236,12 @@ export default {
 
             path.setAttributeNS(null, 'stroke-width', this.width);
             this.board.appendChild(path);
+            this.deleteInterpolatingPath("interpolation1")
             // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
             this.gesture = false;
             this.line = '';
 
-            var dots = document.getElementsByClassName("dot");
+            const dots = document.getElementsByClassName("dot");
             while (dots[0]) {
                 dots[0].parentNode.removeChild(dots[0]);
             }
