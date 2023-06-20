@@ -1,6 +1,6 @@
 
 exports.interpolate = function interpolate(points, path, tension = 1) {
-    path.setAttributeNS(null, "d", catmull_rom_spline(points, tension));
+    path.points = catmull_rom_spline(points, tension);
 }
 
 function catmull_rom_spline(data, k) {
