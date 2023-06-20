@@ -3,12 +3,9 @@
 
         <div class="toolbar" :style="{ right: toolBarRight }">
 
-
             <div class="allColors">
 
-                <div class="panelUp mobile">
-
-                </div>
+                <div class="panelUp mobile"></div>
 
                 <transition-group class="lineColor" name="color-list" tag="ul">
                     <li v-for="(color, $index) in colors" v-bind:style='{ "background-color": color }'
@@ -40,13 +37,12 @@
 
         <div class="canvas">
 
-
             <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
             <svg xmlns=http://www.w3.org/2000/svg version="1.1" class="drawSvg" :width="canvasWidth"
                  :height="canvasHeight"
-                 @mousedown="linestart()"
-                 @touchstart="linestart()"
+                 @mousedown="lineStart()"
+                 @touchstart="lineStart()"
                  @mousemove="lineMove()"
                  @touchmove="lineMove()"
                  @mouseup="lineEnd()"
@@ -56,7 +52,7 @@
             >
 
                 <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
-
+                <Interpolation ref="interpolation"></Interpolation>
             </svg>
 
             <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
@@ -69,6 +65,11 @@
 
 <script>
 
+import {interpolate} from "@/scripts/interpolation";
+import Interpolation from "@/components/Interpolation.vue";
+import {ref} from "vue";
+import {arrayMove, rgb2hex} from "@/scripts/utility";
+
 require('../assets/css/freehandDraw.css')
 
 // hello jquery
@@ -77,6 +78,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
+    components: {Interpolation},
     props: [
         'title',
         'colors',
@@ -94,7 +96,7 @@ export default {
             radius: 2.5,
             width: 8,
             undo: false,
-            onCanvas: false // mouseout event is not firing, dunno why
+            onCanvas: false, // mouseout event is not firing, dunno why,
         }
     },
 
@@ -126,7 +128,7 @@ export default {
 
         },
 
-        linestart: function () {
+        lineStart: function () {
 
             this.undo = true;
 
@@ -139,7 +141,9 @@ export default {
 
             this.line += 'M' + cursorX + ',' + cursorY
 
-            this.cursor.style.opacity = 1
+            this.$refs.interpolation.createInterpolatingPath("interpolation1", this.lineColor); // todo switch id based on the remote user who is drawing
+
+            this.cursor.style.opacity = 0.5
             this.gesture = true
             e.preventDefault()
         },
@@ -149,14 +153,17 @@ export default {
             let e = event
             let rect = this.board.getBoundingClientRect();
 
-            let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-            let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches?[0].clientX - rect.x : -1)
+            let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches?[0].clientY - rect.y : -1)
 
 
             if (this.gesture === true) {
                 this.line += 'L' + cursorX + ',' + cursorY
                 // this.line += 'L'+(e.clientX||e.touches[0].clientX)+','+(e.clientY||e.touches[0].clientY)+' '
-                this.trace((e.clientX || e.touches[0].clientX), (e.clientY || e.touches[0].clientY))
+                const x = (e.clientX || e.touches[0].clientX);
+                const y = (e.clientY || e.touches[0].clientY);
+                this.trace(x, y);
+                this.$refs.interpolation.interpolate(cursorX, cursorY, "interpolation1") // todo switch id based on the remote user who is drawing
             }
 
             this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
@@ -200,37 +207,16 @@ export default {
 
             path.setAttributeNS(null, 'stroke-width', this.width);
             this.board.appendChild(path);
+            this.$refs.interpolation.deleteInterpolatingPath("interpolation1")
             // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
             this.gesture = false;
             this.line = '';
 
-            var dots = document.getElementsByClassName("dot");
+            const dots = document.getElementsByClassName("dot");
             while (dots[0]) {
                 dots[0].parentNode.removeChild(dots[0]);
             }
 
-        },
-
-        // For changing color positions inside toolbar
-        arrayMove: function (arr, fromIndex, toIndex) {
-            const element = arr[fromIndex];
-            arr.splice(fromIndex, 1);
-            arr.splice(toIndex, 0, element);
-        },
-
-
-        rgb2hex: function (rgb) {
-
-            function hex(x) {
-                return ("0" + parseInt(x).toString(16)).slice(-2);
-            }
-
-            if (rgb.search("rgb") === -1) {
-                return rgb;
-            } else {
-                rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/);
-                return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-            }
         },
 
         setActiveColor: function (Li) {
@@ -252,12 +238,12 @@ export default {
             let colorIndex = arr.indexOf(color)
 
             for (let li of allLi) {
-                let liColor = this.rgb2hex(li.style.backgroundColor).toUpperCase()
+                let liColor = rgb2hex(li.style.backgroundColor).toUpperCase()
 
                 if (liColor === color) {
                     li.classList.add('activeColor')
 
-                    this.arrayMove(arr, colorIndex, 0)
+                    arrayMove(arr, colorIndex, 0)
                 }
             }
         },
@@ -270,7 +256,7 @@ export default {
             this.setActiveColor('.lineColor li')
 
             // changing circle position
-            this.arrayMove(this.colors, index, 0)
+            arrayMove(this.colors, index, 0)
         },
 
         changeBg(color, index) { // just change backgrounds colors one after another
@@ -282,7 +268,7 @@ export default {
 
             $('.drawSvg #bg').setAttribute('fill', this.bgColor)
 
-            this.arrayMove(this.bgColors, index, 0)
+            arrayMove(this.bgColors, index, 0)
 
             // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
 
@@ -337,8 +323,6 @@ export default {
 
     mounted: function () {
         this.initBoard()
-
-        this.colors
 
         this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
         this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)

@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt')
 exports.Authenticator = class Authenticator {
     constructor(db) {
         this.db = db;
-        this.tokenKey = "213918903";//process.env.TOKEN_KEY
+        this.refreshTokenKey = "213918903";//process.env.TOKEN_KEY
+        this.accessTokenKey = "142530983";
     }
 
     async register(userData) {
@@ -36,16 +37,6 @@ exports.Authenticator = class Authenticator {
                 password: encryptedPassword,
             });
 
-            // Create token
-            // save user token
-            user.token = jwt.sign(
-                {user_id: user._id, username},
-                this.tokenKey,
-                {
-                    expiresIn: "2h",
-                }
-            );
-
             // return new user
             return {user: user}
         } catch (err) {
@@ -63,15 +54,22 @@ exports.Authenticator = class Authenticator {
         const user = await this.db.findOne(username);
 
         if (user && (await bcrypt.compare(password, user.password))) {
-            // Create token
-            // save user token
-            user.token = jwt.sign(
+            // Create refresh token
+            user.refreshToken = jwt.sign(
                 {user_id: user._id, username},
-                this.tokenKey,
+                this.refreshTokenKey,
                 {
-                    expiresIn: "2h",
+                    expiresIn: "1d",
                 }
             );
+
+            user.accessToken = jwt.sign(
+                {user_id: user._id, username},
+                this.accessTokenKey,
+                {
+                    expiresIn: "10m"
+                }
+            )
 
             // user
             return {user:user, err:""}
@@ -79,15 +77,50 @@ exports.Authenticator = class Authenticator {
         return {user:"", err: "User not registered or wrong password"}
     }
 
-    async validateToken(token) {
+    async validateRefreshToken(token) {
         if (!token) {
-            return {token:undefined,err: "A token is required for authentication"};
+            return {user:undefined,err: "A token is required for authentication"};
         }
         try {
-            const decoded = jwt.verify(token, this.tokenKey);
-            return {token:decoded}
+            const decoded = jwt.verify(token, this.refreshTokenKey);
+            return {user:decoded, token: jwt.sign(
+                {username:decoded.username, user_id: decoded._user_id},
+                this.accessTokenKey,
+                {
+                    expiresIn: "10m"
+                }
+            ), err: undefined}
         } catch (err) {
-            return {token:undefined, err:"Invalid Token"};
+            return {user:undefined, err:"Invalid Token"};
+        }
+    }
+
+    async refreshToken(token) {
+        return this.validateRefreshToken(token).then(result => {
+            if (result.err) {
+                return {token: undefined, err: "Unauthorized"}
+            }
+            return {
+                token: jwt.sign(
+                    {username:result.user.username, user_id: result.user._user_id},
+                    this.accessTokenKey,
+                    {
+                        expiresIn: "10m"
+                    }
+                )
+            }
+        })
+    }
+    // granting authorization NOT authentication
+    async validateAccessToken(token) {
+        if (!token) {
+            return {user:undefined,err: "A token is required for authorization"};
+        }
+        try {
+            const decoded = jwt.verify(token, this.accessTokenKey);
+            return {user:decoded, err: undefined}
+        } catch (err) {
+            return {user:undefined, err:"Invalid Token"};
         }
     }
 }
