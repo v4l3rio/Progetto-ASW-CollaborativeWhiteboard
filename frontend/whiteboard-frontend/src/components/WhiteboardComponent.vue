@@ -32,7 +32,7 @@
             </button>
             <button v-on:click="clean()" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
             </button>
-            <button v-on:click="undoLine()" class="btn undoBtn"><img src="../assets/undo.svg" alt="Undo"></button>
+            <UndoStack ref="undoStack"></UndoStack>
         </div>
 
         <div class="canvas">
@@ -69,6 +69,7 @@ import {interpolate} from "@/scripts/interpolation";
 import Interpolation from "@/components/Interpolation.vue";
 import {ref} from "vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
+import UndoStack from "@/components/UndoStack.vue";
 
 require('../assets/css/freehandDraw.css')
 
@@ -78,7 +79,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
-    components: {Interpolation},
+    components: {UndoStack, Interpolation},
     props: [
         'title',
         'colors',
@@ -205,6 +206,10 @@ export default {
             path.setAttributeNS(null, 'stroke-linejoin', 'round');
             path.setAttributeNS(null, 'stroke', this.lineColor);
 
+            const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
+            path.setAttribute("id", id);
+            this.$refs.undoStack.addLine(id);
+
             path.setAttributeNS(null, 'stroke-width', this.width);
             this.board.appendChild(path);
             this.$refs.interpolation.deleteInterpolatingPath("interpolation1")
@@ -274,10 +279,7 @@ export default {
 
         },
 
-        undoLine: function () {
-            let paths = $$('.drawSvg path');
-            $('.drawSvg').removeChild(paths[paths.length - 1])
-        },
+
 
         clean: function () {
             this.line = '';
