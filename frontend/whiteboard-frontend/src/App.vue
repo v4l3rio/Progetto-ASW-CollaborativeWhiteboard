@@ -1,7 +1,8 @@
 <template>
   <nav>
     <router-link to="/">Whiteboard</router-link> |
-    <router-link to="/login">Login</router-link>
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/addWhiteboard">Files</router-link>
   </nav>
   <router-view/>
 </template>
