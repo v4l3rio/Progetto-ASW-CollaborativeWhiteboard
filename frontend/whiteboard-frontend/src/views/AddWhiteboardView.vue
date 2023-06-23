@@ -8,7 +8,6 @@
         <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
         <CardComponent v-else></CardComponent>
     </div>
-    <FooterComponent></FooterComponent>
 </div>
 </template>
 <script>
