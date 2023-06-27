@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "testAuth": "cd auth; cd test; node auth_test.js"
+    "testAuth": "cd src/auth; cd test; node auth_test.js"
   },
   "author": "",
   "license": "ISC",
