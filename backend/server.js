@@ -2,35 +2,31 @@ const express = require('express');
 const app = express();
 http = require('http');
 const cors = require('cors');
-const { Server } = require('socket.io');
+
+/**
+ * Routers for this API
+ */
+const indexRouter = require('./src/routes/indexRoutes');
+const exampleSubRouter = require('./src/routes/exampleSubRoutes');
 
 app.use(cors()); // Add cors middleware
+app.use(express.json());
+
+const PORT = 4000;
+
+
+/**
+ * ROUTES
+ */
+app.use(indexRouter);
+app.use("/example", exampleSubRouter);
 
 const server = http.createServer(app);
 
-// Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
-const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:3000',
-        methods: ['GET', 'POST'],
-    },
-});
+/**
+ * REAL-TIME ENVIRONMENT (example)
+ */
+const {Realtime} = require('./src/realtime/api/Realtime');
+const rt = new Realtime(server);
 
-let connections = [];
-
-// Listen for when the client connects via socket.io-client
-io.on('connection', (socket) => {
-    connections.push(socket);
-    console.log(socket.id + " has connected");
-
-    socket.emit('message', 'Hello from the server');
-
-    // Listen for when the client disconnects
-    socket.on('disconnect', () => {
-        console.log(socket.id + " has disconnected");
-        connections = connections.filter(connection => connection.id !== socket.id);
-    });
-
-});
-
-server.listen(4000, () => 'Server is running on port 4000');
+server.listen(PORT, () => `Server is running on http://localhost:${PORT}`);
