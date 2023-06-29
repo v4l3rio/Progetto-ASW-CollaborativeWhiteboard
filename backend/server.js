@@ -1,32 +1,52 @@
+/*
+ * Required packages
+ */
 const express = require('express');
 const app = express();
-http = require('http');
+const cookieParser = require('cookie-parser');
+const {requestMethod} = require("./src/auth/requestMethod");
+const http = require('http');
 const cors = require('cors');
 
-/**
+const {printServerStart} = require("./src/util/consoleUtil");
+
+// ----------------------------------------------------------------------------
+const PORT = 4000;
+// ----------------------------------------------------------------------------
+
+
+/*
  * Routers for this API
  */
 const indexRouter = require('./src/routes/indexRoutes');
 const exampleSubRouter = require('./src/routes/exampleSubRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 
+/*
+ * Middlewares
+ */
 app.use(cors()); // Add cors middleware
 app.use(express.json());
+app.use(cookieParser());
+app.use(express.json())
+app.use(requestMethod);
 
-const PORT = 4000;
-
-
-/**
+/*
  * ROUTES
  */
 app.use(indexRouter);
 app.use("/example", exampleSubRouter);
 
+app.use("/auth", authRoutes);
+
 const server = http.createServer(app);
 
-/**
+/*
  * REAL-TIME ENVIRONMENT (example)
  */
 const {Realtime} = require('./src/realtime/api/Realtime');
 const rt = new Realtime(server);
 
-server.listen(PORT, () => `Server is running on http://localhost:${PORT}`);
+app.listen(PORT, () => {
+    printServerStart(PORT);
+});

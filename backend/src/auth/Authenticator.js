@@ -2,8 +2,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 exports.Authenticator = class Authenticator {
-    constructor(db) {
-        this.db = db;
+    constructor(model) {
+        this.model = model;
         this.refreshTokenKey = "213918903";//process.env.TOKEN_KEY
         this.accessTokenKey = "142530983";
     }
@@ -20,7 +20,7 @@ exports.Authenticator = class Authenticator {
 
             // check if user already exist
             // Validate if user exist in our database
-            const oldUser = await this.db.findOne(username);
+            const oldUser = await this.model.findOne(username);
 
             if (oldUser) {
                 return{user: "",err:"User Already Exist. Please Login"};
@@ -30,7 +30,7 @@ exports.Authenticator = class Authenticator {
             const encryptedPassword = await bcrypt.hash(password, 10);
 
             // Create user in our database
-            const user = await this.db.createUser({
+            const user = await this.model.createUser({
                 first_name,
                 last_name,
                 username: username.toLowerCase(), // sanitize: convert email to lowercase
@@ -51,7 +51,7 @@ exports.Authenticator = class Authenticator {
         }
         const {username, password} = userData;
         // Validate if user exist in our database
-        const user = await this.db.findOne(username);
+        const user = await this.model.findOne(username);
 
         if (user && (await bcrypt.compare(password, user.password))) {
             // Create refresh token
