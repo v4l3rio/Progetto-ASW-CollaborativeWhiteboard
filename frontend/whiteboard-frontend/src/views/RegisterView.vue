@@ -1,11 +1,10 @@
 <template>
-    <p>Questa pagina di register non funziona, è stata utilizzata solo come esempio per il routing</p>
     <div class="d-flex justify-content-center">
     <div class="col-8">
         <div v-if="showAlert" class="alert alert-danger" role="alert">
             {{alertMessage}}
         </div>
-        <div v-if="isFormSubmitted" class="alert alert-info" role="alert">
+        <div v-if="isFormSubmitted" class="alert alert-success" role="alert">
             <p>Registered successfully</p>
             <a href="#/login">Go to Login</a>
         </div>
@@ -44,7 +43,7 @@
             </div>
 
             <!-- Submit button -->
-            <button class="btn btn-primary btn-block mb-4" :disabled="showAlert" >Register</button>
+            <button class="btn btn-primary btn-block mb-4" :disabled="passwordCheckError" >Register</button>
 
             <!-- Login buttons -->
             <div class="text-center">
@@ -68,6 +67,7 @@ export default {
             password:"",
             confirmPassword:"",
             showAlert: false,
+            passwordCheckError:false,
             alertMessage: "",
             isFormSubmitted:false,
         }
@@ -76,9 +76,11 @@ export default {
         checkPasswords: function () {
             if (this.password !== this.confirmPassword) {
                 this.showAlert = true;
+                this.passwordCheckError = true;
                 this.alertMessage = "The passwords are different!"
             } else {
                 this.showAlert = false;
+                this.passwordCheckError = false;
             }
         },
         submitForm: function () {
@@ -89,13 +91,11 @@ export default {
                 first_name:this.name,
                 last_name:this.lastName
             }).then(function (response) {
-                console.log(response);
                 ref.isFormSubmitted = true;
                 ref.showAlert = false;
-            })
-            .catch(function (error) {
+            }).catch(function (error) {
                 ref.showAlert = true;
-                ref.alertMessage = error;
+                ref.alertMessage = error.response.data.message ? error.response.data.message : "There was an error";
             });
 
         }

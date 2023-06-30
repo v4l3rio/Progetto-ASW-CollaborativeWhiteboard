@@ -20,7 +20,7 @@ exports.Authenticator = class Authenticator {
 
             // check if user already exist
             // Validate if user exist in our database
-            const oldUser = await this.model.findOne(username);
+            const oldUser = await this.model.findOne(username.toLowerCase());
 
             if (oldUser) {
                 return{user: "",err:"User Already Exist. Please Login"};
@@ -33,7 +33,7 @@ exports.Authenticator = class Authenticator {
             const user = await this.model.createUser({
                 first_name,
                 last_name,
-                username: username.toLowerCase(), // sanitize: convert email to lowercase
+                username: username.toLowerCase(), // sanitize: convert username to lowercase
                 password: encryptedPassword,
             });
 
