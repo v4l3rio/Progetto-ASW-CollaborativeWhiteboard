@@ -43,7 +43,7 @@ exports.printServerStart = (port) => {
     nl();
     printWithColor(FgCyan + Bright, "-----------------------------------------------------------------------")
     nl();
-    printWithColor(FgCyan + Bright, "****\t" + serverName + "\t****");
+    printWithColor(FgCyan + Bright, "  ****  " + serverName + "  ****");
     nl();
     printWithColor(Dim, "  ---\t" + authors);
     nl();
