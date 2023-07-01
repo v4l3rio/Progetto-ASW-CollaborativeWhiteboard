@@ -60,3 +60,7 @@ exports.logErr = (err) => {
     printWithColor(FgRed, " --- ERR --- " + err);
 }
 
+exports.logRealtime = (string) => {
+    printWithColor(FgYellow, " --- SOCKET.IO --- " + string)
+}
+
