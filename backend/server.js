@@ -46,7 +46,10 @@ const server = http.createServer(app);
  */
 const {Realtime} = require('./src/realtime/api/Realtime');
 const rt = new Realtime(server);
+rt.listen();
+exports.realtime = rt;
 
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
     printServerStart(PORT);
 });
