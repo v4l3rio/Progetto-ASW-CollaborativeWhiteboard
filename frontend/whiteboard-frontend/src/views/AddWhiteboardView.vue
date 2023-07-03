@@ -49,7 +49,6 @@ export default {
                 {title: "whiteboard1", image: "whiteb.svg"},
                 {title: "whiteboard1", image: "plus.svg"}];
                 this.isReady = true;
-                console.log("ciao");
             }, 3000)
         },
         importWhiteboard () {
