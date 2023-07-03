@@ -15,6 +15,10 @@ const PORT = 4000;
 // ----------------------------------------------------------------------------
 
 
+var corsOptions = {
+    origin: "http://localhost:8081"
+}
+
 /*
  * Routers for this API
  */
@@ -25,7 +29,7 @@ const authRoutes = require('./src/routes/authRoutes');
 /*
  * Middlewares
  */
-app.use(cors()); // Add cors middleware
+app.use(cors(corsOptions)); // Add cors middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.json())
@@ -36,7 +40,6 @@ app.use(requestMethod);
  */
 app.use(indexRouter);
 app.use("/example", exampleSubRouter);
-
 app.use("/auth", authRoutes);
 
 const server = http.createServer(app);
