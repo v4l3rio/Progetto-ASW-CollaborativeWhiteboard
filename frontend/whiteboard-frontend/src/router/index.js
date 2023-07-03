@@ -18,6 +18,11 @@ const routes = [
     path: '/addWhiteboard',
     name: 'Files',
     component: AddWhiteboardView
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/RegisterView.vue')
   }
 ]
 

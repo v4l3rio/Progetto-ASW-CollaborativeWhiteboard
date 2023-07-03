@@ -4,6 +4,7 @@ const app = express();
 const {serialize} = require("cookie");
 var cookieParser = require('cookie-parser');
 const {requestMethod} = require("../requestMethod");
+const {TestModel} = require("../../models/testModel");
 app.use(cookieParser());
 app.use(express.json())
 app.use(requestMethod);
@@ -11,36 +12,8 @@ const port = 3000;
 
 const SECURE_COOKIE = false // if set to true, the cookie will be accessible only through https (not development mode)
 
-class Db {
-    constructor() {
-        this.lastId = 0;
-        this.users = [];
-    }
 
-    async findOne(username) {
-        for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].username === username) {
-                return this.users[i];
-            }
-        }
-        return undefined;
-    }
-
-    async createUser(user) {
-        const toCreate = {
-            id: this.lastId,
-            username: user.username,
-            password: user.password,
-            first_name: user.first_name,
-            last_name: user.last_name
-        };
-        this.users.push(toCreate);
-        this.lastId++;
-        return toCreate;
-    }
-}
-const db = new Db();
-const auth = new Authenticator(db)
+const auth = new Authenticator(TestModel)
 app.post('/register', (req, res) => {
     if (req.body.username && req.body.password && req.body.first_name && req.body.last_name) {
         const {username, password, first_name, last_name} = req.body;
@@ -77,25 +50,25 @@ app.post("/login", (req, res) => {
                 } else {
                     const logged = result.user;
                     const noPasswordUser = {id: logged.id, username:logged.username};
-                    res.cookie("token", logged.token,
+                    res.cookie("refreshToken", logged.refreshToken,
                         {httpOnly: true,
                                 secure: SECURE_COOKIE,
-                                maxAge:60 * 60 * 24 * 30})
+                                maxAge:60 * 60 * 24 * 1000})
 
                     console.log("Logged user " + JSON.stringify(noPasswordUser));
                     res.status(200)
                         .json({"message": "User logged successfully",
-                            "user" : noPasswordUser});
+                            "accessToken":logged.accessToken});
                 }
 
             });
-    } else if (req.cookies && req.cookies.token){
-        auth.validateToken(req.cookies.token).then(result => {
+    } else if (req.cookies && req.cookies.refreshToken){
+        auth.validateRefreshToken(req.cookies.refreshToken).then(result => {
             if (result.err) {
                 res.status(401).json({"message": "Invalid Token"});
             } else {
                 res.status(200)
-                    .json({"message": "User logged successfully", "username": result.token.username});
+                    .json({"message": "Already logged in"});
             }
         })
     } else {
@@ -104,11 +77,41 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    if (req.cookies?.token) {
-        res.clearCookie("token");
+    if (req.cookies?.refreshToken) {
+        res.clearCookie("refreshToken");
         res.status(200).end();
     } else {
         res.status(405).json({message:"You have to be already logged in to log out"});
+    }
+})
+
+app.post("/refresh", (req, res) => {
+   if (req.cookies?.refreshToken && req.body.accessToken) {
+       auth.refreshToken(req.cookies.refreshToken).then(result => {
+           if (result.err) {
+               res.status(406).json({ message: 'Unauthorized' });
+           } else {
+               res.status(200)
+                   .json({"message": "Refreshed successfully",
+                       "token":result.token});
+           }
+       })
+   } else {
+       res.status(406).json({ message: 'Unauthorized' });
+   }
+});
+
+app.post("/someResource", (req, res) => {
+    if (req.body.accessToken && req.cookies?.refreshToken) {
+        auth.validateAccessToken(req.body.accessToken).then(result => {
+            if (result.err) {
+                res.status(406).json({message: "Unauthorized"})
+            } else {
+                res.status(200).json({"message": "Access granted", "resource": 123})
+            }
+        })
+    } else {
+        res.status(401).json({message: "Unauthorized"});
     }
 })
 

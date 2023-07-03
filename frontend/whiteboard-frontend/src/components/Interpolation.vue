@@ -1,0 +1,60 @@
+<template>
+    <path v-for="(path) in this.interpolatingPaths"
+          v-bind="{d: path.points, stroke: path.color,'stroke-opacity': this.strokeOpacity,
+                    'stroke-width': this.strokeWidth}"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+    >
+    </path>
+</template>
+
+<script>
+import {interpolate} from "@/scripts/interpolation";
+
+export default {
+    name: "Interpolation",
+    data() {
+        return {
+            interpolatingPoints: {},
+            interpolatingPaths: {},
+            testInterpolation: 0,
+            testInterpolationPeriod: 200, // temporarily, will be done by emitting less frequent data on sender side
+            strokeOpacity: 0.5,
+            strokeWidth: 6,
+        }
+    },
+    methods: {
+        init: function () {
+            this.testInterpolation = performance.now();
+        },
+        createInterpolatingPath: function (id, color) {
+            this.interpolatingPoints[id] = []
+            this.interpolatingPaths[id] = {points:[], color:color};
+        },
+
+        interpolate: function (x, y, id) {
+            if (performance.now() - this.testInterpolation > this.testInterpolationPeriod) {
+                this.testInterpolation = performance.now();
+                this.interpolatingPoints[id].push(x,y)
+                const path = this.interpolatingPaths[id]
+                interpolate(this.interpolatingPoints[id], path)
+            }
+        },
+
+        deleteInterpolatingPath(id) {
+            //document.getElementById(id).remove();
+            delete this.interpolatingPoints[id]
+            delete this.interpolatingPaths[id]
+        },
+
+    },
+    mounted() {
+        this.init();
+    }
+}
+</script>
+
+<style scoped>
+
+</style>
