@@ -6,7 +6,7 @@ exports.Realtime = class Realtime {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
         this.io = new Server(server, {
             cors: {
-                origin: ['http://localhost:3000', 'http://localhost:8081'],
+                origin: ['http://localhost:3000', 'http://localhost:8081', 'http://localhost:8080'],
                 methods: ['GET', 'POST'],
             },
         });
@@ -42,6 +42,7 @@ exports.Realtime = class Realtime {
                 this.io.sockets.in(room).emit('welcome', `${userId} has joined the Whiteboard!`);
 
                 socket.on('drawStart', (cursorX, cursorY) => { //todo add room to draw
+                    console.log(cursorX, cursorY);
                     const roomToBroadcast = 1;
                     this.roomData.rooms[roomToBroadcast].forEach(connection => {
                         if(socket.id !== connection.id){
