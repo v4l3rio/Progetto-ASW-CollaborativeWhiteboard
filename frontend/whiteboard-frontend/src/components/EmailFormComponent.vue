@@ -1,6 +1,6 @@
 <template>
     <div class="form-floating mb-3">
-            <input type="email" class="form-control" :class="{ 'is-invalid' : isValid, 'is-valid' : validationFeedback}" id="floatingUsername" v-model="email" @input="validateEmail" aria-required="true" placeholder="name@example.com" required>
+            <input type="email" class="form-control" :class="{ 'is-invalid' : isValid, 'is-valid' : validationFeedback}" id="floatingUsername" v-model="email" @input="validateEmail(); changeEmail()" aria-required="true" placeholder="name@example.com" required>
             <label for="floatingUsername">Email address</label> 
             <div class="invalid-feedback">
                 Please provide a valid email.
@@ -10,6 +10,7 @@
 <script>
 export default {
     name: "EmailFormComponent",
+    emits:['email-changed'],
     data () {
       return {
         isValid: false,
@@ -27,6 +28,9 @@ export default {
             } else {
                 this.isValid = true;
             }
+        },
+        changeEmail() {
+            this.$emit('email-changed',this.email);
         }
     }
 }

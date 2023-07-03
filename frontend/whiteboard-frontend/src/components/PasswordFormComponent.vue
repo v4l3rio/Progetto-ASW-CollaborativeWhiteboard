@@ -1,7 +1,7 @@
 <template>
     <div class="input-group mb-3">
             <div class="form-floating">
-                <input :type="isVisible ? 'text' : 'password'" class="form-control" id="floatingPassword" placeholder="Password" aria-required="true" required>
+                <input v-model="password" :type="isVisible ? 'text' : 'password'" class="form-control" id="floatingPassword" @input="changePassword()" placeholder="Password" aria-required="true" required>
                 <label for="floatingPassword">Password</label>
             </div>
             <button class="btn btn-outline-secondary" type="button" id="button-addon1" @click="showPassword">
@@ -12,12 +12,14 @@
 <script>
 export default {
     name: "PasswordFormComponent",
+    emits:['password-changed'],
     data(){
         return{
             image: 'eye-slash.svg',
             iconHide: 'eye-slash.svg',
             iconShow: 'eye.svg', 
             isVisible: false,
+            password: ''
         }
     },   
     methods: {
@@ -31,6 +33,9 @@ export default {
         showPassword() {
             this.isVisible = this.isVisible ? false : true;
             this.init();
+        },
+        changePassword() {
+            this.$emit('password-changed',this.password);
         }
     }
 }
