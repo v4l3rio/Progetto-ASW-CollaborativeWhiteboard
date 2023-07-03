@@ -11,34 +11,34 @@
         <form @submit.prevent="submitForm" v-if="!isFormSubmitted">
 
             <!-- Email input -->
-            <div class="form-outline mb-4">
-                <input type="text" id="username" class="form-control" v-model="username" required/>
+            <div class="form-floating mb-4">
+                <input type="email" id="username" class="form-control" aria-required="true" v-model="username" placeholder="name@example.com" required/>
                 <label class="form-label" for="username">Username</label>
             </div>
 
             <!-- Name input -->
-            <div class="form-outline mb-4">
-                <input type="text" id="name" class="form-control" v-model="name" required/>
+            <div class="form-floating  mb-4">
+                <input type="text" id="name" class="form-control" aria-required="true" v-model="name" placeholder="Name" required/>
                 <label class="form-label" for="name">Name</label>
             </div>
 
             <!-- Surname input -->
-            <div class="form-outline mb-4">
-                <input type="text" id="lastName" class="form-control" v-model="lastName" required/>
+            <div class="form-floating  mb-4">
+                <input type="text" id="lastName" class="form-control" aria-required="true" v-model="lastName" placeholder="Surname" required/>
                 <label class="form-label" for="lastName">Surname</label>
             </div>
 
             <!-- Password input -->
-            <div class="form-outline mb-4">
-                <input type="password" id="password" class="form-control" @input="this.checkPasswords"
-                       v-model="password" required/>
+            <div class="form-floating  mb-4">
+                <input type="password" id="password" class="form-control" @input="this.checkPasswords" placeholder="Password"
+                aria-required="true" v-model="password" required/>
                 <label class="form-label" for="password">Password</label>
             </div>
 
             <!-- Confirm input -->
-            <div class="form-outline mb-4">
-                <input type="password" id="confirmPassword" class="form-control" @input="this.checkPasswords"
-                       v-model="confirmPassword" required />
+            <div class="form-floating  mb-4">
+                <input type="password" id="confirmPassword" class="form-control" @input="this.checkPasswords" aria-required="true"
+                       v-model="confirmPassword" placeholder="Confirm Password" required />
                 <label class="form-label" for="confirmPassword">Confirm Password</label>
             </div>
 

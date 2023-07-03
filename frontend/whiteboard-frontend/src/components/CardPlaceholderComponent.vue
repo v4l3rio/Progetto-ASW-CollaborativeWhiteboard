@@ -20,7 +20,7 @@ export default {
     name: 'CardPlaceholderComponent',
     data() {
         return {
-            placeholderNum: 12
+            placeholderNum: 8
         }
     },
     methods: {

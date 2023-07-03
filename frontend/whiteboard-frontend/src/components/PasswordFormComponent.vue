@@ -1,7 +1,7 @@
 <template>
     <div class="input-group mb-3">
             <div class="form-floating">
-                <input :type="isVisible ? 'text' : 'password'" class="form-control" id="floatingPassword" placeholder="Username" aria-required="true" required>
+                <input :type="isVisible ? 'text' : 'password'" class="form-control" id="floatingPassword" placeholder="Password" aria-required="true" required>
                 <label for="floatingPassword">Password</label>
             </div>
             <button class="btn btn-outline-secondary" type="button" id="button-addon1" @click="showPassword">
