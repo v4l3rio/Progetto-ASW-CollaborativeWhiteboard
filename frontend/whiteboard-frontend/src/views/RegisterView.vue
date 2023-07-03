@@ -10,11 +10,7 @@
         </div>
         <form @submit.prevent="submitForm" v-if="!isFormSubmitted">
 
-            <!-- Email input -->
-            <div class="form-floating mb-4">
-                <input type="email" id="username" class="form-control" aria-required="true" v-model="username" placeholder="name@example.com" required/>
-                <label class="form-label" for="username">Username</label>
-            </div>
+            <EmailFormComponent @email-changed="emailHandler"></EmailFormComponent>
 
             <!-- Name input -->
             <div class="form-floating  mb-4">
@@ -28,12 +24,7 @@
                 <label class="form-label" for="lastName">Surname</label>
             </div>
 
-            <!-- Password input -->
-            <div class="form-floating  mb-4">
-                <input type="password" id="password" class="form-control" @input="this.checkPasswords" placeholder="Password"
-                aria-required="true" v-model="password" required/>
-                <label class="form-label" for="password">Password</label>
-            </div>
+            <PasswordFormComponent @password-changed="passwordHandler" @input="this.checkPasswords"></PasswordFormComponent>
 
             <!-- Confirm input -->
             <div class="form-floating  mb-4">
@@ -56,6 +47,8 @@
 <script>
 
 import axios from "axios";
+import EmailFormComponent from "@/components/EmailFormComponent.vue"
+import PasswordFormComponent from "@/components/PasswordFormComponent.vue";
 
 export default {
     name: 'RegisterView',
@@ -71,6 +64,10 @@ export default {
             alertMessage: "",
             isFormSubmitted:false,
         }
+    },
+    components: {
+        EmailFormComponent,
+        PasswordFormComponent
     },
     methods: {
         checkPasswords: function () {
@@ -98,7 +95,13 @@ export default {
                 ref.alertMessage = error.response.data.message ? error.response.data.message : "There was an error";
             });
 
-        }
+        },
+        passwordHandler(password) {
+            this.password = password;
+        },
+        emailHandler(email) {
+            this.email = email;
+        },
     }
 }
 </script>
