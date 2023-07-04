@@ -101,6 +101,7 @@ export default {
             width: 8,
             undo: false,
             onCanvas: false, // mouseout event is not firing, dunno why,
+            lineToSend: []
         }
     },
 
@@ -142,6 +143,7 @@ export default {
             let cursorY;
             let rect = this.board.getBoundingClientRect();
 
+            this.lineToSend.push({x: e.clientX || e.changedTouches[0].clientX, y: e.clientY || e.changedTouches[0].clientY});
             cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
             cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
             this.$refs.socket.drawStart(e.clientX, e.clientY);
@@ -154,31 +156,6 @@ export default {
             this.gesture = true
             e.preventDefault()
         },
-        remoteLineStart: function (data) {
-            console.log("Line start" + data)
-            if (data.id) {
-                console.log("Line start with ID")
-                this.$refs.interpolation.createInterpolatingPath(data.id, this.lineColor);
-            }
-        },
-        remoteLineMove: function (data) {
-            console.log("Line Move" +data)
-            if (data.id && data.point) {
-                console.log(`Line move with point : ${data}`)
-
-                const point = this.getCursors(data.point.x, data.point.y)
-                this.$refs.interpolation.interpolate(point.x, point.y, data.id)
-            }
-        },
-        remoteLineEnd: function (data) {
-            console.log("Line end")
-            if (data.id && data.points) {
-                console.log(`Line end with data ${data}`)
-
-                this.$refs.interpolation.deleteInterpolatingPath(data.id);
-                // todo put all data.points inside a new path with data.id as id
-            }
-        },
 
         lineMove: function () {
 
@@ -186,6 +163,7 @@ export default {
             let rect = this.board.getBoundingClientRect();
             let cursorX;
             let cursorY;
+
 
             cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches ? [0].clientX - rect.x : -1)
             cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches ? [0].clientY - rect.y : -1)
@@ -198,7 +176,7 @@ export default {
                 const x = (e.clientX || e.touches[0].clientX);
                 const y = (e.clientY || e.touches[0].clientY);
                 this.trace(x, y);
-
+                this.lineToSend.push({x: e.clientX || e.changedTouches[0].clientX, y: e.clientY || e.changedTouches[0].clientY});
             }
 
             this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
@@ -231,34 +209,78 @@ export default {
 
             cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
             cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-            this.$refs.socket.drawEnd(e.clientX, e.clientY);
+
+            this.$refs.socket.drawEnd(this.lineToSend);
 
             this.line += 'L' + cursorX + ',' + cursorY;
             this.cursor.style.opacity = .5
-            let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttributeNS(null, 'd', this.line);
-            path.setAttributeNS(null, 'fill', 'none');
-            path.setAttributeNS(null, 'stroke-linecap', 'round');
-            path.setAttributeNS(null, 'stroke-linejoin', 'round');
-            path.setAttributeNS(null, 'stroke', this.lineColor);
-
             const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
-            path.setAttribute("id", id);
-            this.$refs.undoStack.addLine(id);
 
-            path.setAttributeNS(null, 'stroke-width', this.width);
-            this.board.appendChild(path);
-
+            this.createPath(id, this.line, this.lineColor, this.width);
             // TODO broadcast all the points added
             // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
             this.gesture = false;
             this.line = '';
-
+            this.lineToSend = [];
             const dots = document.getElementsByClassName("dot");
             while (dots[0]) {
                 dots[0].parentNode.removeChild(dots[0]);
             }
 
+        },
+
+        remoteLineStart: function (data) {
+            console.log("Line start" + data)
+            if (data.id) {
+                console.log("Line start with ID")
+                this.$refs.interpolation.createInterpolatingPath(data.id, this.lineColor);
+            }
+        },
+        remoteLineMove: function (data) {
+            console.log("Line Move" +data)
+            if (data.id && data.point) {
+                console.log(`Line move with point : ${data}`)
+
+                const point = this.getCursors(data.point.x, data.point.y)
+                this.$refs.interpolation.interpolate(point.x, point.y, data.id)
+            }
+        },
+        remoteLineEnd: function (data) {
+            console.log("Line end")
+            if (data.id && data.points) {
+                console.log(`Line end with data ${data}`)
+
+                this.$refs.interpolation.deleteInterpolatingPath(data.id);
+
+                let remoteLine = "";
+                let point = this.getCursors(data.points[0].x, data.points[0].y);
+                console.log(point);
+                remoteLine += 'M' + point.x + ',' + point.y;
+                //data.points.splice(0, 1);
+                data.points.forEach(p => {
+                    point = this.getCursors(p.x, p.y);
+                    remoteLine += 'L' + point.x + ',' + point.y;
+                })
+                console.log("Linea "+remoteLine);
+                const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
+                this.createPath(id, remoteLine, this.lineColor, this.width);
+                remoteLine = "";
+                data.points = [];
+                // todo put all data.points inside a new path with data.id as id
+            }
+        },
+
+        createPath: function(id, line, lineColor, width){
+            let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttributeNS(null, 'd', line);
+            path.setAttributeNS(null, 'fill', 'none');
+            path.setAttributeNS(null, 'stroke-linecap', 'round');
+            path.setAttributeNS(null, 'stroke-linejoin', 'round');
+            path.setAttributeNS(null, 'stroke', lineColor);
+            path.setAttribute("id", id);
+            this.$refs.undoStack.addLine(id);
+            path.setAttributeNS(null, 'stroke-width', width);
+            this.board.appendChild(path);
         },
 
         setActiveColor: function (Li) {

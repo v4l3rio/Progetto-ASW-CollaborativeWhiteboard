@@ -60,11 +60,11 @@ exports.Realtime = class Realtime {
                     })
                 })
 
-                socket.on('drawEnd', (cursorX, cursorY) => {
+                socket.on('drawEnd', line => {
                     const roomToBroadcast = 1;
                     this.roomData.rooms[roomToBroadcast].forEach(connection => {
                         if(socket.id !== connection.id){
-                            connection.emit("drawEndBC", cursorX, cursorY);
+                            connection.emit("drawEndBC", line);
                         }
                     })
                 })

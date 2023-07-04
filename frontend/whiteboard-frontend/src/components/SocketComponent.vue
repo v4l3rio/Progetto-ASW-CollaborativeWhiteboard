@@ -25,13 +25,13 @@ export default {
     mounted() {
         // todo add the remaining attributes to socket.IO calls
         this.socket.on("drawStartBC", (cursorX, cursorY) => {
-            this.$emit('drawStartBC', {id: "1"});
+            this.$emit('drawStartBC', {id: "1", point:{x: cursorX, y: cursorY}});
         });
         this.socket.on("drawingBC", (cursorX, cursorY) => {
             this.$emit('drawingBC', {id: "1", point:{x: cursorX, y: cursorY}})
         });
-        this.socket.on("drawEndBC", (cursorX, cursorY) => {
-            this.$emit('drawEndBC', {id:"1", points: []})
+        this.socket.on("drawEndBC", line => {
+            this.$emit('drawEndBC', {id:"1", points:line})
         });
         this.socket.on("disconnect", () => {
             this.connected = false;
@@ -44,8 +44,8 @@ export default {
         drawing(cursorX, cursorY){
             this.socket.emit("drawing", cursorX, cursorY);
         },
-        drawEnd(cursorX, cursorY){
-            this.socket.emit("drawEnd", cursorX, cursorY);
+        drawEnd(lineToSend){
+            this.socket.emit("drawEnd", lineToSend);
         }
     }
 }
