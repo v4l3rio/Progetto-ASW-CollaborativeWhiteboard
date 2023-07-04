@@ -41,12 +41,12 @@
 
             <svg xmlns=http://www.w3.org/2000/svg version="1.1" class="drawSvg" :width="canvasWidth"
                  :height="canvasHeight"
-                 @mousedown="lineStart()"
-                 @touchstart="lineStart()"
-                 @mousemove="lineMove()"
-                 @touchmove="lineMove()"
-                 @mouseup="lineEnd()"
-                 @touchend="lineEnd()"
+                 @mousedown="lineStart({x: null, y:null})"
+                 @touchstart="lineStart({x: null, y:null})"
+                 @mousemove="lineMove({x: null, y:null})"
+                 @touchmove="lineMove({x: null, y:null})"
+                 @mouseup="lineEnd({x: null, y:null})"
+                 @touchend="lineEnd({x: null, y:null})"
                  @onmouseleave="outOfCanvas()"
                  @touchcancel="outOfCanvas()"
             >
@@ -61,15 +61,18 @@
 
 
     </div>
+    <SocketComponent ref="socket"
+                     v-on:drawStartBC="lineStart"
+                     v-on:drawingBC="lineMove"
+                     v-on:drawEndBC="lineEnd"
+    ></SocketComponent>
 </template>
 
 <script>
-
-import {interpolate} from "@/scripts/interpolation";
 import Interpolation from "@/components/Interpolation.vue";
-import {ref} from "vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
 import UndoStack from "@/components/UndoStack.vue";
+import SocketComponent from "@/components/SocketComponent.vue";
 
 require('../assets/css/freehandDraw.css')
 
@@ -79,7 +82,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
-    components: {UndoStack, Interpolation},
+    components: {SocketComponent, UndoStack, Interpolation},
     props: [
         'title',
         'colors',
@@ -129,16 +132,23 @@ export default {
 
         },
 
-        lineStart: function () {
+        lineStart: function (data) {
 
             this.undo = true;
 
             let e = event
 
-
+            let cursorX;
+            let cursorY;
             let rect = this.board.getBoundingClientRect();
-            let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-            let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            if(data.y !== null && data.x!== null){
+                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            } else {
+                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+                this.$refs.socket.drawStart(cursorX, cursorY);
+            }
 
             this.line += 'M' + cursorX + ',' + cursorY
 
@@ -149,17 +159,24 @@ export default {
             e.preventDefault()
         },
 
-        lineMove: function () {
+        lineMove: function (data) {
 
             let e = event
             let rect = this.board.getBoundingClientRect();
-
-            let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches?[0].clientX - rect.x : -1)
-            let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches?[0].clientY - rect.y : -1)
-
-
+            let cursorX;
+            let cursorY;
+            if(data.y !== null && data.x !== null){
+                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches?[0].clientX - rect.x : -1)
+                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches?[0].clientY - rect.y : -1)
+            } else {
+                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches ? [0].clientX - rect.x : -1)
+                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches ? [0].clientY - rect.y : -1)
+            }
             if (this.gesture === true) {
                 this.line += 'L' + cursorX + ',' + cursorY
+                if(data.y === null && data.x === null) {
+                    this.$refs.socket.drawing(cursorX, cursorY);
+                }
                 // this.line += 'L'+(e.clientX||e.touches[0].clientX)+','+(e.clientY||e.touches[0].clientY)+' '
                 const x = (e.clientX || e.touches[0].clientX);
                 const y = (e.clientY || e.touches[0].clientY);
@@ -188,13 +205,20 @@ export default {
             //setTimeout(function(){document.body.removeChild(dot)},1000);
         },
 
-        lineEnd: function () {
+        lineEnd: function (data) {
 
             let e = event;
+            let cursorX;
+            let cursorY;
             let rect = this.board.getBoundingClientRect();
-
-            let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x);
-            let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y);
+            if(data.y !== null && data.x!== null){
+                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            } else {
+                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+                this.$refs.socket.drawEnd(cursorX, cursorY);
+            }
 
 
             this.line += 'L' + cursorX + ',' + cursorY;
@@ -325,7 +349,6 @@ export default {
 
     mounted: function () {
         this.initBoard()
-
         this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
         this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
 
