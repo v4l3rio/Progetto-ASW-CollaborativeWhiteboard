@@ -19,7 +19,7 @@ export default {
             interpolatingPoints: {},
             interpolatingPaths: {},
             testInterpolation: 0,
-            testInterpolationPeriod: 200, // temporarily, will be done by emitting less frequent data on sender side
+            testInterpolationPeriod: 100, // temporarily, will be done by emitting less frequent data on sender side
             strokeOpacity: 0.5,
             strokeWidth: 6,
         }

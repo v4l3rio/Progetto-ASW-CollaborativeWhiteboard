@@ -41,12 +41,12 @@
 
             <svg xmlns=http://www.w3.org/2000/svg version="1.1" class="drawSvg" :width="canvasWidth"
                  :height="canvasHeight"
-                 @mousedown="lineStart({x: null, y:null})"
-                 @touchstart="lineStart({x: null, y:null})"
-                 @mousemove="lineMove({x: null, y:null})"
-                 @touchmove="lineMove({x: null, y:null})"
-                 @mouseup="lineEnd({x: null, y:null})"
-                 @touchend="lineEnd({x: null, y:null})"
+                 @mousedown="lineStart()"
+                 @touchstart="lineStart()"
+                 @mousemove="lineMove()"
+                 @touchmove="lineMove()"
+                 @mouseup="lineEnd()"
+                 @touchend="lineEnd()"
                  @onmouseleave="outOfCanvas()"
                  @touchcancel="outOfCanvas()"
             >
@@ -62,9 +62,9 @@
 
     </div>
     <SocketComponent ref="socket"
-                     v-on:drawStartBC="lineStart"
-                     v-on:drawingBC="lineMove"
-                     v-on:drawEndBC="lineEnd"
+                     v-on:drawStartBC="remoteLineStart"
+                     v-on:drawingBC="remoteLineMove"
+                     v-on:drawEndBC="remoteLineEnd"
     ></SocketComponent>
 </template>
 
@@ -132,7 +132,7 @@ export default {
 
         },
 
-        lineStart: function (data) {
+        lineStart: function () {
 
             this.undo = true;
 
@@ -141,47 +141,64 @@ export default {
             let cursorX;
             let cursorY;
             let rect = this.board.getBoundingClientRect();
-            if(data.y !== null && data.x!== null){
-                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-            } else {
-                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-                this.$refs.socket.drawStart(cursorX, cursorY);
-            }
+
+            cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+            cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            this.$refs.socket.drawStart(e.clientX, e.clientY);
+
 
             this.line += 'M' + cursorX + ',' + cursorY
 
-            this.$refs.interpolation.createInterpolatingPath("interpolation1", this.lineColor); // todo switch id based on the remote user who is drawing
 
             this.cursor.style.opacity = 0.5
             this.gesture = true
             e.preventDefault()
         },
+        remoteLineStart: function (data) {
+            console.log("Line start" + data)
+            if (data.id) {
+                console.log("Line start with ID")
+                this.$refs.interpolation.createInterpolatingPath(data.id, this.lineColor);
+            }
+        },
+        remoteLineMove: function (data) {
+            console.log("Line Move" +data)
+            if (data.id && data.point) {
+                console.log(`Line move with point : ${data}`)
 
-        lineMove: function (data) {
+                const point = this.getCursors(data.point.x, data.point.y)
+                this.$refs.interpolation.interpolate(point.x, point.y, data.id)
+            }
+        },
+        remoteLineEnd: function (data) {
+            console.log("Line end")
+            if (data.id && data.points) {
+                console.log(`Line end with data ${data}`)
+
+                this.$refs.interpolation.deleteInterpolatingPath(data.id);
+                // todo put all data.points inside a new path with data.id as id
+            }
+        },
+
+        lineMove: function () {
 
             let e = event
             let rect = this.board.getBoundingClientRect();
             let cursorX;
             let cursorY;
-            if(data.y !== null && data.x !== null){
-                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches?[0].clientX - rect.x : -1)
-                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches?[0].clientY - rect.y : -1)
-            } else {
-                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches ? [0].clientX - rect.x : -1)
-                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches ? [0].clientY - rect.y : -1)
-            }
+
+            cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches ? [0].clientX - rect.x : -1)
+            cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches ? [0].clientY - rect.y : -1)
+
             if (this.gesture === true) {
                 this.line += 'L' + cursorX + ',' + cursorY
-                if(data.y === null && data.x === null) {
-                    this.$refs.socket.drawing(cursorX, cursorY);
-                }
+                this.$refs.socket.drawing(e.clientX, e.clientY);
+
                 // this.line += 'L'+(e.clientX||e.touches[0].clientX)+','+(e.clientY||e.touches[0].clientY)+' '
                 const x = (e.clientX || e.touches[0].clientX);
                 const y = (e.clientY || e.touches[0].clientY);
                 this.trace(x, y);
-                this.$refs.interpolation.interpolate(cursorX, cursorY, "interpolation1") // todo switch id based on the remote user who is drawing
+
             }
 
             this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
@@ -205,21 +222,16 @@ export default {
             //setTimeout(function(){document.body.removeChild(dot)},1000);
         },
 
-        lineEnd: function (data) {
+        lineEnd: function () {
 
             let e = event;
             let cursorX;
             let cursorY;
             let rect = this.board.getBoundingClientRect();
-            if(data.y !== null && data.x!== null){
-                cursorX = Math.round(data.x - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-                cursorY = Math.round(data.y - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-            } else {
-                cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-                cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-                this.$refs.socket.drawEnd(cursorX, cursorY);
-            }
 
+            cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
+            cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+            this.$refs.socket.drawEnd(e.clientX, e.clientY);
 
             this.line += 'L' + cursorX + ',' + cursorY;
             this.cursor.style.opacity = .5
@@ -236,7 +248,8 @@ export default {
 
             path.setAttributeNS(null, 'stroke-width', this.width);
             this.board.appendChild(path);
-            this.$refs.interpolation.deleteInterpolatingPath("interpolation1")
+
+            // TODO broadcast all the points added
             // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
             this.gesture = false;
             this.line = '';
@@ -343,6 +356,14 @@ export default {
 
             // this.$emit('drawSubmit', drawSvg);
         },
+
+        getCursors(x,y) {
+            const point = {}
+            let rect = this.board.getBoundingClientRect();
+            point.x = Math.round(x - rect.x)
+            point.y = Math.round(y - rect.y)
+            return point;
+        }
 
 
     },

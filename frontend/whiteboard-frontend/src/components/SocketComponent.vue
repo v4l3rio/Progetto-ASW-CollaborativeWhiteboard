@@ -14,20 +14,24 @@ export default {
         }
     },
     created() {
+        /* todo first, connect to express API to get whiteboard data (and put them in the canvas,
+            then try to connect with socket io
+        */
       this.socket = io(URL, { query: {
               "userId": "vale",
               "whiteBoardId": 1
       }});
     },
     mounted() {
+        // todo add the remaining attributes to socket.IO calls
         this.socket.on("drawStartBC", (cursorX, cursorY) => {
-            this.$emit('drawStartBC', {x: cursorX, y: cursorY});
+            this.$emit('drawStartBC', {id: "1"});
         });
         this.socket.on("drawingBC", (cursorX, cursorY) => {
-            this.$emit('drawingBC', {x: cursorX, y: cursorY})
+            this.$emit('drawingBC', {id: "1", point:{x: cursorX, y: cursorY}})
         });
         this.socket.on("drawEndBC", (cursorX, cursorY) => {
-            this.$emit('drawEndBC', {x: cursorX, y: cursorY})
+            this.$emit('drawEndBC', {id:"1", points: []})
         });
         this.socket.on("disconnect", () => {
             this.connected = false;
