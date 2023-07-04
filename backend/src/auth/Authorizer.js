@@ -3,6 +3,7 @@ exports.Authorizer = class {
         this.model = model;
     }
 
+    // used in both socket io messages and in profileController.js
     async authorizeToWhiteboard(accessToken, whiteboardId) {
 
     }

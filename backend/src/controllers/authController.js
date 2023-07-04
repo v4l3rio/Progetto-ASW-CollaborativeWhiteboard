@@ -3,6 +3,7 @@ const {TestModel} = require ("../models/testModel");
 const {log, logErr} = require("../util/consoleUtil");
 
 const auth = new Authenticator(TestModel);
+exports.auth = auth;
 const SECURE_COOKIE = false; // if set to true, the cookie will be accessible only through https (not development mode)
 
 exports.refresh = (req, res) => {

@@ -2,10 +2,14 @@ const {Authorizer} = require("../auth/Authorizer");
 const {TestModel} = require("../models/testModel");
 
 const authZ = new Authorizer(TestModel);
-
+exports.authZ = authZ;
 /* TODO if everyone can operate freely on the whiteboard, then all the authorize methods
     can be collapsed in one
  */
+
+exports.getWhiteboardData = (req, res) => {
+    // todo express route
+}
 
 exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
     authZ.authorizeToWhiteboard(accessToken, whiteboardId).then(result => {

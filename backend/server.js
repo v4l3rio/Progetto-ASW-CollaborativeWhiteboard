@@ -21,6 +21,7 @@ const PORT = 4000;
 const indexRouter = require('./src/routes/indexRoutes');
 const exampleSubRouter = require('./src/routes/exampleSubRoutes');
 const authRoutes = require('./src/routes/authRoutes');
+const profileRoutes = require('./src/routes/profileRoutes');
 
 /*
  * Middlewares
@@ -38,6 +39,7 @@ app.use(indexRouter);
 app.use("/example", exampleSubRouter);
 
 app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
 
 const server = http.createServer(app);
 
