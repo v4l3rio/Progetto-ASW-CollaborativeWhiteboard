@@ -2,7 +2,7 @@ const {Server} = require('socket.io')
 const {logRealtime, log, logErr} = require("../../util/consoleUtil");
 
 exports.Realtime = class Realtime {
-    constructor(server) {
+    constructor(server, controller) {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
         this.io = new Server(server, {
             cors: {
@@ -10,7 +10,7 @@ exports.Realtime = class Realtime {
                 methods: ['GET', 'POST'],
             },
         });
-
+        this.controller = controller;
         this.roomData = {users: {}, connections: {}, rooms: {}};
     }
 
