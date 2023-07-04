@@ -12,6 +12,8 @@ const {printServerStart} = require("./src/util/consoleUtil");
 
 // ----------------------------------------------------------------------------
 const PORT = 4000;
+process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
+process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
 // ----------------------------------------------------------------------------
 
 
@@ -23,9 +25,9 @@ var corsOptions = {
  * Routers for this API
  */
 const indexRouter = require('./src/routes/indexRoutes');
-const exampleSubRouter = require('./src/routes/exampleSubRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const profileRoutes = require('./src/routes/profileRoutes');
+const whiteboardRoutes = require('./src/routes/whiteboardRoutes');
 
 /*
  * Middlewares
@@ -40,9 +42,9 @@ app.use(requestMethod);
  * ROUTES
  */
 app.use(indexRouter);
-app.use("/example", exampleSubRouter);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
+app.use("/whiteboard", whiteboardRoutes)
 
 const server = http.createServer(app);
 

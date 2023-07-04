@@ -3,22 +3,60 @@ const {TestModel} = require("../models/testModel");
 
 const authZ = new Authorizer(TestModel);
 exports.authZ = authZ;
-/* TODO if everyone can operate freely on the whiteboard, then all the authorize methods
-    can be collapsed in one
- */
 
-exports.getWhiteboardData = (req, res) => {
-    // todo express route
+/*
+    ----------------------------------------------------------------------------------------------------------------
+    EXPRESS ROUTES
+    ----------------------------------------------------------------------------------------------------------------
+*/
+
+exports.getWhiteboardData = async (req, res) => {
+    if (req.params?.whiteboardId && req.body.accessToken) {
+        authZ.authorizeToWhiteboard(req.body.accessToken, req.params.whiteboardId).then(result => {
+            const {err} = result;
+            if (err) {
+                res.status(401).json({message: err})
+            } else {
+                TestModel.findOneWhiteboard(req.params.whiteboardId).then(whiteboardData => {
+                    if (whiteboardData) {
+                        res.status(200).json({whiteboardData: whiteboardData});
+                    } else {
+                        res.status(404).json({message: "Not found"})
+                    }
+                });
+            }
+        })
+    }
 }
 
+exports.inviteToWhiteboard = (req, res) => {
+    if (req.body.accessToken && req.body.username && req.body.whiteboardId) {
+        authZ.authorizeToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+            const {err} = result;
+            if (err) {
+                res.status(401).json({message: err});
+            } else {
+                TestModel.inviteUserToWhiteboard(req.body.username, req.body.whiteboardId).then(() => {
+                    res.status(200).json({message: "User invited successfully"});
+                })
+            }
+        });
+    }
+}
+
+
+/*
+    ----------------------------------------------------------------------------------------------------------------
+    THESE ARE THE ONES FOR SOCKET IO
+    ----------------------------------------------------------------------------------------------------------------
+*/
 exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
     authZ.authorizeToWhiteboard(accessToken, whiteboardId).then(result => {
         const {err} = result;
         if (err) {
-            callback(null, err);
+            callback(err);
         } else {
-            const whiteboardData = {} // get from DB
-            callback(whiteboardData, undefined);
+            callback();
         }
     })
 }
@@ -29,8 +67,6 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
         if (err) {
             callback(undefined, err);
         } else {
-            const {point, color} = line;
-            // todo broadcast the line (done by the realtime)
             callback(lineId, undefined);
         }
     })
@@ -39,7 +75,6 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
 // maybe unnecessary
 exports.lineMove = (line, lineId, whiteboardId, callback) => {
     const {point, color} = line;
-    // todo add maybe the authorization also in line move?
     callback();
 }
 
@@ -48,7 +83,13 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err)
         } else {
-            callback()
+            TestModel.insertLine(whiteboardId, lineId, line).then(result => {
+                if (result.err) {
+                    callback(result.err)
+                } else {
+                    callback();
+                }
+            })
         }
     });
 }
@@ -58,7 +99,13 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err);
         } else {
-            callback();
+            TestModel.deleteLine(whiteboardId, lineId).then(result => {
+                if (result.err) {
+                    callback(result.err)
+                } else {
+                    callback();
+                }
+            })
         }
     });
 }

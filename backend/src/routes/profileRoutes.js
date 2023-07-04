@@ -3,10 +3,10 @@ const profileController = require('../controllers/profileController');
 const router = express.Router();
 
 router.route('/')
-    .post(profileController.getProfile);
+    .get(profileController.getProfile);
 
 router.route('/createWhiteboard')
-    .put(profileController.createWhiteboard);
+    .post(profileController.createWhiteboard);
 
 router.route('/updateWhiteboard')
     .put(profileController.updateWhiteboard)
