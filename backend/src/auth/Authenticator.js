@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 exports.Authenticator = class Authenticator {
     constructor(model) {
         this.model = model;
-        this.refreshTokenKey = "213918903";//process.env.TOKEN_KEY
-        this.accessTokenKey = "142530983";
+        this.refreshTokenKey = process.env.REFRESH_TOKEN_KEY;
+        this.accessTokenKey = process.env.ACCESS_TOKEN_KEY;
     }
 
     async register(userData) {
@@ -20,7 +20,7 @@ exports.Authenticator = class Authenticator {
 
             // check if user already exist
             // Validate if user exist in our database
-            const oldUser = await this.model.findOne(username.toLowerCase());
+            const oldUser = await this.model.findOneUser(username.toLowerCase());
 
             if (oldUser) {
                 return{user: "",err:"User Already Exist. Please Login"};
@@ -51,7 +51,7 @@ exports.Authenticator = class Authenticator {
         }
         const {username, password} = userData;
         // Validate if user exist in our database
-        const user = await this.model.findOne(username);
+        const user = await this.model.findOneUser(username);
 
         if (user && (await bcrypt.compare(password, user.password))) {
             // Create refresh token
