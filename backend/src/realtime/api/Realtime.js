@@ -41,12 +41,12 @@ exports.Realtime = class Realtime {
 
                 this.io.sockets.in(room).emit('welcome', `${userId} has joined the Whiteboard!`);
 
-                socket.on('drawStart', (cursorX, cursorY) => { //todo add room to draw
+                socket.on('drawStart', (cursorX, cursorY, color) => { //todo add room to draw
                     console.log(cursorX, cursorY);
                     const roomToBroadcast = 1;
                     this.roomData.rooms[roomToBroadcast].forEach(connection => {
                         if(socket.id !== connection.id){
-                            connection.emit("drawStartBC", cursorX, cursorY);
+                            connection.emit("drawStartBC", cursorX, cursorY, color);
                         }
                     })
                 })
@@ -60,11 +60,11 @@ exports.Realtime = class Realtime {
                     })
                 })
 
-                socket.on('drawEnd', line => {
+                socket.on('drawEnd', (line, color) => {
                     const roomToBroadcast = 1;
                     this.roomData.rooms[roomToBroadcast].forEach(connection => {
                         if(socket.id !== connection.id){
-                            connection.emit("drawEndBC", line);
+                            connection.emit("drawEndBC", line, color);
                         }
                     })
                 })

@@ -146,7 +146,7 @@ export default {
             this.lineToSend.push({x: e.clientX || e.changedTouches[0].clientX, y: e.clientY || e.changedTouches[0].clientY});
             cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
             cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-            this.$refs.socket.drawStart(e.clientX, e.clientY);
+            this.$refs.socket.drawStart(e.clientX, e.clientY, this.lineColor);
 
 
             this.line += 'M' + cursorX + ',' + cursorY
@@ -210,7 +210,7 @@ export default {
             cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
             cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
 
-            this.$refs.socket.drawEnd(this.lineToSend);
+            this.$refs.socket.drawEnd(this.lineToSend, this.lineColor);
 
             this.line += 'L' + cursorX + ',' + cursorY;
             this.cursor.style.opacity = .5
@@ -233,7 +233,7 @@ export default {
             console.log("Line start" + data)
             if (data.id) {
                 console.log("Line start with ID")
-                this.$refs.interpolation.createInterpolatingPath(data.id, this.lineColor);
+                this.$refs.interpolation.createInterpolatingPath(data.id, data.color);
             }
         },
         remoteLineMove: function (data) {
@@ -256,14 +256,14 @@ export default {
                 let point = this.getCursors(data.points[0].x, data.points[0].y);
                 console.log(point);
                 remoteLine += 'M' + point.x + ',' + point.y;
-                //data.points.splice(0, 1);
+                data.points.splice(0, 1);
                 data.points.forEach(p => {
                     point = this.getCursors(p.x, p.y);
                     remoteLine += 'L' + point.x + ',' + point.y;
                 })
                 console.log("Linea "+remoteLine);
                 const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
-                this.createPath(id, remoteLine, this.lineColor, this.width);
+                this.createPath(id, remoteLine, data.color, this.width);
                 remoteLine = "";
                 data.points = [];
                 // todo put all data.points inside a new path with data.id as id
