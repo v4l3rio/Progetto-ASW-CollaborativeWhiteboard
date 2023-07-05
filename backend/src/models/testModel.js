@@ -84,7 +84,6 @@ class Db {
         while(whiteboard.traits[whiteboard.freeId] !== undefined) {
             whiteboard.freeId++;
         }
-        log(`The id is ${id}`);
         return id;
     }
 

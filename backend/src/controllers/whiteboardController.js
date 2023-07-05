@@ -89,6 +89,7 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err)
         } else {
+            console.log(line);
             TestModel.insertLine(whiteboardId, lineId, line).then((result) => {
                 if (result?.err) {
                     callback(result.err)
