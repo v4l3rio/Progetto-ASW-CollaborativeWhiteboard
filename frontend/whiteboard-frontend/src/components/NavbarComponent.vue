@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom mb-5">
         <div class="container justify-content-center align-items-center">
             <a class="navbar-brand " href="#/home">
                 Colla
