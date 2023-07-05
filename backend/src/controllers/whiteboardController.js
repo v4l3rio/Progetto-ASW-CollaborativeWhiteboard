@@ -12,7 +12,7 @@ exports.authZ = authZ;
 
 exports.getWhiteboardData = async (req, res) => {
     if (req.params?.whiteboardId && req.body.accessToken) {
-        authZ.authorizeToWhiteboard(req.body.accessToken, req.params.whiteboardId).then(result => {
+        authZ.normalUserToWhiteboard(req.body.accessToken, req.params.whiteboardId).then(result => {
             const {err} = result;
             if (err) {
                 res.status(401).json({message: err})
@@ -26,12 +26,14 @@ exports.getWhiteboardData = async (req, res) => {
                 });
             }
         })
+    } else {
+        res.status(400).json({message: "Missing access token or whiteboard ID in the request"})
     }
 }
 
 exports.inviteToWhiteboard = (req, res) => {
     if (req.body.accessToken && req.body.username && req.body.whiteboardId) {
-        authZ.authorizeToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+        authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
             const {err} = result;
             if (err) {
                 res.status(401).json({message: err});
@@ -41,6 +43,8 @@ exports.inviteToWhiteboard = (req, res) => {
                 })
             }
         });
+    } else {
+        res.status(400).json({message: "Missing access token, username or whiteboard ID in the request"})
     }
 }
 
@@ -51,12 +55,12 @@ exports.inviteToWhiteboard = (req, res) => {
     ----------------------------------------------------------------------------------------------------------------
 */
 exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
-    authZ.authorizeToWhiteboard(accessToken, whiteboardId).then(result => {
-        const {err} = result;
+    authZ.normalUserToWhiteboard(accessToken, whiteboardId).then(result => {
+        const {err, username} = result;
         if (err) {
-            callback(err);
+            callback(err, undefined);
         } else {
-            callback();
+            callback(undefined, username);
         }
     })
 }
@@ -65,9 +69,9 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     authZ.authorizeNewLine(accessToken, whiteboardId).then(result => {
         const {lineId, err} = result;   // the authorizer generates fresh new line id
         if (err) {
-            callback(undefined, err);
+            callback(err, undefined);
         } else {
-            callback(lineId, undefined);
+            callback(undefined, lineId);
         }
     })
 }
@@ -83,8 +87,8 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err)
         } else {
-            TestModel.insertLine(whiteboardId, lineId, line).then(result => {
-                if (result.err) {
+            TestModel.insertLine(whiteboardId, lineId, line).then((result) => {
+                if (result?.err) {
                     callback(result.err)
                 } else {
                     callback();

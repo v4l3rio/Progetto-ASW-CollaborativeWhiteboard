@@ -101,7 +101,8 @@ export default {
             width: 8,
             undo: false,
             onCanvas: false, // mouseout event is not firing, dunno why,
-            lineToSend: []
+            lineToSend: [],
+            drawingId: ""
         }
     },
 
@@ -214,7 +215,7 @@ export default {
 
             this.line += 'L' + cursorX + ',' + cursorY;
             this.cursor.style.opacity = .5
-            const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
+            const id = this.$refs.socket.drawingId;  // taken from the socket component, just updated with the new id
 
             this.createPath(id, this.line, this.lineColor, this.width);
             // TODO broadcast all the points added
