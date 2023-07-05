@@ -10,7 +10,7 @@ export default {
     data() {
         return {
             connected : false,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZXNobWFnIiwiaWF0IjoxNjg4NTUxMTU4LCJleHAiOjE2ODg1NTE3NTh9.A_u5Kqt_CIMiOrNNWS3FWSVjZ57aHQ8gsXNlV9fLD8g", // todo take from local storage
+            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZXNobWFnIiwiaWF0IjoxNjg4NTUxNzM3LCJleHAiOjE2ODg1NTIzMzd9.cJwu-DzAwC_DIDJ-7FCX8KY6ltaeFwqwrg6-JeB51II", // todo take from local storage
             drawingId: "",
             socket: {},
         }
@@ -42,6 +42,7 @@ export default {
     methods:{
         drawStart(cursorX, cursorY, color){
             this.socket.emit("drawStart", {cursorX, cursorY, color}, this.accessToken, (response) => {
+                console.log(response.newId);
                 this.drawingId = response.newId;
             });
         },

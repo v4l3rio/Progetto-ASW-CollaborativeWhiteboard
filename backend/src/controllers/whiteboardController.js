@@ -67,11 +67,13 @@ exports.joinWhiteboard = (accessToken, whiteboardId, callback) => {
 
 exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
     authZ.authorizeNewLine(accessToken, whiteboardId).then(result => {
-        const {lineId, err} = result;   // the authorizer generates fresh new line id
+        const {err} = result;   // the authorizer generates fresh new line id
         if (err) {
             callback(err, undefined);
         } else {
-            callback(undefined, lineId);
+            TestModel.generateFreshLineId(whiteboardId).then(id => {
+                callback(undefined, id);
+            })
         }
     })
 }
