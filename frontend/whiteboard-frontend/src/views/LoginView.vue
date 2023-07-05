@@ -50,8 +50,7 @@ export default {
                 username: this.email,
                 password: this.password,
             }).then(response => {
-                var token = response.data.accessToken;
-                localStorage.setItem('accesToken', token);
+                localStorage.setItem('accessToken', response.data.accessToken);
                 this.$router.replace({ path: '/addwhiteboard' })
             }).catch(error => {
                 this.isInvalid = true;
