@@ -10,6 +10,8 @@ export default {
     data() {
         return {
             connected : false,
+            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NTU5NTgyLCJleHAiOjE2ODg2NDU5ODJ9.oNl53XoLpJaCF0hxF9FfTsMTA_-vTUrKbV3G_-fbhck", // todo take from local storage
+            drawingId: "",
             socket: {},
         }
     },
@@ -18,20 +20,20 @@ export default {
             then try to connect with socket io
         */
       this.socket = io(URL, { query: {
-              "userId": "vale",
-              "whiteBoardId": 1
+              "accessToken": this.accessToken,
+              "whiteBoardId": 0
       }});
     },
     mounted() {
         // todo add the remaining attributes to socket.IO calls
-        this.socket.on("drawStartBC", (cursorX, cursorY, color) => {
-            this.$emit('drawStartBC', {id: "1", point:{x: cursorX, y: cursorY}, color: color});
+        this.socket.on("drawStartBC", (line, newId) => {
+            this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
         });
-        this.socket.on("drawingBC", (cursorX, cursorY) => {
-            this.$emit('drawingBC', {id: "1", point:{x: cursorX, y: cursorY}})
+        this.socket.on("drawingBC", (line, lineId) => {
+            this.$emit('drawingBC', {id: lineId, point:{x: line.cursorX, y: line.cursorY}})
         });
-        this.socket.on("drawEndBC", (line, color) => {
-            this.$emit('drawEndBC', {id:"1", points:line, color: color});
+        this.socket.on("drawEndBC", (line, lineId) => {
+            this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
         });
         this.socket.on("disconnect", () => {
             this.connected = false;
@@ -39,13 +41,16 @@ export default {
     },
     methods:{
         drawStart(cursorX, cursorY, color){
-            this.socket.emit("drawStart", cursorX, cursorY, color);
+            this.socket.emit("drawStart", {cursorX, cursorY, color}, this.accessToken, (response) => {
+                console.log(response.newId);
+                this.drawingId = response.newId;
+            });
         },
         drawing(cursorX, cursorY){
-            this.socket.emit("drawing", cursorX, cursorY);
+            this.socket.emit("drawing", {cursorX, cursorY}, this.drawingId, this.accessToken);
         },
         drawEnd(lineToSend, color){
-            this.socket.emit("drawEnd", lineToSend, color);
+            this.socket.emit("drawEnd", {points:lineToSend, color}, this.drawingId, this.accessToken);
         }
     }
 }

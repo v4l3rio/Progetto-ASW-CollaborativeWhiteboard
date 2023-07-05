@@ -81,7 +81,7 @@ class Db {
         const whiteboard = this.whiteBoards[whiteboardId];
         const id = whiteboard.freeId;
         whiteboard.freeId++;
-        while(whiteboard.traits[whiteboard.freeId]) {
+        while(whiteboard.traits[whiteboard.freeId] !== undefined) {
             whiteboard.freeId++;
         }
         return id;
@@ -107,7 +107,12 @@ class Db {
         if (user) {
             return this.whiteBoards[whiteboardId].users.includes(user.id);
         }
-
+    }
+    async validateOwnerToWhiteboard(username, whiteboardId) {
+        const user = await this.findOneUser(username);
+        if (user) {
+            return this.whiteBoards[whiteboardId].ownerId === user.id;
+        }
     }
 
     async getWhiteboards(username) {

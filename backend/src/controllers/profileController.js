@@ -54,7 +54,7 @@ exports.updateWhiteboard = (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
                 if (req.body.whiteboardId !== undefined) {
-                    authZ.authorizeToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+                    authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
                         TestModel.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                             res.status(200).json({message: "Whiteboard updated successfully"});
                         })
@@ -76,7 +76,7 @@ exports.deleteWhiteboard = (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
                 if (req.body.whiteboardId !== undefined) {
-                    authZ.authorizeToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+                    authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
                         TestModel.deleteWhiteboard(req.body.whiteboardId).then(() => {
                             res.status(200).json({message: "Whiteboard deleted successfully"});
                         })

@@ -14,10 +14,12 @@ const {printServerStart} = require("./src/util/consoleUtil");
 const PORT = 4000;
 process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
 process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
+process.env.MODE = "test";
+process.env.TEST_WHITEBOARD = "yes"
 // ----------------------------------------------------------------------------
 
 
-var corsOptions = {
+const corsOptions = {
     origin: "http://localhost:8081"
 }
 
@@ -53,6 +55,7 @@ const server = http.createServer(app);
  */
 const {Realtime} = require('./src/realtime/api/Realtime');
 const whiteboardController = require("./src/controllers/whiteboardController");
+const {createTestEnvironment} = require("./src/auth/test/testUtility");
 const rt = new Realtime(server, whiteboardController);
 rt.listen();
 exports.realtime = rt;
@@ -60,4 +63,7 @@ exports.realtime = rt;
 
 server.listen(PORT, () => {
     printServerStart(PORT);
+    if (process.env.MODE === "test") {
+        createTestEnvironment();
+    }
 });
