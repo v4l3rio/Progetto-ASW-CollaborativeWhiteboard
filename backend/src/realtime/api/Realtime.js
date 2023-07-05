@@ -54,8 +54,8 @@ exports.Realtime = class Realtime {
                                     // todo handle unauthorized line
                                 } else {
                                     callback({newId: newId}); // to propagate back to the client the fresh new line id
-                                    console.log(line);
-                                    console.log(newId);
+                                    //console.log(line);
+                                    //console.log(newId);
                                     this.roomData.rooms[room].forEach(connection => {
                                         if(socket.id !== connection.id){
                                             connection.emit("drawStartBC", line, newId);

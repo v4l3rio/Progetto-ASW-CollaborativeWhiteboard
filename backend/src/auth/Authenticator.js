@@ -67,7 +67,7 @@ exports.Authenticator = class Authenticator {
                 {user_id: user._id, username},
                 this.accessTokenKey,
                 {
-                    expiresIn: "10m"
+                    expiresIn: process.env.MODE === "test" ? "1d" : "10m"
                 }
             )
 

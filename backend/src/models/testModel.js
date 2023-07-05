@@ -81,9 +81,10 @@ class Db {
         const whiteboard = this.whiteBoards[whiteboardId];
         const id = whiteboard.freeId;
         whiteboard.freeId++;
-        while(whiteboard.traits[whiteboard.freeId]) {
+        while(whiteboard.traits[whiteboard.freeId] !== undefined) {
             whiteboard.freeId++;
         }
+        log(`The id is ${id}`);
         return id;
     }
 

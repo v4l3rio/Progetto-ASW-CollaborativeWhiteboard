@@ -231,43 +231,42 @@ export default {
         },
 
         remoteLineStart: function (data) {
-            console.log("Line start" + data)
-            if (data.id) {
-                console.log("Line start with ID")
+            //console.log("Line start" + JSON.stringify(data))
+            if (data.id !== undefined) {
+                //console.log("Line start with ID")
                 this.$refs.interpolation.createInterpolatingPath(data.id, data.color);
             }
         },
         remoteLineMove: function (data) {
-            console.log("Line Move" +data)
+            //console.log("Line Move" +JSON.stringify(data))
             if (data.id && data.point) {
-                console.log(`Line move with point : ${data}`)
+                //console.log(`Line move with point : ${data}`)
 
                 const point = this.getCursors(data.point.x, data.point.y)
                 this.$refs.interpolation.interpolate(point.x, point.y, data.id)
             }
         },
         remoteLineEnd: function (data) {
-            console.log("Line end")
+            //console.log("Line end")
             if (data.id && data.points) {
-                console.log(`Line end with data ${data}`)
+                //console.log(`Line end with data ${data}`)
 
                 this.$refs.interpolation.deleteInterpolatingPath(data.id);
 
                 let remoteLine = "";
                 let point = this.getCursors(data.points[0].x, data.points[0].y);
-                console.log(point);
+                //console.log(point);
                 remoteLine += 'M' + point.x + ',' + point.y;
                 data.points.splice(0, 1);
                 data.points.forEach(p => {
                     point = this.getCursors(p.x, p.y);
                     remoteLine += 'L' + point.x + ',' + point.y;
                 })
-                console.log("Linea "+remoteLine);
-                const id = Math.floor(Math.random() * 1000);  // todo interrogate server for retaining fresh ids
+                //console.log("Linea "+remoteLine);
+                const id = data.id;
                 this.createPath(id, remoteLine, data.color, this.width);
                 remoteLine = "";
                 data.points = [];
-                // todo put all data.points inside a new path with data.id as id
             }
         },
 

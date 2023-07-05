@@ -10,7 +10,7 @@ export default {
     data() {
         return {
             connected : false,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZXNobWFnIiwiaWF0IjoxNjg4NTUxNzM3LCJleHAiOjE2ODg1NTIzMzd9.cJwu-DzAwC_DIDJ-7FCX8KY6ltaeFwqwrg6-JeB51II", // todo take from local storage
+            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NTU5NTgyLCJleHAiOjE2ODg2NDU5ODJ9.oNl53XoLpJaCF0hxF9FfTsMTA_-vTUrKbV3G_-fbhck", // todo take from local storage
             drawingId: "",
             socket: {},
         }
@@ -21,7 +21,7 @@ export default {
         */
       this.socket = io(URL, { query: {
               "accessToken": this.accessToken,
-              "whiteBoardId": 1
+              "whiteBoardId": 0
       }});
     },
     mounted() {
