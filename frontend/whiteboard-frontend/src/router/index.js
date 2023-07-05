@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import WhiteboardView from '../views/WhiteboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddWhiteboardView from '../views/AddWhiteboardView.vue'
+import UserProfileView from '../views/UserProfileView.vue'
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: () => import('../views/RegisterView.vue')
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: UserProfileView
   }
 ]
 
