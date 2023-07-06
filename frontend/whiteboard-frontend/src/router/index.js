@@ -2,10 +2,16 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import WhiteboardView from '../views/WhiteboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddWhiteboardView from '../views/AddWhiteboardView.vue'
+import HomepageComponent from "@/components/HomepageComponent.vue";
 
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: HomepageComponent
+  },
+  {
+    path: '/whiteboard',
     name: 'Whiteboard',
     component: WhiteboardView
   },
