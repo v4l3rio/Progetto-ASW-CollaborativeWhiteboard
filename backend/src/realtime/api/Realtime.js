@@ -18,6 +18,7 @@ exports.Realtime = class Realtime {
 
         // Listen for when the client connects via socket.io-client
         this.io.on('connection', (socket) => {
+
             if (socket.handshake.query.accessToken && socket.handshake.query.whiteBoardId) {
                 const room = socket.handshake.query.whiteBoardId;
                 // get the user ID from the connection query and assign that user to the correct room (whiteboard)
@@ -46,54 +47,70 @@ exports.Realtime = class Realtime {
                             this.roomData.rooms[room] = [socket];
                         }
 
-                        this.io.sockets.in(room).emit('welcome', `${username} has joined the Whiteboard!`);
 
-                        socket.on('drawStart', (line, accessToken, callback) => {
-                            this.controller.lineStarted(line, accessToken, room, (err, newId) => {
-                                if (err) {
-                                    // todo handle unauthorized line
-                                } else {
-                                    callback({newId: newId}); // to propagate back to the client the fresh new line id
-                                    //console.log(line);
-                                    //console.log(newId);
-                                    this.roomData.rooms[room].forEach(connection => {
-                                        if(socket.id !== connection.id){
-                                            connection.emit("drawStartBC", line, newId);
+                        switch (socket.handshake.query.type) {
+                            case 'notification': {
+                                this.roomData.rooms[room].forEach(connection => {
+                                    if(socket.id !== connection.id){
+                                        connection.emit("notify-my-connection", username);
+                                    }
+                                })
+                                break;
+                            }
+                            case 'whiteboard': {
+
+                                socket.on('drawStart', (line, accessToken, callback) => {
+                                    this.controller.lineStarted(line, accessToken, room, (err, newId) => {
+                                        if (err) {
+                                            // todo handle unauthorized line
+                                        } else {
+                                            callback({newId: newId}); // to propagate back to the client the fresh new line id
+                                            //console.log(line);
+                                            //console.log(newId);
+                                            this.roomData.rooms[room].forEach(connection => {
+                                                if(socket.id !== connection.id){
+                                                    connection.emit("drawStartBC", line, newId);
+                                                }
+                                            })
                                         }
                                     })
-                                }
-                            })
-                        })
+                                })
 
-                        socket.on('drawing', (line, lineId, accessToken) => {
-                            this.controller.lineMove(line, lineId, room, (err) => {
-                                if (!err) {
-                                    this.roomData.rooms[room].forEach(connection => {
-                                        if(socket.id !== connection.id){
-                                            connection.emit("drawingBC", line, lineId);
+                                socket.on('drawing', (line, lineId, accessToken) => {
+                                    this.controller.lineMove(line, lineId, room, (err) => {
+                                        if (!err) {
+                                            this.roomData.rooms[room].forEach(connection => {
+                                                if(socket.id !== connection.id){
+                                                    connection.emit("drawingBC", line, lineId);
+                                                }
+                                            })
+                                        } else {
+                                            // todo handle error
                                         }
                                     })
-                                } else {
-                                    // todo handle error
-                                }
-                            })
 
-                        })
+                                })
 
-                        socket.on('drawEnd', (line, lineId, accessToken) => {
-                            this.controller.lineEnd(line, accessToken, lineId, room, (err) => {
-                                if (err) {
-                                    // todo handle unauthorized line
-                                } else {
-                                    this.roomData.rooms[room].forEach(connection => {
-                                        if(socket.id !== connection.id){
-                                            connection.emit("drawEndBC", line, lineId);
+                                socket.on('drawEnd', (line, lineId, accessToken) => {
+                                    this.controller.lineEnd(line, accessToken, lineId, room, (err) => {
+                                        if (err) {
+                                            // todo handle unauthorized line
+                                        } else {
+                                            this.roomData.rooms[room].forEach(connection => {
+                                                if(socket.id !== connection.id){
+                                                    connection.emit("drawEndBC", line, lineId);
+                                                }
+                                            })
                                         }
                                     })
-                                }
-                            })
 
-                        })
+                                })
+
+                                break;
+                            }
+                        }
+
+
 
                         // Listen for when the client disconnects
                         socket.on('disconnect', () => {

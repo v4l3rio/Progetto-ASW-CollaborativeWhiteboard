@@ -1,11 +1,15 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/whiteboard">Whiteboard</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/addWhiteboard">Files</router-link> |
-    <router-link to="/register">Register</router-link> |
-    <router-link to="/profile">Profile</router-link>
+      <div class="row">
+          <div class="col"></div>
+          <router-link to="/" class="col">Home</router-link>
+          <router-link to="/whiteboard" class="col">Whiteboard</router-link>
+          <router-link to="/login" class="col">Login</router-link>
+          <router-link to="/addWhiteboard" class="col">Files</router-link>
+          <router-link to="/register" class="col">Register</router-link>
+          <router-link to="/profile" class="col">Profile</router-link>
+          <NotificationComponent class="col"></NotificationComponent>
+      </div>
   </nav>
   <router-view/>
 </template>
@@ -35,4 +39,5 @@ nav a.router-link-exact-active {
 @import'~bootstrap/dist/css/bootstrap.css';
 </style>
 <script setup>
+import NotificationComponent from "@/components/NotificationComponent.vue";
 </script>
