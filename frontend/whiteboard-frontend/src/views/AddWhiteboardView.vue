@@ -63,51 +63,82 @@ export default {
   },
   methods: {
     getWhiteboards() {
+      this.loading = true;
       axios.get('http://localhost:4000/profile/', {
         params: {
           accessToken: localStorage.getItem("accessToken")
         }
       }).then(response => {
         this.isReady = true;
-        this.whiteboards = response.data.whiteboards;
+        this.loading = false;
+        console.log(response.data.whiteboards)
+          // TODO fix fields set to null
+        if (response.data.whiteboards[0]) {
+
+            this.whiteboards = response.data.whiteboards;
+        } else if (response.data.whiteboards.length >= 1) {
+            this.whiteboards = response.data.whiteboards.slice(1)
+        } else {
+            this.whiteboards = [];
+        }
         console.log(this.whiteboards);
+        this.alertOn = false;
       }).catch(error => {
         console.log(error)
+        this.loading = false;
+        this.showAlert(error.response.data.message);
       })
     },
     importWhiteboard () {
 
     },
     createWhiteboard () {
-      this.loading = true;
-      axios.post('http://localhost:4000/profile/createWhiteboard', {
-        accessToken: localStorage.getItem("accessToken"),
-          whiteboardName: this.whiteboardCreateName
-      }).then(response => {
-        console.log(response.data.message);
-        this.alertOn = false;
-        this.loading = false;
-      }).catch(error => {
-          this.showAlert(error.response.data.message);
-          this.loading = false;
-      })
-
+        if (this.whiteboardCreateName) {
+            this.loading = true;
+            axios.post('http://localhost:4000/profile/createWhiteboard', {
+                accessToken: localStorage.getItem("accessToken"),
+                whiteboardName: this.whiteboardCreateName
+            }).then(response => {
+                console.log(response.data.message);
+                this.whiteboardCreateName = "";
+                this.alertOn = false;
+                this.loading = false;
+                this.getWhiteboards();
+            }).catch(error => {
+                this.whiteboardCreateName = "";
+                this.showAlert(error.response.data.message);
+                this.loading = false;
+            })
+        }
     },
     showAlert(text) {
         this.alertOn = true;
         this.alertText = text;
     },
     deleteWhiteboard (id) {
-      axios.delete('http://localhost:4000/profile/deleteWhiteboard', {
-        accessToken: localStorage.getItem("accessToken"),
-        whiteboardId: id
+        console.log(id)
+        const token = localStorage.getItem("accessToken");
+        console.log(token)
+      axios.delete('http://localhost:4000/profile/deleteWhiteboard', {"data": {
+              accessToken: token,
+              whiteboardId: id
+          }}).then(result => {
+          this.getWhiteboards();
+      }).catch(error => {
+          this.showAlert(error.response.data.message);
+          this.loading = false;
       });
     },
     renameWhiteboard(id) {
       axios.put('http://localhost:4000/profile/updateWhiteboard', {
         accessToken: localStorage.getItem("accessToken"),
         whiteboardId: id
-      });
+      }).then(result => {
+          this.getWhiteboards();
+      }).catch(error => {
+          this.showAlert(error.response.data.message);
+          this.loading = false;
+      });;
     }
   },
   mounted: function () {

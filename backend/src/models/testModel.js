@@ -61,7 +61,10 @@ class Db {
     }
 
     async updateWhiteboard(whiteboardId, newName) {
-        (await this.findOneWhiteboard(whiteboardId)).name = newName;
+        const whiteboard = (await this.findOneWhiteboard(whiteboardId));
+        if (whiteboard) {
+            whiteboard.name = newName;
+        }
     }
 
     async deleteWhiteboard(whiteboardId) {
