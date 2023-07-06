@@ -51,7 +51,6 @@ export default {
       }).then(response => {
         this.isReady = true;
         this.whiteboards = response.data.whiteboards;
-        console.log(this.whiteboards);
       }).catch(error => {
         console.log(error)
       })

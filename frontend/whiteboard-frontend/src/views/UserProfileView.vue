@@ -28,17 +28,17 @@
         <p><strong>Email</strong></p>
         <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon1">Email</span>
-          <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+          <input v-model="email" type="text" class="form-control" placeholder="email" aria-label="Email" aria-describedby="basic-addon1">
         </div>
         <p calss="mb-2"><strong>Name</strong></p>
         <div class="input-group flex-nowrap mb-3">
           <span class="input-group-text" id="addon-wrapping">Name</span>
-          <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+          <input v-model="name" type="text" class="form-control" placeholder="first name" aria-label="First name" aria-describedby="addon-wrapping">
         </div>
         <p><strong>Surname</strong></p>
         <div class="input-group flex-nowrap mb-3">
           <span class="input-group-text" id="addon-wrapping">Surname</span>
-          <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="addon-wrapping">
+          <input v-model="surname" type="text" class="form-control" placeholder="Last name" aria-label="Last name" aria-describedby="addon-wrapping">
         </div>
       </div>
     </div>
@@ -60,6 +60,8 @@
 <FooterComponent></FooterComponent>
 </template>
 <script>
+
+import axios from "axios";
 import FooterComponent from "@/components/FooterComponent.vue"
 export default {
   name: 'UserProfileView',
@@ -76,8 +78,25 @@ export default {
     }
   },
   methods: {
+    getUserData() {
+      axios.get('http://localhost:4000/userSetting/', {
+        params: {
+          accessToken: localStorage.getItem("accessToken")
+        }
+      }).then(response => {
+        var user = response.data
+        this.email = user.username
+        this.name = user.first_name
+        this.surname = user.last_name
+
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   },
   mounted: function () {
+    this.getUserData()
+
   }
 }
 </script>
