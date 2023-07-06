@@ -35,7 +35,7 @@
             <UndoStack ref="undoStack"></UndoStack>
         </div>
 
-        <div class="canvas">
+        <div class="canvas rounded shadow">
 
             <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
