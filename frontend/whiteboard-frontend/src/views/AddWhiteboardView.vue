@@ -44,7 +44,9 @@ export default {
   methods: {
     getWhiteboards() {
       axios.get('http://localhost:4000/profile/', {
-        params: {accessToken: localStorage.getItem("accessToken")}
+        params: {
+          accessToken: localStorage.getItem("accessToken")
+        }
       }).then(response => {
         this.isReady = true;
         this.whiteboards = response.data.whiteboards;
