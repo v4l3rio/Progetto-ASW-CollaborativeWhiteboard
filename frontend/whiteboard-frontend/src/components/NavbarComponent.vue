@@ -48,7 +48,6 @@ export default {
     methods: {
         isUserLogged() {
             axios.post('http://localhost:4000/auth/refresh', {
-                cookies: this.$cookie.get("refreshToken"),
                 accessToken: localStorage.getItem('accessToken')
             }).then(response => {
                 this.isLogged = true;

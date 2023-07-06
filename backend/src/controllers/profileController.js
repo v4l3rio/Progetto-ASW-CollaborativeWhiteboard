@@ -7,8 +7,8 @@ const {authZ} = require('./whiteboardController')
 const DEFAULT_WHITEBOARD_NAME = "Lavagna di Prova";
 
 exports.getProfile = (req, res) => {
-    if (req.body.accessToken) {
-        auth.validateAccessToken(req.body.accessToken).then(result => {
+    if (req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
