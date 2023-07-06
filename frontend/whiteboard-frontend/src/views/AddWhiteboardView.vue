@@ -7,7 +7,7 @@
     <h1 class="h3 mb-3">Your files</h1>
     <div class="row row-cols-1 row-cols-md-4 g-4">
       <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="renameWhiteboard" v-bind:whiteboards="whiteboards" v-else-if="whiteboards != null"></CardComponent>
+      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="renameWhiteboard" v-bind:whiteboards="whiteboards" v-else-if="whiteboards.length != 0"></CardComponent>
       <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
     </div>
   </div>
@@ -50,6 +50,7 @@ export default {
       }).then(response => {
         this.isReady = true;
         this.whiteboards = response.data.whiteboards;
+        console.log(this.whiteboards);
       }).catch(error => {
         console.log(error)
       })
