@@ -1,4 +1,5 @@
 <template>
+  <NavbarComponent></NavbarComponent>
   <div class="container text-start">
     <div class="row row-cols-1 row-cols-sm-5 g-3">
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard="createWhiteboard"></AddWhiteboardComponent>
@@ -7,7 +8,7 @@
     <h1 class="h3 mb-3">Your files</h1>
     <div class="row row-cols-1 row-cols-md-4 g-4">
       <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="renameWhiteboard" v-bind:whiteboards="whiteboards" v-else-if="whiteboards.length != 0"></CardComponent>
+      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="renameWhiteboard" v-bind:whiteboards="whiteboards" v-else-if="(whiteboards.length !== undefined && whiteboards.length !== 0)"></CardComponent>
       <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
     </div>
   </div>

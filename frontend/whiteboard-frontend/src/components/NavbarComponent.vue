@@ -29,7 +29,7 @@
                     <li><a class="dropdown-item" href="#">New project</a></li>
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    <li><a class="dropdown-item" role="button">Sign out</a></li>
                 </ul>
             </div>
         </div>
@@ -48,12 +48,18 @@ export default {
     methods: {
         isUserLogged() {
             axios.post('http://localhost:4000/auth/refresh', {
-                accessToken: localStorage.getItem('accessToken')
+                accessToken: localStorage.getItem('accessToken'),
+                refreshToken: localStorage.getItem('refreshToken')
             }).then(response => {
                 this.isLogged = true;
             }).catch(error => {
                 this.isLogged = false;
             });
+        },
+        logout() {
+            localStorage.removeItem("accessToken")
+            localStorage.removeItem("refreshToken")
+            this.$router.replace({ path: '/addwhiteboard' })
         }
     },
     mounted: function() {
