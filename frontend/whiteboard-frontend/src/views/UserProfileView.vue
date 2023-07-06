@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <form class="container">
     <div class="row border rounded g-3 text-start mb-5">
       <div class="col m-3">
         <h3><strong>Avatar</strong></h3>
@@ -13,7 +13,6 @@
           <div class="col text-start">
             <p><strong>Upload</strong></p>
             <div class="mb-3">
-              <label for="formFile" class="form-label">Default file input example</label>
               <input class="form-control" type="file" id="formFile">
             </div>
           </div>
@@ -46,7 +45,7 @@
     <div class="row border rounded g-3 text-start">
       <div class="col m-3">
         <h3><strong>Password</strong></h3>
-        <p>Manage yout password</p>
+        <p>Manage your password</p>
       </div>
       <div class="col m-3">
         <p><strong>Password</strong></p>
@@ -56,7 +55,8 @@
         </div>
       </div>
     </div>
-  </div>
+    <button type="submit" class="btn btn-primary">Primary</button>
+  </form>
 <FooterComponent></FooterComponent>
 </template>
 <script>
@@ -68,6 +68,11 @@ export default {
 },
   data() {
     return {
+      email: '',
+      name: '',
+      surname: '',
+      password: '',
+      image: '',
     }
   },
   methods: {
