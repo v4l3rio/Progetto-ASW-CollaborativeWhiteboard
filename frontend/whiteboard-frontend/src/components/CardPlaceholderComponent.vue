@@ -10,7 +10,6 @@
                     <span class="placeholder placeholder-s col-7"></span>
                     <span class="placeholder placeholder-xs col-6"></span>
                 </p>    
-                <a href="#" class="stretched-link"></a>
             </div>
         </div>
     </div>
