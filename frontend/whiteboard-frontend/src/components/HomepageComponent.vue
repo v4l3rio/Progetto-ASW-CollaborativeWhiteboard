@@ -6,12 +6,18 @@
             <p class="r one">Real</p>
             <p class="r two"><span class="w">time</span></p>
         </h3>
+        <router-link
+            to="/login"
+            custom
+            v-slot="{ navigate }"
+        >
+        <button class="btn btn-primary shadow mt-5" @click="navigate" role="link">Accedi</button> <!-- se l'utente non ha fatto il login, altrimenti mettere un pulsante che rimanda alle lavagne-->
+        </router-link>
         <div class="container">
             <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg"></div>
             <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg"></div>
             <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg"></div>
         </div>
-
     </div>
 </template>
 <script>
