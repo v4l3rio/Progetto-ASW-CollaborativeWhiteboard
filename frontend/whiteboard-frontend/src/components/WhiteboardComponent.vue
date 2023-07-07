@@ -59,7 +59,6 @@
 
         </div>
 
-
     </div>
     <SocketComponent ref="socket"
                      v-on:drawStartBC="remoteLineStart"
