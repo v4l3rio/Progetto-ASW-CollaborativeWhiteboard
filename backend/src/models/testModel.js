@@ -17,9 +17,10 @@ class Db {
         return undefined;
     }
     async findOneWhiteboard(whiteboardId) {
-        for (let i = 0; i < this.whiteBoards.length; i++) {
-            if (this.whiteBoards[i].id === whiteboardId) {
-                return this.whiteBoards[i];
+        for (const id in this.whiteBoards) {
+            const whiteboard = this.whiteBoards[id];
+            if (whiteboard.id === whiteboardId) {
+                return whiteboard;
             }
         }
         return undefined;
@@ -61,7 +62,7 @@ class Db {
     }
 
     async updateWhiteboard(whiteboardId, newName) {
-        const whiteboard = (await this.findOneWhiteboard(whiteboardId));
+        const whiteboard = await this.findOneWhiteboard(whiteboardId);
         if (whiteboard) {
             whiteboard.name = newName;
         }
@@ -69,13 +70,14 @@ class Db {
 
     async deleteWhiteboard(whiteboardId) {
         const whiteboard = this.whiteBoards[whiteboardId];
+        log(`Deleting ${whiteboardId}`)
         // remove the whiteboard from all the profiles
         if (whiteboard) {
             for (let i = 0; i < whiteboard.users.length; i++) {
                 const user = this.users[whiteboard.users[i]];
-                user.whiteboards.splice(whiteboardId, 1)
+                user.whiteboards.splice(user.whiteboards.indexOf(whiteboardId), 1);
             }
-            delete this.whiteBoards[whiteboardId];
+            this.whiteBoards[whiteboardId] = undefined;
         }
 
     }
@@ -121,7 +123,7 @@ class Db {
     async getWhiteboards(username) {
         const outWhiteboards = [];
         const user = await this.findOneUser(username);
-        if (user) {
+        if (user !== undefined) {
             const ids = user.whiteboards;
             for (let i = 0; i < ids?.length; i++) {
                 outWhiteboards.push(this.whiteBoards[ids[i]]);

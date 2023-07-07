@@ -11,7 +11,7 @@
                         </button>
                         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
                             <li><a class="dropdown-item" role="button">Open</a></li>
-                            <li><a class="dropdown-item" role="button" @click="renameCard(whiteboard.id)">Rename</a></li>
+                            <li><a class="dropdown-item" role="button" @click="renameCard(whiteboard.id)" data-bs-toggle="modal" data-bs-target="#whiteboardModalRename">Rename</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item link-danger" role="button" @click="deleteWhiteboard(whiteboard.id)">Delete</a></li>
                         </ul>

@@ -5,12 +5,20 @@
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
       <ImportWhiteboardComponent v-bind:importProps="importProps"></ImportWhiteboardComponent>
     </div>
-      <ModalWithButton modal-id="whiteboardModal" title="Create a Whiteboard"
+      <ModalWithButton modal-id="whiteboardModal" ref="createModal" title="Create a Whiteboard"
                        :click="createWhiteboard" button-text="Create">
           <p>Insert a name for the whiteboard</p>
           <div class="input-group flex-nowrap mb-3">
               <span class="input-group-text" id="modalNameInput">Whiteboard name</span>
               <input type="text" v-model="whiteboardCreateName" class="form-control" placeholder="Whiteboard Name" aria-label="Whiteboard Name" aria-describedby="addon-wrapping">
+          </div>
+      </ModalWithButton>
+      <ModalWithButton modal-id="whiteboardModalRename" ref="renameModal" title="Rename the Whiteboard"
+                       :click="renameWhiteboard" button-text="Rename">
+          <p>Insert a  new name for the whiteboard</p>
+          <div class="input-group flex-nowrap mb-3">
+              <span class="input-group-text" id="modalNameInput">Whiteboard name</span>
+              <input type="text" v-model="whiteboardRenameName" class="form-control" placeholder="Whiteboard New Name" aria-label="Whiteboard New Name" aria-describedby="addon-wrapping">
           </div>
       </ModalWithButton>
     <h1 class="h3 mb-3">Your files</h1>
@@ -19,7 +27,7 @@
       </div>
     <div class="row row-cols-1 row-cols-md-4 g-4">
       <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="renameWhiteboard" v-bind:whiteboards="whiteboards" v-else-if="whiteboards?.length !== 0"></CardComponent>
+      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal" v-bind:whiteboards="whiteboards" v-else-if="whiteboards?.length !== 0"></CardComponent>
       <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
     </div>
   </div>
@@ -49,6 +57,8 @@ export default {
         { title: 'Import whiteboard', icon: "M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z", color: 'btn-outline-secondary', alt: 'import whiteboard arrow up icon'},
       ],
       whiteboardCreateName: "",
+      whiteboardRenameName: "",
+      renameId: -1,
       whiteboards: []
     }
   },
@@ -71,28 +81,31 @@ export default {
       }).then(response => {
         this.isReady = true;
         this.loading = false;
-        console.log(response.data.whiteboards)
-          // TODO fix fields set to null
-        if (response.data.whiteboards[0]) {
-
-            this.whiteboards = response.data.whiteboards;
-        } else if (response.data.whiteboards.length >= 1) {
-            this.whiteboards = response.data.whiteboards.slice(1)
-        } else {
-            this.whiteboards = [];
+        console.log(response.data?.whiteboards)
+        const wb = [];
+        const data = response.data.whiteboards;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i]) {
+                wb.push(data[i]);
+            }
         }
-        console.log(this.whiteboards);
+        this.whiteboards = wb;
         this.alertOn = false;
       }).catch(error => {
         console.log(error)
         this.loading = false;
-        this.showAlert(error.response.data.message);
+        this.showAlert(error.response?.data?.message);
       })
     },
     importWhiteboard () {
 
     },
+    hideModal(id) {
+
+    },
     createWhiteboard () {
+        this.$refs.createModal.close();
+
         if (this.whiteboardCreateName) {
             this.loading = true;
             axios.post('http://localhost:4000/profile/createWhiteboard', {
@@ -129,16 +142,27 @@ export default {
           this.loading = false;
       });
     },
-    renameWhiteboard(id) {
+    openRenameModal(id) {
+      this.renameId = id;
+    },
+    renameWhiteboard() {
+      this.$refs.renameModal.close();
+      console.log(this.renameId)
       axios.put('http://localhost:4000/profile/updateWhiteboard', {
         accessToken: localStorage.getItem("accessToken"),
-        whiteboardId: id
-      }).then(result => {
+        whiteboardId: this.renameId,
+        newName: this.whiteboardRenameName
+      }).then(response => {
           this.getWhiteboards();
+          this.loading = false;
+          console.log(response.data.message);
+          this.whiteboardRenameName = "";
+          this.alertOn = false;
       }).catch(error => {
+          this.whiteboardRenameName = "";
           this.showAlert(error.response.data.message);
           this.loading = false;
-      });;
+      });
     }
   },
   mounted: function () {

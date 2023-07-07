@@ -11,7 +11,7 @@
                     </slot>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeBtn">Close</button>
                     <button type="button" class="btn btn-primary" @click="this.click">{{buttonText}}</button>
                 </div>
             </div>
@@ -31,6 +31,9 @@ export default {
       click: Function
     },
     methods: {
+        close() {
+            this.$refs.closeBtn.click();
+        }
     }
 }
 </script>

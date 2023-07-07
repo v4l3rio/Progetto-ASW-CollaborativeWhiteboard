@@ -55,6 +55,7 @@ exports.updateWhiteboard = (req, res) => {
             } else {
                 if (req.body.whiteboardId !== undefined) {
                     authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+                        log(req.body.newName + " " + req.body.whiteboardId);
                         TestModel.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                             res.status(200).json({message: "Whiteboard updated successfully"});
                         })
