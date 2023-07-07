@@ -41,7 +41,7 @@ export default {
     },
     unmounted() {
         this.connected = false;
-        socket.removeAllListeners('notify-my-connection');
+        socket.removeAllListeners();
         socket.disconnect();
     },
     methods:{

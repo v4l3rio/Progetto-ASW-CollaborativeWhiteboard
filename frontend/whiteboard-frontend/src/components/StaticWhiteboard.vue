@@ -38,7 +38,6 @@ export default {
         traits: Object
     },
     mounted() {
-        console.log(this.traits);
         this.svg = $("#whiteboard")
         this.renderPaths()
     }
