@@ -64,6 +64,7 @@
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
+                     whiteboard-id="0"
     ></SocketComponent>
 </template>
 

@@ -14,19 +14,16 @@ import {socket} from "@/scripts/socket";
 const URL = "http://localhost:4000";
 
 export default {
-    name: "SocketComponent",
+    name: "NotificationComponent",
     data() {
         return {
             animationEffect: false,
             connected : false,
-            username: undefined,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NjU0OTI3LCJleHAiOjE2ODg3NDEzMjd9.9j_Q-VufaGdfaPfVq5cocQ3qP_2cMqPhcVTnGBQpucw", // todo take from local storage
+            accessToken: localStorage.getItem("accessToken"),
+            username: ""
         }
     },
     created() {
-        /* todo first, connect to express API to get whiteboard data (and put them in the canvas,
-            then try to connect with socket io
-        */
         this.connected = true;
     },
     mounted() {

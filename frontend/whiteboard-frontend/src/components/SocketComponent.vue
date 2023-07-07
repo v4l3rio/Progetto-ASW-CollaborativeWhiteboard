@@ -9,11 +9,14 @@ const URL = "http://localhost:4000";
 
 export default {
     name: "SocketComponent",
+    props: {
+      whiteboardId: String
+    },
     data() {
         return {
             connected : false,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NjU0OTI3LCJleHAiOjE2ODg3NDEzMjd9.9j_Q-VufaGdfaPfVq5cocQ3qP_2cMqPhcVTnGBQpucw", // todo take from local storage
             drawingId: "",
+            accessToken: localStorage.getItem("accessToken")
         }
     },
     created() {
@@ -24,8 +27,13 @@ export default {
        this.connected = true;
     },
     mounted() {
-        // todo add the remaining attributes to socket.IO calls
+        socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId, (response) => {
+            console.log(response);
+            // todo add the remaining attributes to socket.IO calls
+
+        });
         socket.on("drawStartBC", (line, newId) => {
+            console.log("ADAADADADAA")
             this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
         });
         socket.on("drawingBC", (line, lineId) => {
@@ -34,7 +42,6 @@ export default {
         socket.on("drawEndBC", (line, lineId) => {
             this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
         });
-
     },
     unmounted() {
         this.connected = false;
