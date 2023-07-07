@@ -1,8 +1,6 @@
 
 
 exports.traitToPaths = function (trait, svg, id) {
-    console.log("CIAO")
-    console.log(svg)
     const LINE_WIDTH = 8;
     let pathString = "";
     let point = getCursors(trait.points[0].x, trait.points[0].y, svg);
@@ -10,7 +8,7 @@ exports.traitToPaths = function (trait, svg, id) {
     pathString += 'M' + point.x + ',' + point.y;
     trait.points.splice(0, 1);
     trait.points.forEach(p => {
-        point = this.getCursors(p.x, p.y, svg);
+        point = getCursors(p.x, p.y, svg);
         pathString += 'L' + point.x + ',' + point.y;
     })
     return createPath(id, pathString, trait.color, LINE_WIDTH);
@@ -25,13 +23,11 @@ function createPath (id, line, lineColor, width){
     path.setAttributeNS(null, 'stroke', lineColor);
     path.setAttribute("id", id);
     path.setAttributeNS(null, 'stroke-width', width);
-    console.log(path);
     return path;
 }
 
 function getCursors(x,y, svg) {
     const point = {}
-    console.log(svg)
     let rect = svg.getBoundingClientRect();
     point.x = Math.round(x - rect.x)
     point.y = Math.round(y - rect.y)

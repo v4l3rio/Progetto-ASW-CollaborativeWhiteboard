@@ -1,11 +1,15 @@
 <template>
 
-    <svg width="100%"
+    <svg xmlns="http://www.w3.org/2000/svg"
+        width="100%"
          height="100%"
+         preserveAspectRatio="none"
          id="whiteboard"
+         viewBox="0 0 1000 563"
     >
-        <g v-html="paths"></g>
         <rect id="bg" width="100%" height="100%" fill="#FFFFFF"></rect>
+        <g v-html="paths"></g>
+
     </svg>
 </template>
 
@@ -18,16 +22,17 @@ export default {
     data() {
         return {
             svg: "",
-            paths: ``
+            paths: ''
         }
     },
     methods: {
         traitToPaths,
         renderPaths() {
-            for (const [id, trait] in Object.entries(this.traits)) {
-                console.log(trait);
-                this.paths += traitToPaths(trait, this.svg, id)
+            for (const id in Object.keys(this.traits)) {
+                const trait = this.traits[id];
+                this.paths += traitToPaths(trait, this.svg, id).outerHTML
             }
+            //this.svg.setAttribute("viewBox", `0 0 ${this.svg.clientWidth} ${this.svg.clientHeight}`)
         }
     },
     props: {
@@ -36,7 +41,7 @@ export default {
     mounted() {
         console.log(this.traits);
         this.svg = $("#whiteboard")
-        //this.renderPaths()
+        this.renderPaths()
     }
 }
 </script>
