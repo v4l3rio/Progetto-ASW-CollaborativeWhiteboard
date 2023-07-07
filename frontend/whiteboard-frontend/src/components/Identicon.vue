@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import {sha256} from "@/scripts/hashing/hashing";
+import Identicon from "identicon.js"
 export default {
     name: "Identicon",
     props: {

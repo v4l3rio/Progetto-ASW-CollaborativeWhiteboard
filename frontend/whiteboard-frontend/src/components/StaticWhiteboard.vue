@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Interpolation from "@/components/Interpolation.vue";
 import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
 const $ = document.querySelector.bind(document)
 export default {

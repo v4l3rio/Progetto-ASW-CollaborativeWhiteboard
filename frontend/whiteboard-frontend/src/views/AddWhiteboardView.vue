@@ -41,6 +41,7 @@ import NavbarComponent from "@/components/NavbarComponent.vue"
 import axios from "axios";
 import ModalWithButton from "@/components/ModalWithButton.vue";
 import Alert from "@/components/Alert.vue";
+import Identicon from "@/components/Identicon.vue";
 export default {
   name: 'AddWhiteboardView',
   data() {
@@ -62,6 +63,7 @@ export default {
     }
   },
   components: {
+      Identicon,
       Alert,
       ModalWithButton,
     CardComponent,
