@@ -3,6 +3,7 @@
         <div class="card border-secondary text-start h-100">
             <!-- <img v-bind:src="require('../assets/icons/' + whiteboard.image)" width="150" height="150" class="card-img-top" alt="whiteboard preview" @error="replaceByDefault">
             ADD IMAGE -->
+            <StaticWhiteboard :traits="whiteboard.traits"></StaticWhiteboard>
                 <div class="card-body justify-content-center align-items-center">
                     <h6 class="card-title d-inline text-start"><strong>{{whiteboard.name}}</strong></h6>
                     <div class="dropdown text-end d-inline-flex align-items-center mx-auto">
@@ -22,8 +23,11 @@
     </div>
 </template>
 <script>
+import StaticWhiteboard from "@/components/StaticWhiteboard.vue";
+
 export default {
     name: 'CardComponent',
+    components: {StaticWhiteboard},
     props: ['whiteboards'],
     emits:['card-deleted', 'card-renamed'],
     methods: {

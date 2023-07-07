@@ -10,7 +10,7 @@ export default {
     data() {
         return {
             connected : false,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NTU5NTgyLCJleHAiOjE2ODg2NDU5ODJ9.oNl53XoLpJaCF0hxF9FfTsMTA_-vTUrKbV3G_-fbhck", // todo take from local storage
+            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTY4ODczMjE2MiwiZXhwIjoxNjg4ODE4NTYyfQ.nBHMbnPtAliFw5gQn_QZWE7HkuWovyuRBkxjtBch5DI", // todo take from local storage
             drawingId: "",
             socket: {},
         }

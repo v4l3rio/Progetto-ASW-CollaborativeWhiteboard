@@ -3,7 +3,6 @@
       <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
     <div class="row row-cols-1 row-cols-sm-5 g-3">
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
-      <ImportWhiteboardComponent v-bind:importProps="importProps"></ImportWhiteboardComponent>
     </div>
       <ModalWithButton modal-id="whiteboardModal" ref="createModal" title="Create a Whiteboard"
                        :click="createWhiteboard" button-text="Create">
