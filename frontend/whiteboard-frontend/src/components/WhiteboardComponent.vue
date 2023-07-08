@@ -1,5 +1,9 @@
 <template>
-    <div class="draw">
+    <div class="position-fixed w-100">
+        <Alert class="w-75 text-center d-inline-block" v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
+        <BigGlowingSpinner v-if="loading" class="align-content-center"></BigGlowingSpinner>
+    </div>
+    <div v-bind:class="{'visually-hidden': this.loading || this.error}"  class="draw">
 
         <div class="toolbar" :style="{ right: toolBarRight }">
 
@@ -53,6 +57,7 @@
 
                 <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
                 <Interpolation ref="interpolation"></Interpolation>
+                <g v-html="paths"></g>
             </svg>
 
             <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
@@ -73,6 +78,11 @@ import Interpolation from "@/components/Interpolation.vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
 import UndoStack from "@/components/UndoStack.vue";
 import SocketComponent from "@/components/SocketComponent.vue";
+import Spinner from "@/components/Spinner.vue";
+import BigGlowingSpinner from "@/components/BigGlowingSpinner.vue";
+import axios from "axios";
+import Alert from "@/components/Alert.vue";
+import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
 
 require('../assets/css/freehandDraw.css')
 
@@ -82,7 +92,8 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
-    components: {SocketComponent, UndoStack, Interpolation},
+    components: {Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
+    emits: ['setLoading'],
     props: [
         'title',
         'colors',
@@ -102,7 +113,12 @@ export default {
             undo: true,
             onCanvas: false, // mouseout event is not firing, dunno why,
             lineToSend: [],
-            drawingId: ""
+            drawingId: "",
+            loading: true,
+            alertOn: false,
+            error: false,
+            alertText: "",
+            paths: ""
         }
     },
 
@@ -120,9 +136,7 @@ export default {
             get: function () {
                 return -this.colors.length * 51.5 + 'px'
             },
-
         }
-
     },
 
     methods: {
@@ -130,7 +144,32 @@ export default {
         initBoard: function () {
             this.board = $('.drawSvg')
             this.cursor = $('#cursor')
+            axios.get(`http://localhost:4000/whiteboard/${this.$route.params.id}`, {
+                params: {
+                    accessToken: localStorage.getItem("accessToken")
+                }
+            }).then(result => {
+                const traits = result.data.whiteboardData.traits;
+                this.$emit('setLoading', {loading:false, err: false});
+                for (const id in Object.keys(traits)) {
+                    const trait = traits[id];
+                    this.paths += traitToPaths(trait, this.board, id).outerHTML
+                }
+                this.loading = false;
+                this.error = false;
+            }).catch(error => {
+                console.log(error)
+                this.showAlert(error.response.data.message)
+                this.$emit('setLoading', {loading:false, err: true});
+                this.loading = false;
+                this.error = true;
+            })
             this.gesture = false
+        },
+
+        showAlert(text) {
+            this.alertText = text;
+            this.alertOn = true;
         },
 
         lineStart: function () {

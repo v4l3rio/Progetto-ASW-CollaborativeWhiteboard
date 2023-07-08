@@ -9,10 +9,11 @@
                              v-on:changeLineColor="changeLineColor"
                              v-on:changeBgColor="changeBgColor"
                              v-on:drawSubmit="saveDrawing"
+                             v-on:setLoading="setLoading"
         >
         </WhiteboardComponent>
     </div>
-        <div class="col-1">
+        <div class="col-1" v-if="!loading && !err">
             <ActiveUserInWhiteboard/>
         </div>
     </div>
@@ -34,6 +35,8 @@ export default {
     },
     data() {
         return {
+            loading: true,
+            err: false,
             drawProps:
                 {
                     title: "Freehand SVG Draw",
@@ -57,6 +60,10 @@ export default {
 
         saveDrawing: function (drawSvg) {
             console.log(drawSvg)
+        },
+        setLoading(args) {
+            this.loading = args.loading;
+            this.err = args.err;
         }
     },
 

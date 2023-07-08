@@ -19,7 +19,7 @@ class Db {
     async findOneWhiteboard(whiteboardId) {
         for (const id in this.whiteBoards) {
             const whiteboard = this.whiteBoards[id];
-            if (whiteboard?.id === whiteboardId) {
+            if (whiteboard?.id === parseInt(whiteboardId)) {
                 return whiteboard;
             }
         }

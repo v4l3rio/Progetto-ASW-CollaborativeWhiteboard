@@ -91,7 +91,7 @@ export default {
         this.loading = false;
         const wb = [];
         const data = response.data.whiteboards;
-        console.log(data)
+        //console.log(data)
         for (let i = 0; i < data.length; i++) {
             if (data[i]) {
                 wb.push(data[i]);
