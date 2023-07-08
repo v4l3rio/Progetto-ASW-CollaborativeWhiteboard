@@ -37,6 +37,10 @@ export default {
         socket.on("drawEndBC", (line, lineId) => {
             this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
         });
+        socket.on("lineDeleteBC", (lineId) => {
+            console.log("DSAKLDJAKSJDAKJ" + lineId)
+            this.$emit("lineDeleteBC", {id: lineId});
+        })
 
     },
     unmounted() {
@@ -54,6 +58,9 @@ export default {
         drawEnd(lineToSend, color){
             socket.emit("drawEnd", {points:lineToSend, color}, this.drawingId, this.accessToken);
         },
+        undoLine(id) {
+            socket.emit("lineDelete", id, this.accessToken);
+        }
     }
 }
 

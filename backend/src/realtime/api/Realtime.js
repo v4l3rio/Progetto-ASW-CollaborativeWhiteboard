@@ -23,8 +23,6 @@ exports.Realtime = class Realtime {
                     const room = whiteboardId;
                     // get the user ID from the connection query and assign that user to the correct room (whiteboard)
                     // the room is also get from the connection query
-                    console.log(accessToken)
-                    console.log(whiteboardId)
                     this.controller.joinWhiteboard(accessToken, room,
                         (err, username) => {
                             if (err) {
@@ -111,11 +109,34 @@ exports.Realtime = class Realtime {
 
                                 })
 
+                                socket.on('lineDelete', (lineId, accessToken) => {
+                                    this.controller.lineDelete(lineId, accessToken, room, (err) => {
+                                        if (err) {
+                                            // todo handle unauthorized line
+                                        } else {
+                                            console.log("HAEAE")
+                                            this.roomData.rooms[room].forEach(connection => {
+                                                if(socket.id !== connection.id){
+                                                    console.log("INVIOOOO")
+                                                    connection.emit("lineDeleteBC", lineId);
+                                                }
+                                            })
+                                        }
+                                    })
+
+                                })
+
                                 // Listen for when the client disconnects
-                                socket.on('disconnect', () => {
+                                socket.on('leftWhiteboard', () => {
                                     logRealtime(username + " has disconnected from the whiteboard");
                                     this.roomData.rooms[room] = this.roomData.rooms[room].filter(connection => connection.id !== socket.id);
                                     this.roomData.usersInWhiteboard[room] = this.roomData.usersInWhiteboard[room].filter(user => user !== username);
+                                    socket.removeAllListeners("drawStart");
+                                    socket.removeAllListeners("getAllConnectedUsers");
+                                    socket.removeAllListeners("drawing");
+                                    socket.removeAllListeners("drawEnd");
+                                    socket.removeAllListeners("leftWhiteboard");
+                                    socket.removeAllListeners("lineDelete")
                                     //todo implementare l'aggiornamento di roomData
                                 });
                             } else {
