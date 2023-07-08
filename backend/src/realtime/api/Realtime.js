@@ -109,6 +109,23 @@ exports.Realtime = class Realtime {
 
                                 })
 
+                                socket.on('lineDelete', (lineId, accessToken) => {
+                                    this.controller.lineDelete(lineId, accessToken, room, (err) => {
+                                        if (err) {
+                                            // todo handle unauthorized line
+                                        } else {
+                                            console.log("HAEAE")
+                                            this.roomData.rooms[room].forEach(connection => {
+                                                if(socket.id !== connection.id){
+                                                    console.log("INVIOOOO")
+                                                    connection.emit("lineDeleteBC", lineId);
+                                                }
+                                            })
+                                        }
+                                    })
+
+                                })
+
                                 // Listen for when the client disconnects
                                 socket.on('leftWhiteboard', () => {
                                     logRealtime(username + " has disconnected from the whiteboard");
@@ -119,6 +136,7 @@ exports.Realtime = class Realtime {
                                     socket.removeAllListeners("drawing");
                                     socket.removeAllListeners("drawEnd");
                                     socket.removeAllListeners("leftWhiteboard");
+                                    socket.removeAllListeners("lineDelete")
                                     //todo implementare l'aggiornamento di roomData
                                 });
                             } else {

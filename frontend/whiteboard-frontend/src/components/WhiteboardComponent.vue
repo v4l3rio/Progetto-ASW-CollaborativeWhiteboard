@@ -36,7 +36,7 @@
             </button>
             <button v-on:click="clean()" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
             </button>
-            <UndoStack ref="undoStack"></UndoStack>
+            <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
 
         <div class="canvas rounded shadow">
@@ -69,6 +69,7 @@
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
+                     v-on:lineDeleteBC="remoteLineDelete"
                      :whiteboard-id="this.$route.params.id"
     ></SocketComponent>
 </template>
@@ -268,6 +269,11 @@ export default {
 
         },
 
+        undoLine: function(id) {
+            document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
+            this.$refs.socket.undoLine(id);
+        },
+
         remoteLineStart: function (data) {
             //console.log("Line start" + JSON.stringify(data))
             if (data.id !== undefined) {
@@ -306,6 +312,9 @@ export default {
                 remoteLine = "";
                 data.points = [];
             }
+        },
+        remoteLineDelete: function(data) {
+            document.getElementById(data.id).remove();
         },
 
         createPath: function(id, line, lineColor, width){
@@ -433,10 +442,6 @@ export default {
         this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
         this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
     },
-
-    quit: function () {
-        console.log("Sto seriamente sloggando")
-    }
 
 }
 </script>

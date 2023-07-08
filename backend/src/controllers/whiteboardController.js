@@ -111,7 +111,7 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
             callback(result.err);
         } else {
             TestModel.deleteLine(whiteboardId, lineId).then(result => {
-                if (result.err) {
+                if (result) {
                     callback(result.err)
                 } else {
                     callback();

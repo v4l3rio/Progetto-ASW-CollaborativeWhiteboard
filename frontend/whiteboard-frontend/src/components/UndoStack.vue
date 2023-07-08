@@ -10,11 +10,12 @@ export default {
             idStack : []
         }
     },
+    emits:['undoLine'],
     methods: {
         undoLine: function () {
             try {
                 const id = this.idStack.pop();
-                document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
+                this.$emit("undoLine", id);
             } catch (ignored) {}
         },
         addLine(id) {
