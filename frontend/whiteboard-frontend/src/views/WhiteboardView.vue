@@ -8,7 +8,8 @@
                              v-bind:bgColor="drawProps.bgColor"
                              v-on:changeLineColor="changeLineColor"
                              v-on:changeBgColor="changeBgColor"
-                             v-on:drawSubmit="saveDrawing">
+                             v-on:drawSubmit="saveDrawing"
+        >
         </WhiteboardComponent>
     </div>
         <div class="col-1">
@@ -23,6 +24,7 @@
 // @ is an alias to /src
 import WhiteboardComponent from '@/components/WhiteboardComponent.vue'
 import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
+import {socket} from "@/scripts/socket";
 
 export default {
     name: 'WhiteboardView',
@@ -59,6 +61,10 @@ export default {
     },
 
     mounted: function () {
+    },
+    unmounted() {
+        console.log("Esco");
+        socket.emit("leftWhiteboard");
     }
 
 }

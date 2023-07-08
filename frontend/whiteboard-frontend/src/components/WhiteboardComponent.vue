@@ -393,9 +393,11 @@ export default {
         this.initBoard()
         this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
         this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
-
-
     },
+
+    quit: function () {
+        console.log("Sto seriamente sloggando")
+    }
 
 }
 </script>
