@@ -38,6 +38,11 @@ nav a.router-link-exact-active {
 
 @import'~bootstrap/dist/css/bootstrap.css';
 </style>
-<script setup>
+<script>
 import NotificationComponent from "@/components/NotificationComponent.vue";
+import NavbarComponent from "@/components/NavbarComponent.vue"
+export default {
+  name: "App",
+  components: {NavbarComponent}
+}
 </script>

@@ -41,7 +41,6 @@ import CardPlaceholderComponent from "@/components/CardPlaceholderComponent.vue"
 import CardComponent from "@/components/CardComponent.vue"
 import AddWhiteboardComponent from "@/components/AddWhiteboardComponent.vue"
 import ImportWhiteboardComponent from "@/components/ImportWhiteboardComponent.vue"
-import NavbarComponent from "@/components/NavbarComponent.vue"
 
 import axios from "axios";
 import ModalWithButton from "@/components/ModalWithButton.vue";
@@ -79,7 +78,6 @@ export default {
     CardPlaceholderComponent,
     AddWhiteboardComponent,
     ImportWhiteboardComponent,
-    NavbarComponent
   },
   methods: {
     getWhiteboards() {

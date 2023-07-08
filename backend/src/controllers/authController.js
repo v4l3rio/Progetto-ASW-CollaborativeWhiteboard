@@ -8,8 +8,8 @@ const SECURE_COOKIE = false; // if set to true, the cookie will be accessible on
 
 exports.refresh = (req, res) => {
     try {
-        if (req.cookies?.refreshToken && req.body.accessToken) {
-            auth.refreshToken(req.cookies.refreshToken).then(result => {
+        if (req.body.refreshToken && req.body.accessToken) {
+            auth.refreshToken(req.body.refreshToken).then(result => {
                 if (result.err) {
                     res.status(406).json({message: 'Unauthorized'});
                 } else {
@@ -93,13 +93,14 @@ exports.login = (req, res) => {
                                 httpOnly: true,
                                 secure: SECURE_COOKIE,
                                 maxAge: 60 * 60 * 24 * 1000
-                            })
-
+                            }
+                        )
                         log("Logged user " + JSON.stringify(noPasswordUser));
                         res.status(200)
                             .json({
                                 "message": "User logged successfully",
-                                "accessToken": logged.accessToken
+                                "accessToken": logged.accessToken,
+                                "refreshToken": logged.refreshToken
                             });
                     }
 

@@ -30,6 +30,7 @@ const indexRouter = require('./src/routes/indexRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const profileRoutes = require('./src/routes/profileRoutes');
 const whiteboardRoutes = require('./src/routes/whiteboardRoutes');
+const userSettingsRoutes = require('./src/routes/userSettingsRoutes');
 
 /*
  * Middlewares
@@ -47,6 +48,7 @@ app.use(indexRouter);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/whiteboard", whiteboardRoutes)
+app.use("/userSetting", userSettingsRoutes)
 
 const server = http.createServer(app);
 
