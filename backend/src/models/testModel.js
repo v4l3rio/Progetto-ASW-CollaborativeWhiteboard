@@ -146,7 +146,8 @@ class Db {
                     if (filters.whiteboardId !== undefined) {
                         alreadyIn = user.whiteboards.includes(parseInt(filters.whiteboardId));
                     }
-                    out.push({id: user.id, username: user.username, alreadyIn: alreadyIn});
+                    out.push({id: user.id, username: user.username, first_name: user.first_name, last_name: user.last_name,
+                        alreadyIn: alreadyIn});
                 }
             }
             return {users: out};

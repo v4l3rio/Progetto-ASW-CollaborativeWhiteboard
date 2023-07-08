@@ -25,11 +25,20 @@
 
                                                 <a class="dropdown-item" v-bind:class="{disabled: user.alreadyIn}"
                                                    role="button" @click="invite(user.username)">
-                                                    <div class="m-1" style="width: 30px; display: inline-block; vertical-align: middle">
+                                                    <div class="m-1 d-inline-block align-top" style="width: 30px;">
                                                         <Identicon :seed="user.username"></Identicon>
                                                     </div>
-                                                    {{user.username}}
-                                                    <span v-if="user.alreadyIn">(Already on the whiteboard)</span>
+                                                    <div class="d-inline-block">
+                                                        <div class="list-group" style="width: 18rem;">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+                                                                <span class="small text-secondary" v-if="user.alreadyIn">(Already on the whiteboard)</span>
+                                                                <p class="card-text">{{user.username}}</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
                                                 </a>
                                         </li>
                                     </ul>
@@ -80,11 +89,14 @@ export default {
         },
         focusOut(){
             this.isFocus = false;
+            this.dropDownOn = !this.dropDownOn;
         },
         click() {
             this.dropDownOn = !this.dropDownOn;
         },
         inputChange(input) {
+            console.log(this.isFocus);
+            console.log(this.dropDownOn);
             if (this.isFocus && !this.dropDownOn) {
                 $("#dropdownSearch").click();
             }
@@ -117,6 +129,7 @@ export default {
             }
         },
         invite(username) {
+            this.dropDownOn = !this.dropDownOn;
             console.log("Inviting " + username);
             axios.put("http://localhost:4000/whiteboard/invite", {
                 accessToken: localStorage.getItem("accessToken"),
