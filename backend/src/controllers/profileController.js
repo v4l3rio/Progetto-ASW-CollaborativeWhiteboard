@@ -7,8 +7,8 @@ const {authZ} = require('./whiteboardController')
 const DEFAULT_WHITEBOARD_NAME = "Lavagna di Prova";
 
 exports.getProfile = (req, res) => {
-    if (req.body.accessToken) {
-        auth.validateAccessToken(req.body.accessToken).then(result => {
+    if (req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
@@ -55,6 +55,7 @@ exports.updateWhiteboard = (req, res) => {
             } else {
                 if (req.body.whiteboardId !== undefined) {
                     authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+                        log(req.body.newName + " " + req.body.whiteboardId);
                         TestModel.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                             res.status(200).json({message: "Whiteboard updated successfully"});
                         })

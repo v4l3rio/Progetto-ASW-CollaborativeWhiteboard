@@ -3,7 +3,7 @@ const {auth} = require("../../controllers/authController");
 const {TestModel} = require("../../models/testModel");
 
 exports.createTestEnvironment = () => {
-    auth.register({first_name: "Admin", last_name: "Admin", username: "Admin", password: "admin"})
+    auth.register({first_name: "Admin", last_name: "Admin", username: "admin@admin.com", password: "admin"})
         .then((result) => {
             if (result.err) {
                 logErr("Error: " + result.err)
@@ -15,7 +15,7 @@ exports.createTestEnvironment = () => {
                 };
                 log("Created user " + JSON.stringify(noPasswordUser));
 
-                auth.login({username: "admin", password: "admin"})
+                auth.login({username: "admin@admin.com", password: "admin"})
                     .then((result) => {
                         if (result.err) {
                             logErr("Error: " + result.err)

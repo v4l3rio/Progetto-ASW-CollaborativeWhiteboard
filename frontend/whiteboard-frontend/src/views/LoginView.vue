@@ -46,10 +46,11 @@ export default {
         },
         submitForm() {
             const ref = this;
-            axios.post('http://localhost:4000/auth/login', {
+            axios.post('http://localhost:4000/auth/login',
+            {
                 username: this.email,
                 password: this.password,
-            }).then(response => {
+            },).then(response => {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 this.$router.replace({ path: '/addwhiteboard' })
             }).catch(error => {
