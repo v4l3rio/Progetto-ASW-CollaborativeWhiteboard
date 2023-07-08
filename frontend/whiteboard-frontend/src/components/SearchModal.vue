@@ -7,18 +7,31 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Search users to add to this whiteboard</p>
+                    <span>Search users to add to this whiteboard</span>
+                    <div class="m-1">
+                        <Spinner v-if="this.loading"></Spinner>
+                    </div>
+
                     <div class="mb-3">
-                        <div class="dropdown">
-                            <label for="drowdownMenuButton" class="form-label">Username</label>
-                            <input type="email" class="form-control" id="drowdownMenuButton" placeholder="name@example.com"
-                                   @focusout="hideDropdown" @input="inputChange" data-bs-toggle="dropdown" aria-expanded="false">
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </div>
+                            <div class="dropdown">
+                                <label for="drowdownMenuButton" class="form-label">Username</label>
+                                <div class="row">
+                                    <input type="text" class="form-control" id="drowdownMenuButton" placeholder="name@example.com"
+                                           @focusout="hideDropdown" @input="inputChange" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li v-for="user in foundUsers">
+
+                                                <a class="dropdown-item" role="button" @click="invite(user.username)">
+                                                    <div class="m-1" style="width: 30px; display: inline-block; vertical-align: middle">
+                                                        <Identicon :seed="user.username"></Identicon>
+                                                    </div>
+                                                    {{user.username}}
+                                                </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
 
                     </div>
 
@@ -32,28 +45,74 @@
 </template>
 
 <script>
+import Spinner from "@/components/Spinner.vue";
+import axios from "axios";
+import Identicon from "@/components/Identicon.vue";
+
 const $ = document.querySelector.bind(document);
 
 export default {
     name: "SearchModal",
+    components: {Identicon, Spinner},
     data() {
         return {
-            dropDownOn: false
+            dropDownOn: false,
+            searchCoolDown: null,
+            coolDownMillis: 500,
+            loading: false,
+            foundUsers: []
         }
     },
     props: {
-        name: String
+        name: String,
+        whiteboardId: Number
     },
+    emits: ["invited"],
     methods: {
         inputChange(input) {
-            const query = input.srcElement.value;
+            const query = input.srcElement.value.trim();
+            this.loading = true;
             if (!this.dropdownOn) {
                 this.dropdownOn = true;
-
             }
+            clearTimeout(this.searchCoolDown);
+            this.searchCoolDown = setTimeout(() => {
+                this.search(query);
+            }, this.coolDownMillis);
         },
         hideDropdown() {
             this.dropdownOn = false;
+        },
+        search(query) {
+            if (!query) {
+                this.foundUsers = [];
+            } else {
+                axios.get('http://localhost:4000/profile/users', {
+                    params: {
+                        accessToken: localStorage.getItem("accessToken"),
+                        filters: {username: query}
+                    }
+                }).then(response => {
+                    this.foundUsers = response.data.users;
+                    this.loading = false;
+                }).catch(error => {
+                    console.log(error);
+                    this.loading = false;
+                })
+            }
+        },
+        invite(username) {
+            console.log("Inviting " + username);
+            axios.put("http://localhost:4000/whiteboard/invite", {
+                accessToken: localStorage.getItem("accessToken"),
+                username: username,
+                whiteboardId: this.whiteboardId
+            }).then(result => {
+                console.log(result)
+                this.$emit("invited", username);
+            }).catch(error => {
+                console.log(error.response.data.message)
+            })
         }
     }
 }

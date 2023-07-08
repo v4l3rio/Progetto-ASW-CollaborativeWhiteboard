@@ -4,7 +4,7 @@
     <div class="row row-cols-1 row-cols-sm-5 g-3">
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
     </div>
-      <SearchModal v-bind:name="whiteboardInviteName"></SearchModal>
+      <SearchModal v-bind:name="whiteboardInviteName" v-bind:whiteboard-id="inviteId" @invited="getWhiteboards"></SearchModal>
       <ModalWithButton modal-id="whiteboardModal" ref="createModal" title="Create a Whiteboard"
                        :click="createWhiteboard" button-text="Create">
           <p>Insert a name for the whiteboard</p>
@@ -93,6 +93,7 @@ export default {
         this.loading = false;
         const wb = [];
         const data = response.data.whiteboards;
+        console.log(data)
         for (let i = 0; i < data.length; i++) {
             if (data[i]) {
                 wb.push(data[i]);
