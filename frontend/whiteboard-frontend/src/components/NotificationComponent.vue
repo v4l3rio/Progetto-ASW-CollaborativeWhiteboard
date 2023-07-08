@@ -9,9 +9,7 @@
 </template>
 
 <script>
-import { io } from "socket.io-client";
 import {socket} from "@/scripts/socket";
-const URL = "http://localhost:4000";
 
 export default {
     name: "NotificationComponent",
@@ -27,9 +25,9 @@ export default {
         this.connected = true;
     },
     mounted() {
-
         // todo add the remaining attributes to socket.IO calls
-        socket.on("notify-my-connection", (username) => {
+        socket.on("user-connected", (username) => {
+            console.log("notifica arrivata")
             this.username = username;
             this.animationEffect = true;
             setTimeout(() => {

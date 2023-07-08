@@ -27,7 +27,6 @@ export default {
        this.connected = true;
     },
     mounted() {
-        console.log("CIAO")
         socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId);
         socket.on("drawStartBC", (line, newId) => {
             this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});

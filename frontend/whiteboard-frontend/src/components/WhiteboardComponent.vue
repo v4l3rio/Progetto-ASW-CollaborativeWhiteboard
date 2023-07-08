@@ -99,7 +99,7 @@ export default {
             line: '',
             radius: 2.5,
             width: 8,
-            undo: false,
+            undo: true,
             onCanvas: false, // mouseout event is not firing, dunno why,
             lineToSend: [],
             drawingId: ""

@@ -33,6 +33,6 @@ import NotificationComponent from "@/components/NotificationComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue"
 export default {
   name: "App",
-  components: {NavbarComponent}
+  components: {NotificationComponent, NavbarComponent}
 }
 </script>

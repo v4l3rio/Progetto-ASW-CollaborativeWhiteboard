@@ -11,7 +11,7 @@ exports.Realtime = class Realtime {
             },
         });
         this.controller = controller;
-        this.roomData = {users: {}, connections: {}, rooms: {}};
+        this.roomData = {users: {}, connections: {}, rooms: {}, usersInWhiteboard: {}};
     }
 
     listen() {
@@ -43,19 +43,20 @@ exports.Realtime = class Realtime {
 
                                 // create a list of all the connections' IDs related to this room
                                 if (this.roomData.rooms[room]) {
+                                    this.roomData.usersInWhiteboard[room].push(username);
                                     this.roomData.rooms[room].push(socket);
                                 } else {
+                                    this.roomData.usersInWhiteboard[room] = [username];
                                     this.roomData.rooms[room] = [socket];
                                 }
 
-                                // la notifica arriva a tutti per ora, nel momento in cui setteremo il whiteboardID solo quando entrami nella lavanga le notifiche arriveranno solo a quelli connessi
                                 this.roomData.rooms[room].forEach(connection => {
                                     if(socket.id !== connection.id){
-                                        connection.emit("notify-my-connection", username);
+                                        connection.emit("user-connected", username);
                                     }
                                 })
 
-                                this.io.sockets.in(room).emit('welcome', `${username} has joined the Whiteboard!`);
+                                //this.io.sockets.in(room).emit('welcome', `${username} has joined the Whiteboard!`);
 
                                 socket.on('drawStart', (line, accessToken, callback) => {
                                     this.controller.lineStarted(line, accessToken, room, (err, newId) => {
@@ -73,6 +74,12 @@ exports.Realtime = class Realtime {
                                         }
                                     })
                                 })
+
+
+                                socket.on('getAllConnectedUsers', ()=>{
+                                    socket.emit('allConnectedUsers', this.roomData.usersInWhiteboard[room]);
+                                })
+
 
                                 socket.on('drawing', (line, lineId, accessToken) => {
                                     this.controller.lineMove(line, lineId, room, (err) => {
@@ -108,6 +115,7 @@ exports.Realtime = class Realtime {
                                 socket.on('disconnect', () => {
                                     logRealtime(username + " has disconnected from the whiteboard");
                                     this.roomData.rooms[room] = this.roomData.rooms[room].filter(connection => connection.id !== socket.id);
+                                    this.roomData.usersInWhiteboard[room] = this.roomData.usersInWhiteboard[room].filter(user => user !== username);
                                     //todo implementare l'aggiornamento di roomData
                                 });
                             } else {
