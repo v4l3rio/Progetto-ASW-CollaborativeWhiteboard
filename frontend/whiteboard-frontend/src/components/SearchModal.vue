@@ -14,18 +14,22 @@
 
                     <div class="mb-3">
                             <div class="dropdown">
-                                <label for="drowdownMenuButton" class="form-label">Username</label>
+                                <label for="dropdownSearch" class="form-label">Username</label>
                                 <div class="row">
-                                    <input type="text" class="form-control" id="drowdownMenuButton" placeholder="name@example.com"
-                                           @focusout="hideDropdown" @input="inputChange" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <input type="text" class="form-control" id="dropdownSearch" placeholder="name@example.com"
+                                           @focusin="focusIn" @click="click"
+                                           @focusout="focusOut" @input="inputChange" data-bs-toggle="dropdown" aria-expanded="true"
+                                            autocomplete="off">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownSearch">
                                         <li v-for="user in foundUsers">
 
-                                                <a class="dropdown-item" role="button" @click="invite(user.username)">
+                                                <a class="dropdown-item" v-bind:class="{disabled: user.alreadyIn}"
+                                                   role="button" @click="invite(user.username)">
                                                     <div class="m-1" style="width: 30px; display: inline-block; vertical-align: middle">
                                                         <Identicon :seed="user.username"></Identicon>
                                                     </div>
                                                     {{user.username}}
+                                                    <span v-if="user.alreadyIn">(Already on the whiteboard)</span>
                                                 </a>
                                         </li>
                                     </ul>
@@ -60,7 +64,8 @@ export default {
             searchCoolDown: null,
             coolDownMillis: 500,
             loading: false,
-            foundUsers: []
+            foundUsers: [],
+            isFocus: false
         }
     },
     props: {
@@ -69,19 +74,28 @@ export default {
     },
     emits: ["invited"],
     methods: {
-        inputChange(input) {
-            const query = input.srcElement.value.trim();
-            this.loading = true;
-            if (!this.dropdownOn) {
-                this.dropdownOn = true;
-            }
-            clearTimeout(this.searchCoolDown);
-            this.searchCoolDown = setTimeout(() => {
-                this.search(query);
-            }, this.coolDownMillis);
+        focusIn(){
+            this.inputChange();
+            this.isFocus = true;
         },
-        hideDropdown() {
-            this.dropdownOn = false;
+        focusOut(){
+            this.isFocus = false;
+        },
+        click() {
+            this.dropDownOn = !this.dropDownOn;
+        },
+        inputChange(input) {
+            if (this.isFocus && !this.dropDownOn) {
+                $("#dropdownSearch").click();
+            }
+            const query = input?.srcElement.value.trim();
+            if (query) {
+                this.loading = true;
+                clearTimeout(this.searchCoolDown);
+                this.searchCoolDown = setTimeout(() => {
+                    this.search(query);
+                }, this.coolDownMillis);
+            }
         },
         search(query) {
             if (!query) {
@@ -90,10 +104,11 @@ export default {
                 axios.get('http://localhost:4000/profile/users', {
                     params: {
                         accessToken: localStorage.getItem("accessToken"),
-                        filters: {username: query}
+                        filters: {username: query, whiteboardId: this.whiteboardId}
                     }
                 }).then(response => {
                     this.foundUsers = response.data.users;
+                    console.log(response.data.users);
                     this.loading = false;
                 }).catch(error => {
                     console.log(error);

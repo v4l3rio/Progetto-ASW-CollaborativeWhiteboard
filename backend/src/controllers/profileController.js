@@ -98,7 +98,10 @@ exports.getUserWithFilters = (req, res) => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
-                TestModel.getUsersWithFilters(req.query.filters).then(result => {
+                const filters = req.query.filters;
+                filters["excludes"] = [result.user.username];
+
+                TestModel.getUsersWithFilters(filters).then(result => {
                     if (result.err) {
                         res.status(500).json({message: "Cannot get users"})
                     } else {

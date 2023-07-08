@@ -104,8 +104,10 @@ class Db {
     async inviteUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
         const id = user.id;
-        this.whiteBoards[whiteboardId].users.push(id);
-        this.users[id].whiteboards.push(whiteboardId);
+        if (!this.whiteBoards[whiteboardId].users.includes(id)) {
+            this.whiteBoards[whiteboardId].users.push(id);
+            this.users[id].whiteboards.push(whiteboardId);
+        }
     }
     async validateUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
@@ -139,8 +141,12 @@ class Db {
             const out = [];
             for (let i = 0; i < this.users.length && i < LIMIT; i++) {
                 const user = this.users[i];
-                if (user.username.includes((filters.username))) {
-                    out.push({id: user.id, username: user.username});
+                if (user.username.includes((filters.username)) && (!filters.excludes?.includes(user.username))) {
+                    let alreadyIn = false;
+                    if (filters.whiteboardId !== undefined) {
+                        alreadyIn = user.whiteboards.includes(parseInt(filters.whiteboardId));
+                    }
+                    out.push({id: user.id, username: user.username, alreadyIn: alreadyIn});
                 }
             }
             return {users: out};
