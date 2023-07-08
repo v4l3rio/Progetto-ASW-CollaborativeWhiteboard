@@ -19,7 +19,7 @@ class Db {
     async findOneWhiteboard(whiteboardId) {
         for (const id in this.whiteBoards) {
             const whiteboard = this.whiteBoards[id];
-            if (whiteboard.id === whiteboardId) {
+            if (whiteboard?.id === whiteboardId) {
                 return whiteboard;
             }
         }
@@ -131,6 +131,22 @@ class Db {
             return outWhiteboards;
         }
 
+    }
+
+    async getUsersWithFilters(filters) {
+        const LIMIT = 20;
+        if (filters) {
+            const out = [];
+            for (let i = 0; i < this.users.length && i < LIMIT; i++) {
+                const user = this.users[i];
+                if (user.username.includes((filters.username))) {
+                    out.push({id: user.id, username: user.username});
+                }
+            }
+            return {users: out};
+        } else {
+            return this.users.slice(0, LIMIT);
+        }
     }
 }
 exports.TestModel = new Db();

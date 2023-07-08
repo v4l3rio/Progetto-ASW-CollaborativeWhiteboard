@@ -14,4 +14,7 @@ router.route('/updateWhiteboard')
 router.route('/deleteWhiteboard')
     .delete(profileController.deleteWhiteboard)
 
+router.route('/users')
+    .get(profileController.getUserWithFilters);
+
 module.exports = router;

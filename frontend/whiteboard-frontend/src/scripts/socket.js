@@ -9,11 +9,9 @@ export const state = reactive({
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = "http://localhost:4000";
-const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NjU0OTI3LCJleHAiOjE2ODg3NDEzMjd9.9j_Q-VufaGdfaPfVq5cocQ3qP_2cMqPhcVTnGBQpucw";
+const accessToken = localStorage.getItem("accessToken");
 export const socket = io(URL, { query: {
         "accessToken": accessToken,
-        "whiteBoardId": 0,
-        "type": 'whiteboard'
 }});
 
 

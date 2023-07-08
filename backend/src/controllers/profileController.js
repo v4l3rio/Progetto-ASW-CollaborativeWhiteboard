@@ -91,3 +91,23 @@ exports.deleteWhiteboard = (req, res) => {
         res.status(400).json({message: "Missing access token in the request"})
     }
 }
+
+exports.getUserWithFilters = (req, res) => {
+    if (req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result => {
+            if (result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else {
+                TestModel.getUsersWithFilters(req.query.filters).then(result => {
+                    if (result.err) {
+                        res.status(500).json({message: "Cannot get users"})
+                    } else {
+                        res.status(200).json({users: result.users});
+                    }
+                })
+            }
+        })
+    } else {
+        res.status(400).json({message: "Missing access token in the request"})
+    }
+}

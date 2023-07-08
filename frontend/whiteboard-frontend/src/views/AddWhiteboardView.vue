@@ -4,6 +4,7 @@
     <div class="row row-cols-1 row-cols-sm-5 g-3">
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
     </div>
+      <SearchModal v-bind:name="whiteboardInviteName" v-bind:whiteboard-id="inviteId" @invited="getWhiteboards"></SearchModal>
       <ModalWithButton modal-id="whiteboardModal" ref="createModal" title="Create a Whiteboard"
                        :click="createWhiteboard" button-text="Create">
           <p>Insert a name for the whiteboard</p>
@@ -26,7 +27,11 @@
       </div>
     <div class="row row-cols-1 row-cols-md-4 g-4">
       <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal" v-bind:whiteboards="whiteboards" v-else-if="whiteboards?.length !== 0"></CardComponent>
+      <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal" @invite-to-whiteboard="setInviteWhiteboard"
+                     v-bind:whiteboards="whiteboards"
+                     v-else-if="whiteboards?.length !== 0">
+
+      </CardComponent>
       <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
     </div>
   </div>
@@ -42,6 +47,7 @@ import axios from "axios";
 import ModalWithButton from "@/components/ModalWithButton.vue";
 import Alert from "@/components/Alert.vue";
 import Identicon from "@/components/Identicon.vue";
+import SearchModal from "@/components/SearchModal.vue";
 export default {
   name: 'AddWhiteboardView',
   data() {
@@ -58,11 +64,14 @@ export default {
       ],
       whiteboardCreateName: "",
       whiteboardRenameName: "",
+      whiteboardInviteName: "",
+      inviteId: -1,
       renameId: -1,
       whiteboards: []
     }
   },
   components: {
+      SearchModal,
       Identicon,
       Alert,
       ModalWithButton,
@@ -82,9 +91,9 @@ export default {
       }).then(response => {
         this.isReady = true;
         this.loading = false;
-        console.log(response.data?.whiteboards)
         const wb = [];
         const data = response.data.whiteboards;
+        console.log(data)
         for (let i = 0; i < data.length; i++) {
             if (data[i]) {
                 wb.push(data[i]);
@@ -101,8 +110,9 @@ export default {
     importWhiteboard () {
 
     },
-    hideModal(id) {
-
+    setInviteWhiteboard(whiteboard) {
+        this.inviteId = whiteboard.id;
+        this.whiteboardInviteName = whiteboard.name;
     },
     createWhiteboard () {
         this.$refs.createModal.close();

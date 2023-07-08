@@ -37,9 +37,11 @@ export default {
             if (performance.now() - this.testInterpolation > this.testInterpolationPeriod) {
                 this.testInterpolation = performance.now();
                 console.log(this.interpolatingPoints[id]);
-                this.interpolatingPoints[id].push(x,y)
-                const path = this.interpolatingPaths[id]
-                interpolate(this.interpolatingPoints[id], path)
+                if (this.interpolatingPoints[id]) {
+                    this.interpolatingPoints[id]?.push(x,y)
+                    const path = this.interpolatingPaths[id]
+                    interpolate(this.interpolatingPoints[id], path)
+                }
             }
         },
 
