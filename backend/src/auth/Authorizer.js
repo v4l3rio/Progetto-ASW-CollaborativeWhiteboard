@@ -9,7 +9,7 @@ exports.Authorizer = class {
         this.accessKey = process.env.ACCESS_TOKEN_KEY;
     }
      async userToWhiteboard(level, accessToken, whiteboardId) {
-        if (!accessToken || !whiteboardId) {
+        if (!accessToken || !(whiteboardId !== undefined)) {
             return {err: "Please input accessToken and whiteboardId"};
         }
         try {

@@ -55,6 +55,7 @@ exports.updateWhiteboard = (req, res) => {
             } else {
                 if (req.body.whiteboardId !== undefined) {
                     authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
+                        log(req.body.newName + " " + req.body.whiteboardId);
                         TestModel.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                             res.status(200).json({message: "Whiteboard updated successfully"});
                         })
@@ -84,6 +85,26 @@ exports.deleteWhiteboard = (req, res) => {
                 } else {
                     res.status(400).json({message: "Missing ID of the whiteboard in the request"})
                 }
+            }
+        })
+    } else {
+        res.status(400).json({message: "Missing access token in the request"})
+    }
+}
+
+exports.getUserWithFilters = (req, res) => {
+    if (req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result => {
+            if (result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else {
+                TestModel.getUsersWithFilters(req.query.filters).then(result => {
+                    if (result.err) {
+                        res.status(500).json({message: "Cannot get users"})
+                    } else {
+                        res.status(200).json({users: result.users});
+                    }
+                })
             }
         })
     } else {

@@ -59,12 +59,12 @@
 
         </div>
 
-
     </div>
     <SocketComponent ref="socket"
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
+                     :whiteboard-id="this.$route.params.id"
     ></SocketComponent>
 </template>
 
@@ -131,7 +131,6 @@ export default {
             this.board = $('.drawSvg')
             this.cursor = $('#cursor')
             this.gesture = false
-
         },
 
         lineStart: function () {

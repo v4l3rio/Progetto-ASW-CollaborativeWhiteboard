@@ -12,7 +12,7 @@ const routes = [
     component: HomepageComponent
   },
   {
-    path: '/whiteboard',
+    path: '/whiteboard/:id',
     name: 'Whiteboard',
     component: WhiteboardView
   },

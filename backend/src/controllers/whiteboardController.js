@@ -1,5 +1,6 @@
 const {Authorizer} = require("../auth/Authorizer");
 const {TestModel} = require("../models/testModel");
+const {logErr} = require("../util/consoleUtil");
 
 const authZ = new Authorizer(TestModel);
 exports.authZ = authZ;
@@ -32,10 +33,12 @@ exports.getWhiteboardData = async (req, res) => {
 }
 
 exports.inviteToWhiteboard = (req, res) => {
-    if (req.body.accessToken && req.body.username && req.body.whiteboardId) {
+
+    if (req.body.accessToken && req.body.username && (req.body.whiteboardId !== undefined)) {
         authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
             const {err} = result;
             if (err) {
+                logErr(err)
                 res.status(401).json({message: err});
             } else {
                 TestModel.inviteUserToWhiteboard(req.body.username, req.body.whiteboardId).then(() => {
