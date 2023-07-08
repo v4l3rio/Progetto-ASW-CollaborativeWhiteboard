@@ -1,12 +1,5 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/whiteboard">Whiteboard</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/addWhiteboard">Files</router-link> |
-    <router-link to="/register">Register</router-link> |
-    <router-link to="/profile">Profile</router-link>
-  </nav>
+  <NavbarComponent></NavbarComponent>
   <router-view/>
 </template>
 
@@ -34,5 +27,10 @@ nav a.router-link-exact-active {
 
 @import'~bootstrap/dist/css/bootstrap.css';
 </style>
-<script setup>
+<script>
+import NavbarComponent from "@/components/NavbarComponent.vue"
+export default {
+  name: "App",
+  components: {NavbarComponent}
+}
 </script>

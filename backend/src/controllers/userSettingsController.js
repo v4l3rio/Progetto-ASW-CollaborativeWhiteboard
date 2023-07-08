@@ -17,4 +17,13 @@ exports.getUserData =  (req, res) => {
         res.status(400).json({message: "Missing access token in the request"})
     }
 }
+exports.updateInfo = (req, res) => {
+    if (req.body.username && req.body.first_name && req.body.last_name) {
+        const {username, first_name, last_name} = req.body;
+    }
+
+}
+exports.updatePassword = (req, res) => {
+    
+}
 

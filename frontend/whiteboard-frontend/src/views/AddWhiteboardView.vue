@@ -1,5 +1,4 @@
 <template>
-  <NavbarComponent></NavbarComponent>
   <div class="container text-start">
     <div class="row row-cols-1 row-cols-sm-5 g-3">
       <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard="createWhiteboard"></AddWhiteboardComponent>
@@ -18,7 +17,6 @@ import CardPlaceholderComponent from "@/components/CardPlaceholderComponent.vue"
 import CardComponent from "@/components/CardComponent.vue"
 import AddWhiteboardComponent from "@/components/AddWhiteboardComponent.vue"
 import ImportWhiteboardComponent from "@/components/ImportWhiteboardComponent.vue"
-import NavbarComponent from "@/components/NavbarComponent.vue"
 
 import axios from "axios";
 export default {
@@ -40,7 +38,6 @@ export default {
     CardPlaceholderComponent,
     AddWhiteboardComponent,
     ImportWhiteboardComponent,
-    NavbarComponent
   },
   methods: {
     getWhiteboards() {
