@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import AddWhiteboardView from '../views/AddWhiteboardView.vue'
 import HomepageComponent from "@/components/HomepageComponent.vue";
 import UserProfileView from '../views/UserProfileView.vue'
+import ContactsComponent from "@/components/ContactsComponent.vue";
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: UserProfileView
+  },
+  {
+    path: '/contacts',
+    name: 'Contacts',
+    component: ContactsComponent
   }
 ]
 
