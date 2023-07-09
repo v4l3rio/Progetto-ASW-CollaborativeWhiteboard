@@ -12,13 +12,14 @@ exports.authZ = authZ;
 */
 
 exports.getWhiteboardData = async (req, res) => {
-    if (req.params?.whiteboardId && req.body.accessToken) {
-        authZ.normalUserToWhiteboard(req.body.accessToken, req.params.whiteboardId).then(result => {
+    console.log(req.query.accessToken)
+    if (req.params?.id && req.query.accessToken) {
+        authZ.normalUserToWhiteboard(req.query.accessToken, req.params.id).then(result => {
             const {err} = result;
             if (err) {
                 res.status(401).json({message: err})
             } else {
-                TestModel.findOneWhiteboard(req.params.whiteboardId).then(whiteboardData => {
+                TestModel.findOneWhiteboard(req.params.id).then(whiteboardData => {
                     if (whiteboardData) {
                         res.status(200).json({whiteboardData: whiteboardData});
                     } else {
@@ -110,7 +111,7 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
             callback(result.err);
         } else {
             TestModel.deleteLine(whiteboardId, lineId).then(result => {
-                if (result.err) {
+                if (result) {
                     callback(result.err)
                 } else {
                     callback();
