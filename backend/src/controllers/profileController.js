@@ -1,5 +1,5 @@
 
-const {TestModel} = require ("../models/testModel");
+const {Model} = require ("../models/model");
 const {log, logErr} = require("../util/consoleUtil");
 const {auth} = require('./authController')
 const {authZ} = require('./whiteboardController')
@@ -13,7 +13,7 @@ exports.getProfile = (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
                 if (result.user) {
-                    TestModel.getWhiteboards(result.user.username).then(whiteboards => {
+                    Model.getWhiteboards(result.user.username).then(whiteboards => {
                         res.status(200).json({whiteboards: whiteboards});
                     })
                 }
@@ -32,7 +32,7 @@ exports.createWhiteboard = (req, res) => {
             } else {
                 if (result.user) {
                     const whiteboardName = req.body.whiteboardName ? req.body.whiteboardName : DEFAULT_WHITEBOARD_NAME
-                    TestModel.createWhiteboard(whiteboardName, result.user.username).then(result => {
+                    Model.createWhiteboard(whiteboardName, result.user.username).then(result => {
                         if (result) {
                             res.status(200).json({message: "Message created successfully", whiteboardId: result.id});
                         } else {
@@ -56,7 +56,7 @@ exports.updateWhiteboard = (req, res) => {
                 if (req.body.whiteboardId !== undefined) {
                     authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
                         log(req.body.newName + " " + req.body.whiteboardId);
-                        TestModel.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
+                        Model.updateWhiteboard(req.body.whiteboardId, req.body.newName).then(() => {
                             res.status(200).json({message: "Whiteboard updated successfully"});
                         })
                     })
@@ -78,7 +78,7 @@ exports.deleteWhiteboard = (req, res) => {
             } else {
                 if (req.body.whiteboardId !== undefined) {
                     authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
-                        TestModel.deleteWhiteboard(req.body.whiteboardId).then(() => {
+                        Model.deleteWhiteboard(req.body.whiteboardId).then(() => {
                             res.status(200).json({message: "Whiteboard deleted successfully"});
                         })
                     })
@@ -99,9 +99,9 @@ exports.getUserWithFilters = (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
                 const filters = req.query.filters;
-                filters["excludes"] = [result.user.username];
+                filters["excludes"] = result.user.username;
 
-                TestModel.getUsersWithFilters(filters).then(result => {
+                Model.getUsersWithFilters(filters).then(result => {
                     if (result.err) {
                         res.status(500).json({message: "Cannot get users"})
                     } else {

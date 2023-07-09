@@ -95,8 +95,6 @@ export default {
             this.dropDownOn = !this.dropDownOn;
         },
         inputChange(input) {
-            console.log(this.isFocus);
-            console.log(this.dropDownOn);
             if (this.isFocus && !this.dropDownOn) {
                 $("#dropdownSearch").click();
             }

@@ -45,7 +45,6 @@ class RealDb {
     async createWhiteboard(name, username) {
         const user = await this.findOneUser(username)
         const userId = user?._id;
-        console.log(userId);
         if (user) {
             const toCreate = {
                 name: name,
@@ -65,24 +64,29 @@ class RealDb {
     }
 
     async updateWhiteboard(whiteboardId, newName) {
-        const whiteboard = await this.findOneWhiteboard(whiteboardId);
-        if (whiteboard) {
-            whiteboard.name = newName;
+        try {
+            return (await Whiteboard.findByIdAndUpdate(whiteboardId,{name: newName}));
+        } catch (e) {
+            console.error(e);
         }
     }
 
     async deleteWhiteboard(whiteboardId) {
-        const whiteboard = this.whiteBoards[whiteboardId];
-        log(`Deleting ${whiteboardId}`)
-        // remove the whiteboard from all the profiles
-        if (whiteboard) {
-            for (let i = 0; i < whiteboard.users.length; i++) {
-                const user = this.users[whiteboard.users[i]];
-                user.whiteboards.splice(user.whiteboards.indexOf(whiteboardId), 1);
-            }
-            this.whiteBoards[whiteboardId] = undefined;
-        }
+        try {
+            const whiteboard = await Whiteboard.findById(whiteboardId)
+            log(`Deleting ${whiteboardId}`)
 
+            // remove the whiteboard from all the profiles
+            if (whiteboard) {
+                for (let i = 0; i < whiteboard.users.length; i++) {
+                    const userId = whiteboard.users[i];
+                    await User.updateOne({_id: userId}, {$pull: {whiteboards: whiteboardId}})
+                }
+                await Whiteboard.findByIdAndDelete(whiteboardId);
+            }
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     async generateFreshLineId(whiteboardId) {
@@ -126,14 +130,13 @@ class RealDb {
     }
 
     async getWhiteboards(username) {
-        const outWhiteboards = [];
         const user = await this.findOneUser(username);
         if (user !== undefined) {
-            const ids = user.whiteboards;
-            for (let i = 0; i < ids?.length; i++) {
-                outWhiteboards.push(this.whiteBoards[ids[i]]);
+            try {
+                return (await Whiteboard.find({users: {$in: [user._id]}}));
+            } catch (e) {
+                console.error(e);
             }
-            return outWhiteboards;
         }
 
     }
@@ -142,20 +145,25 @@ class RealDb {
         const LIMIT = 20;
         if (filters) {
             const out = [];
-            for (let i = 0; i < this.users.length && i < LIMIT; i++) {
-                const user = this.users[i];
-                if (user.username.includes((filters.username)) && (!filters.excludes?.includes(user.username))) {
-                    let alreadyIn = false;
-                    if (filters.whiteboardId !== undefined) {
-                        alreadyIn = user.whiteboards.includes(parseInt(filters.whiteboardId));
+            const word = filters.username
+            const users = await (User.find({
+                "$and": [{username: {
+                        "$regex": word,
+                        "$options": "i"
                     }
-                    out.push({id: user.id, username: user.username, first_name: user.first_name, last_name: user.last_name,
-                        alreadyIn: alreadyIn});
-                }
+                }, {username: {"$ne": filters.excludes}}]
+            }));
+            const usersAlreadyIn = (await Whiteboard.find({_id: filters.whiteboardId}, {users: 1}));
+            console.log(users);
+            console.log(usersAlreadyIn);
+            for (let i = 0; i < users.length && i < LIMIT; i++) {
+                const user = users[i];
+                out.push({id: user._id, username: user.username, first_name: user.first_name, last_name: user.last_name,
+                    alreadyIn: usersAlreadyIn.includes(user._id)});
             }
             return {users: out};
         } else {
-            return this.users.slice(0, LIMIT);
+            return (await User.find({}));
         }
     }
 }
