@@ -4,7 +4,7 @@ const app = express();
 const {serialize} = require("cookie");
 var cookieParser = require('cookie-parser');
 const {requestMethod} = require("../requestMethod");
-const {TestModel} = require("../../models/testModel");
+const {Model} = require("../../models/model");
 app.use(cookieParser());
 app.use(express.json())
 app.use(requestMethod);
@@ -13,7 +13,7 @@ const port = 3000;
 const SECURE_COOKIE = false // if set to true, the cookie will be accessible only through https (not development mode)
 
 
-const auth = new Authenticator(TestModel)
+const auth = new Authenticator(Model)
 app.post('/register', (req, res) => {
     if (req.body.username && req.body.password && req.body.first_name && req.body.last_name) {
         const {username, password, first_name, last_name} = req.body;

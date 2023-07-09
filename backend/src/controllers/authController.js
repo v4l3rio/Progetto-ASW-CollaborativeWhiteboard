@@ -1,8 +1,8 @@
 const {Authenticator} = require( "../auth/Authenticator");
-const {TestModel} = require ("../models/testModel");
+const {Model} = require ("../models/model");
 const {log, logErr} = require("../util/consoleUtil");
 
-const auth = new Authenticator(TestModel);
+const auth = new Authenticator(Model);
 exports.auth = auth;
 const SECURE_COOKIE = false; // if set to true, the cookie will be accessible only through https (not development mode)
 

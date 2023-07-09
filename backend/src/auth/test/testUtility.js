@@ -1,6 +1,6 @@
 const {logErr, log} = require("../../util/consoleUtil");
 const {auth} = require("../../controllers/authController");
-const {TestModel} = require("../../models/testModel");
+const {Model} = require("../../models/model");
 
 exports.createTestEnvironment = async () => {
     await registerLoginWithWhiteboard("admin@admin.com", "admin")
@@ -22,6 +22,7 @@ async function registerLoginWithWhiteboard(username, password) {
 
             }
         })
+
     let accessToken;
     await auth.login({username: username, password: password})
         .then((result) => {
@@ -44,9 +45,9 @@ async function registerLoginWithWhiteboard(username, password) {
             } else {
                 if (result.user) {
                     const whiteboardName = "Test Whiteboard"
-                    TestModel.createWhiteboard(whiteboardName, result.user.username).then(result => {
+                    Model.createWhiteboard(whiteboardName, result.user.username).then(result => {
                         if (result) {
-                            log(`Whiteboard created successfully, ID:${result.id}`);
+                            log(`Whiteboard created successfully, ID:${result._id}`);
                         } else {
                             logErr("Test ERROR")
                         }
