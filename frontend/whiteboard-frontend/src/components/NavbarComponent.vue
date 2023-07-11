@@ -15,15 +15,16 @@
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
             </div>
             <div v-else class="dropdown ">
-                <a role="button" class="btn btn-light link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+                <a role="button" class="btn btn-light link-body-emphasis text-decoration-none" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
                     <img src="../assets/icons/person-circle.svg" alt="mdo" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
-                        <li> <router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
-                        <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item  link-danger" role="button" @click="logout">Sign out</a></li>
-                    </ul>
+                    <p class="d-inline mx-2">{{username}}</p>
+                </a>
+                <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
+                    <li> <router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
+                    <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item  link-danger" role="button" @click="logout">Sign out</a></li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -35,7 +36,8 @@ export default {
     props: ['loginStatus'],
     data() {
         return {
-            isLogged: false
+            isLogged: false,
+            username: ''
         }
     },
     methods: {
@@ -45,6 +47,7 @@ export default {
                 refreshToken: localStorage.getItem('refreshToken')
             }).then(response => {
                 this.isLogged = true;
+                this.username = localStorage.getItem("name")
                 this.$forceUpdate();
             }).catch(error => {
                 this.isLogged = false;
