@@ -13,6 +13,7 @@
 export default {
     name: "PasswordFormComponent",
     emits:['password-changed'],
+    props: ['password'],
     data(){
         return{
             image: 'eye-slash.svg',
