@@ -1,5 +1,11 @@
 <template>
   <form class="container">
+    <div class="alert alert-success mb-3" role="alert" :hidden="!this.isValid">
+      Updated succesfully!        
+    </div>
+    <div class="alert alert-danger mb-3" role="alert" :hidden="!this.isInvalid">
+      Something went wrong       
+    </div>
     <div class="row border rounded g-3 text-start mb-5">
       <div class="col m-3">
         <h3><strong>Avatar</strong></h3>
@@ -9,12 +15,6 @@
         <div class="row">
           <div class="col-3 text-center d-flex flex-wrap align-items-center">
             <img src="../assets/icons/eye.svg" width="75" height="75" class="rounded-circle border"/>
-          </div>
-          <div class="col text-start">
-            <p><strong>Upload</strong></p>
-            <div class="mb-3">
-              <input class="form-control" type="file" id="formFile">
-            </div>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
       <div class="col m-3">
         <p><strong>Email</strong></p>
         <div class="input-group mb-3">
-          <input @input="checkChanges" v-model="email" type="email" class="form-control" placeholder="email" aria-label="Email" aria-describedby="basic-addon1">
+          <input disabled v-model="email" type="email" class="form-control" placeholder="email" aria-label="Email" aria-describedby="basic-addon1">
         </div>
         <p calss="mb-2"><strong>Name</strong></p>
         <div class="input-group flex-nowrap mb-3">
@@ -37,10 +37,7 @@
         <div class="input-group flex-nowrap mb-3">
           <input @input="checkChanges" v-model="surname" type="text" class="form-control" placeholder="Last name" aria-label="Last name" aria-describedby="addon-wrapping">
         </div>
-        <div class="alert alert-danger" role="alert" :hidden="!this.isInvalid">
-            Something went wrong
-        </div>
-        <button type="button" class="btn btn-primary" :disabled="!isEnabled">Update</button>
+        <button type="button" class="btn btn-primary" @click="updateUserInfo" :disabled="!isEnabled">Update</button>
       </div>
     </div>
     <div class="row border rounded g-3 text-start mb-5">
@@ -51,13 +48,33 @@
       <div class="col m-3">
         <p><strong>Password</strong></p>
         <div class="input-group mb-3">
-          <input v-model="password" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+          <input disabled v-model="password" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="addon-wrapping">
         </div>
-        <button type="submit" class="btn btn-primary" @click="updatePassword">Change Password</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Change Password</button>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update your password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Insert a new password</p>
+                  <div class="input-group flex-nowrap mb-3">
+                      <span class="input-group-text" id="modalNameInput">Password</span>
+                      <input type="text"  class="form-control" placeholder="New user password" aria-label="New user password" aria-describedby="addon-wrapping">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeBtn">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="updatePassword">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
       </div>
     </div>
   </form>
-<FooterComponent></FooterComponent>
 </template>
 <script>
 
@@ -66,7 +83,7 @@ import FooterComponent from "@/components/FooterComponent.vue"
 export default {
   name: 'UserProfileView',
   components: {
-    FooterComponent
+    FooterComponent,
 },
   data() {
     return {
@@ -75,15 +92,18 @@ export default {
       surname: '',
       password: '',
       image: '',
+      isValid: false,
       isInvalid: false,
       isEnabled: false,
       currentName: '',
       currentSurname: '',
-      currentEmail: '',
       password: ''
     }
   },
   methods: {
+    scrollToTop() {
+      window.scrollTo(0,0);
+    },
     getUserData() {
       axios.get('http://localhost:4000/userSetting/', {
         params: {
@@ -94,38 +114,56 @@ export default {
         this.email = user.username
         this.name = user.first_name
         this.surname = user.last_name
-        this.currentEmail = user.username
         this.currentName = user.first_name
         this.currentSurname = user.last_name
-
+        this.password = user.password
       }).catch(error => {
         console.log(error)
       })
     },
     updateUserInfo() {
-      axios.post('http://localhost:4000/userSetting/updateInfo', {
-        email: this.email,
+      axios.put('http://localhost:4000/userSetting/updateInfo', {
+        accessToken: localStorage.getItem("accessToken"),
+        username: this.email,
         first_name: this.name,
-        last_name: this.last_name
+        last_name: this.surname,
+        username: this.email
       }).then(response => {
-
+        this.currentName = this.name
+        this.currentSurname = this.surname
+        this.isValid = true
+        this.isInvalid = false
+        const user = response.data
+        localStorage.setItem('name', user.first_name);
+        this.checkChanges()
+        this.scrollToTop()
       }).catch(error => {
         this.isInvalid = true
+        this.isValid = false
+        this.scrollToTop()
       })
 
     },
     updatePassword() {
-      axios.post('http://localhost:4000/userSetting/updateInfo', {
-        password: this.password
+      axios.put('http://localhost:4000/userSetting/updatePassword', {
+        accessToken: localStorage.getItem("accessToken"),
+        password: this.password,
+        username: this.email
       }).then(response => {
-
+        this.isValid = true
+        this.isInvalid = false
+        this.scrollToTop()
       }).catch(error => {
+        this.isValid = false
         this.isInvalid = true
+        this.scrollToTop()
       })
     },
     checkChanges() {
-      if (this.email !== this.currentEmail || this.name !== this.currentName || this.surname !== this.currentSurname) {
+      if (this.name !== this.currentName || this.surname !== this.currentSurname) {
         this.isEnabled = true
+      } else {
+        this.isEnabled = false
       }
     },
   },

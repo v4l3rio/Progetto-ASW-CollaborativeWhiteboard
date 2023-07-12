@@ -53,6 +53,7 @@ export default {
             },).then(response => {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('refreshToken', response.data.refreshToken);
+                localStorage.setItem('name', response.data.name);
                 this.$router.replace({ path: '/addwhiteboard' })
             }).catch(error => {
                 this.isInvalid = true;

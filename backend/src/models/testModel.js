@@ -1,4 +1,5 @@
 const {log} = require("../util/consoleUtil");
+const bcrypt = require('bcrypt')
 
 class Db {
     constructor() {
@@ -39,6 +40,24 @@ class Db {
         this.users.push(toCreate);
         this.userFreeId++;
         return toCreate;
+    }
+    async updateUserInfo(username, newUsername, newFirstName, newLastName) {
+        const user = await this.findOneUser(username);
+        if (user) {
+            user.username = newUsername;
+            user.first_name = newFirstName;
+            user.last_name = newLastName;
+            return user;
+        }
+    }
+    
+    async updateUserPassword(username, password) {
+        const user = await this.findOneUser(username);
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        if(user) {
+            user.password = encryptedPassword;
+        }
+
     }
 
     async createWhiteboard(name, username) {
