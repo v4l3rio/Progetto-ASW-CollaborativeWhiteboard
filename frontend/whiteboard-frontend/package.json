@@ -17,6 +17,7 @@
     "identicon.js": "^2.3.3",
     "socket.io-client": "^4.7.1",
     "vue": "^3.2.13",
+    "vue-cookies": "^1.8.3",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {

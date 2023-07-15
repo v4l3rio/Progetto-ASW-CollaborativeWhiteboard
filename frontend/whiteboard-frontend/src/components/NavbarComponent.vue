@@ -42,21 +42,22 @@ export default {
     },
     methods: {
         isUserLogged() {
-            axios.post('http://localhost:4000/auth/refresh', {
-                accessToken: localStorage.getItem('accessToken'),
-                refreshToken: localStorage.getItem('refreshToken')
-            }).then(response => {
-                this.isLogged = true;
-                this.username = localStorage.getItem("name")
-                this.$forceUpdate();
-            }).catch(error => {
-                this.isLogged = false;
-                this.$forceUpdate();
-            });
+            if (localStorage.getItem('accessToken') && !this.isLogged) {
+                axios.post('http://localhost:4000/auth/refresh', {
+                    accessToken: localStorage.getItem('accessToken'),
+                }, {withCredentials: true}).then(response => {
+                    this.isLogged = true;
+                    console.log("Loggato")
+                    this.$forceUpdate();
+                }).catch(error => {
+                    console.log(error)
+                    console.log("Errore")
+                    this.isLogged = false;
+                });
+            }
         },
         logout() {
             localStorage.removeItem("accessToken")
-            localStorage.removeItem("refreshToken")
             localStorage.removeItem("name")
             this.username = ''
             this.isLogged = false
