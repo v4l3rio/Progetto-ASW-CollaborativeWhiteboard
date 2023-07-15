@@ -1,7 +1,7 @@
 <template>
-  <NavbarComponent></NavbarComponent>
+  <NavbarComponent ref="navbar"></NavbarComponent>
   <NotificationComponent class="col"></NotificationComponent>
-  <router-view/>
+  <router-view v-on:onLogin="this.onLogin"/>
 </template>
 
 <style>
@@ -33,6 +33,11 @@ import NotificationComponent from "@/components/NotificationComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue"
 export default {
   name: "App",
-  components: {NotificationComponent, NavbarComponent}
+  components: {NotificationComponent, NavbarComponent},
+    methods: {
+      onLogin() {
+          this.$refs.navbar.reloadNavbar();
+      }
+    }
 }
 </script>
