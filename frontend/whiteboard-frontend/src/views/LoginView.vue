@@ -55,6 +55,7 @@ export default {
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('name', response.data.name);
                 this.$router.replace({ path: '/addwhiteboard' })
+                this.$emit("onLogin")
             }).catch(error => {
                 this.isInvalid = true;
             });

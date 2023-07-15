@@ -41,7 +41,7 @@ export default {
         }
     },
     methods: {
-        isUserLogged() {
+        reloadNavbar() {
             if (localStorage.getItem('accessToken') && !this.isLogged) {
                 axios.post('http://localhost:4000/auth/refresh', {
                     accessToken: localStorage.getItem('accessToken'),
@@ -65,10 +65,10 @@ export default {
         }
     },
     updated: function() {
-        this.isUserLogged();
+        this.reloadNavbar();
     },
     mounted: function() {
-        this.isUserLogged();
+        this.reloadNavbar();
     }
 }
 </script>
