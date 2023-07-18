@@ -30,8 +30,7 @@ class RealDb {
             password: user.password,
             first_name: user.first_name,
             last_name: user.last_name,
-            notifications: [],
-            whiteboards: []
+            notifications: []
         };
         try{
             return (await new User(toCreate).save());
@@ -53,8 +52,10 @@ class RealDb {
             }
 
             try{
-                return (await new Whiteboard(toCreate).save());
+                const currentWhiteboard  = await new Whiteboard(toCreate).save();
+                return currentWhiteboard;
             }catch (e){
+                console.log(e);
                 return e;
             }
         }
@@ -74,10 +75,6 @@ class RealDb {
             const whiteboard = await Whiteboard.findById(whiteboardId)
             // remove the whiteboard from all the profiles
             if (whiteboard) {
-                for (let i = 0; i < whiteboard.users.length; i++) {
-                    const userId = whiteboard.users[i];
-                    await User.updateOne({_id: userId}, {$pull: {whiteboards: whiteboardId}})
-                }
                 await Whiteboard.findByIdAndDelete(whiteboardId);
             }
         } catch (e) {
@@ -86,7 +83,9 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        return mongoose.Types.ObjectId();
+        const lineId = await new mongoose.Types.ObjectId();
+        console.log("lineID " + lineId);
+        return lineId;
     }
 
     async insertLine(whiteboardId, lineId, line){
@@ -114,7 +113,8 @@ class RealDb {
     async validateUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
         if (user) {
-            return user.whiteboards.includes(whiteboardId)
+            const whiteboard = (await Whiteboard.findById(whiteboardId));
+            return whiteboard.users.includes(user._id)
         }
     }
     async validateOwnerToWhiteboard(username, whiteboardId) {

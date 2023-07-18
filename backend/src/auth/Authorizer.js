@@ -26,6 +26,7 @@ exports.Authorizer = class {
                 return {username: decoded.username };
             }
         } catch (e) {
+            console.log(e)
             return {err: "Invalid token or illegal input values"};
         }
     }

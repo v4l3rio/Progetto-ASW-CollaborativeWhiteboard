@@ -5,16 +5,13 @@ const userSchema = new mongoose.Schema({
     password: String,
     first_name: String,
     last_name: String,
-    notifications: [{id: Number, text: String}],
-    whiteboards: [Object]
+    notifications: [{id: Number, text: String}]
 })
 
 const whiteboardSchema = new mongoose.Schema({
     name: String,
     ownerId: Object,
-    traits: {
-        traitId: {points: [{x: Number, y:Number}], color: String}
-    },
+    traits: mongoose.Schema.Types.Mixed,
     freeId: Number,
     users: [Object]
 })
