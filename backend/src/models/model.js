@@ -18,7 +18,7 @@ class RealDb {
     }
     async findOneWhiteboard(whiteboardId) {
         try{
-            return (await User.findOne({'username': username}));
+            return (await Whiteboard.findById(whiteboardId));
         } catch (e) {
             return e;
         }
@@ -86,13 +86,12 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        var id = mongoose.Types.ObjectId();
-        return id;
+        return mongoose.Types.ObjectId();
     }
 
     async insertLine(whiteboardId, lineId, line){
         const object = {};
-        object[`­traits.${lineId}`] = line;
+        object[`traits.${lineId}`] = line;
         try {
             await Whiteboard.findOneAndUpdate({_id: whiteboardId}, object);
         } catch (e) {
@@ -113,16 +112,16 @@ class RealDb {
         }
     }
     async validateUserToWhiteboard(username, whiteboardId) {
-        
         const user = await this.findOneUser(username);
         if (user) {
-            return this.whiteBoards[whiteboardId].users.includes(user.id);
+            return user.whiteboards.includes(whiteboardId)
         }
     }
     async validateOwnerToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
-        if (user) {
-            return this.whiteBoards[whiteboardId].ownerId === user.id;
+        const whiteboard = await this.findOneWhiteboard(whiteboardId);
+        if (user && whiteboard) {
+            return whiteboard.owner === user._id;
         }
     }
 

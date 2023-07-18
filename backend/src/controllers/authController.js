@@ -7,7 +7,6 @@ exports.auth = auth;
 const SECURE_COOKIE = true; // if set to true, the cookie will be accessible only through https (not development mode)
 
 exports.refresh = (req, res) => {
-    console.log(req.cookies)
     try {
         if (req.cookies.refreshToken && req.body.accessToken) {
             auth.refreshToken(req.cookies.refreshToken).then(result => {

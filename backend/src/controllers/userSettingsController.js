@@ -1,5 +1,5 @@
 const { response } = require('express')
-const {TestModel} = require ("../models/testModel");
+const {Model} = require ("../models/model");
 const {auth} = require('./authController')
 
 exports.getUserData =  (req, res) => {
@@ -9,7 +9,7 @@ exports.getUserData =  (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
                 console.log(result.user.username)
-                TestModel.findOneUser(result.user.username).then(user => {
+                Model.findOneUser(result.user.username).then(user => {
                     res.status(200).json(user);
                 })
             }
@@ -24,7 +24,7 @@ exports.updateInfo = (req, res) => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
-                TestModel.updateUserInfo(req.body.username, req.body.username, req.body.first_name, req.body.last_name).then(user => {
+                Model.updateUserInfo(req.body.username, req.body.username, req.body.first_name, req.body.last_name).then(user => {
                     res.status(200).json(user);
                 })
             }
@@ -40,7 +40,7 @@ exports.updatePassword = (req, res) => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
-                TestModel.updateUserPassword(req.body.username, req.body.password).then(() => {
+                Model.updateUserPassword(req.body.username, req.body.password).then(() => {
                     if (result.err) {
                         res.status(401).json({message: "Somthing went wrong"})
                     } else {

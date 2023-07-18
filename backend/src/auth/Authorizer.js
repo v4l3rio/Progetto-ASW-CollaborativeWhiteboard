@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {TestModel} = require("../models/testModel");
+const {Model} = require("../models/model");
 
 const OWNER = 0;
 const NORMAL = 1;
@@ -16,9 +16,9 @@ exports.Authorizer = class {
             const decoded = await jwt.verify(accessToken, this.accessKey);
             let authorized;
             if (level === OWNER) {
-                authorized = await TestModel.validateOwnerToWhiteboard(decoded.username, whiteboardId);
+                authorized = await Model.validateOwnerToWhiteboard(decoded.username, whiteboardId);
             } else {
-                authorized = await TestModel.validateUserToWhiteboard(decoded.username, whiteboardId);
+                authorized = await Model.validateUserToWhiteboard(decoded.username, whiteboardId);
             }
             if (!authorized) {
                 return {err: "Unauthorized to this whiteboard"};
