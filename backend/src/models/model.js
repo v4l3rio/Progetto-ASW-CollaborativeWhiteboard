@@ -7,8 +7,6 @@ class RealDb {
         mongoose.connect('mongodb://localhost:27017/whiteboard-db')
             .then(() => {log("MI SONO CONNESSOOOOOOOO!")})
             .catch((e)=>{console.error(e)});
-
-
     }
 
     async findOneUser(username) {
@@ -74,8 +72,6 @@ class RealDb {
     async deleteWhiteboard(whiteboardId) {
         try {
             const whiteboard = await Whiteboard.findById(whiteboardId)
-            log(`Deleting ${whiteboardId}`)
-
             // remove the whiteboard from all the profiles
             if (whiteboard) {
                 for (let i = 0; i < whiteboard.users.length; i++) {
@@ -90,21 +86,21 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        const whiteboard = this.whiteBoards[whiteboardId];
-        const id = whiteboard.freeId;
-        whiteboard.freeId++;
-        while(whiteboard.traits[whiteboard.freeId] !== undefined) {
-            whiteboard.freeId++;
-        }
+        var id = mongoose.Types.ObjectId();
         return id;
     }
 
     async insertLine(whiteboardId, lineId, line){
-        const whiteboard = this.whiteBoards[whiteboardId];
-        whiteboard.traits[lineId] = line;
+        const object = {};
+        object[`­traits.${lineId}`] = line;
+        try {
+            await Whiteboard.findOneAndUpdate({_id: whiteboardId}, object);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
-    async deleteLine(whiteboardId, lineId){
+    async deleteLine(whiteboardId, lineId) {
         delete this.whiteBoards[whiteboardId].traits[lineId];
     }
 
@@ -117,6 +113,7 @@ class RealDb {
         }
     }
     async validateUserToWhiteboard(username, whiteboardId) {
+        
         const user = await this.findOneUser(username);
         if (user) {
             return this.whiteBoards[whiteboardId].users.includes(user.id);

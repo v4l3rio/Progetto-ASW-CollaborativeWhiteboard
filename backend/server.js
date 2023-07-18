@@ -16,7 +16,7 @@ const {Model} = require("./src/models/model");
 const PORT = 4000;
 process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
 process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
-process.env.MODE = "prod"; //set "test" to create example users and whiteboards
+process.env.MODE = "test"; //set "test" to create example users and whiteboards
 process.env.TEST_WHITEBOARD = "yes"
 // ----------------------------------------------------------------------------
 
