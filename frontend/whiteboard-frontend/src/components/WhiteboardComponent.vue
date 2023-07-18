@@ -152,15 +152,21 @@ export default {
             }).then(result => {
                 const traits = result.data.whiteboardData.traits;
                 this.$emit('setLoading', {loading:false, err: false});
-                for (const id in Object.keys(traits)) {
-                    const trait = traits[id];
-                    this.paths += traitToPaths(trait, this.board, id).outerHTML
+                if (traits) {
+                    for (const id in Object.keys(traits)) {
+                        const trait = traits[id];
+                        this.paths += traitToPaths(trait, this.board, id).outerHTML
+                    }
+                    this.error = false;
+                } else {
+                    this.showAlert("Some error occurred, cannot read traits")
+                    this.error = true;
                 }
+
                 this.loading = false;
-                this.error = false;
             }).catch(error => {
                 console.log(error)
-                this.showAlert(error.response.data.message)
+                this.showAlert(error.response?.data?.message)
                 this.$emit('setLoading', {loading:false, err: true});
                 this.loading = false;
                 this.error = true;

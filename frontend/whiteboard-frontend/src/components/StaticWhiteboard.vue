@@ -27,9 +27,12 @@ export default {
     methods: {
         traitToPaths,
         renderPaths() {
-            for (const id in Object.keys(this.traits)) {
-                const trait = this.traits[id];
-                this.paths += traitToPaths(trait, this.svg, id).outerHTML
+            if (this.traits) {
+                for (const id in Object.keys(this.traits)) {
+                    const trait = this.traits[id];
+                    console.log(trait);
+                    this.paths += traitToPaths(trait, this.svg, id).outerHTML
+                }
             }
             //this.svg.setAttribute("viewBox", `0 0 ${this.svg.clientWidth} ${this.svg.clientHeight}`)
         }

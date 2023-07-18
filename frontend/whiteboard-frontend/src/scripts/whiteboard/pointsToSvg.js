@@ -3,7 +3,7 @@
 exports.traitToPaths = function (trait, svg, id) {
     const LINE_WIDTH = 8;
     let pathString = "";
-    if (trait?.points) {
+    if (trait?.points && trait.points.length > 0) {
         let point = getCursors(trait.points[0].x, trait.points[0].y, svg);
         //console.log(point);
         pathString += 'M' + point.x + ',' + point.y;

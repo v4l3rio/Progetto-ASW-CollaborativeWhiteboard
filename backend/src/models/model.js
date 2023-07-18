@@ -1,6 +1,7 @@
 const {log} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
 const {User, Whiteboard} = require("../models/dbModel");
+const {Traits, Trait} = require("./dbModel");
 
 class RealDb {
     constructor() {
@@ -46,8 +47,7 @@ class RealDb {
             const toCreate = {
                 name: name,
                 ownerId: userId,
-                traits: {},
-                freeId: 0,
+                traits: [],
                 users: [userId]
             }
 
@@ -83,16 +83,19 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        const lineId = await new mongoose.Types.ObjectId();
-        console.log("lineID " + lineId);
-        return lineId;
+        const line = Whiteboard.findById(whiteboardId).then((whiteboard) => {
+            const line = whiteboard.traits.id();
+        });
+        //const lineId = await new mongoose.Types.ObjectId();
+        console.log("lineID " + line);
+        return line;
     }
 
     async insertLine(whiteboardId, lineId, line){
         const object = {};
         object[`traits.${lineId}`] = line;
         try {
-            await Whiteboard.findOneAndUpdate({_id: whiteboardId}, object);
+            await Trait.findByIdAndUpdate(lineId, {points: line.points, color: line.color})
         } catch (e) {
             console.error(e);
         }
