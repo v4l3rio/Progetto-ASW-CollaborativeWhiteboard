@@ -45,7 +45,11 @@ export default {
             if (localStorage.getItem('accessToken') && !this.isLogged) {
                 axios.post('http://localhost:4000/auth/refresh', {
                     accessToken: localStorage.getItem('accessToken'),
-                }, {withCredentials: true}).then(response => {
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                }).then(response => {
                     this.isLogged = true;
                     console.log("Loggato")
                     this.$forceUpdate();

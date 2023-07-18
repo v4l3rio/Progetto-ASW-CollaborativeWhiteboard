@@ -4,13 +4,15 @@ const {log, logErr} = require("../util/consoleUtil");
 
 const auth = new Authenticator(Model);
 exports.auth = auth;
-const SECURE_COOKIE = false; // if set to true, the cookie will be accessible only through https (not development mode)
+const SECURE_COOKIE = true; // if set to true, the cookie will be accessible only through https (not development mode)
 
 exports.refresh = (req, res) => {
+    console.log(req.cookies)
     try {
         if (req.cookies.refreshToken && req.body.accessToken) {
             auth.refreshToken(req.cookies.refreshToken).then(result => {
                 if (result.err) {
+                    logErr(result.err)
                     res.status(401).json({message: 'Unauthorized'});
                 } else {
                     res.status(200)
