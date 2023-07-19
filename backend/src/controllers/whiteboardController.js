@@ -33,7 +33,6 @@ exports.getWhiteboardData = async (req, res) => {
 }
 
 exports.inviteToWhiteboard = (req, res) => {
-    console.log(req.body.accessToken + req.body.username + req.body.whiteboardId);
     if (req.body.accessToken && req.body.username && (req.body.whiteboardId !== undefined)) {
         authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
             const {err} = result;

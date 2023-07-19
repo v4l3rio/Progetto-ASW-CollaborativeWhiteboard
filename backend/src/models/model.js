@@ -1,7 +1,7 @@
 const {log} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
 const {User, Whiteboard} = require("../models/dbModel");
-const {Traits, Trait} = require("./dbModel");
+const {checkContains} = require("../util/arrayUtil")
 
 class RealDb {
     constructor() {
@@ -154,19 +154,12 @@ class RealDb {
                     }
                 }, {username: {"$ne": filters.excludes}}]
             }));
-            const usersAlreadyIn = (await Whiteboard.findById(filters.whiteboardId, "users"));
-            console.log("users already in ")
-            console.log(Object.values(usersAlreadyIn)[2].users);
-            for(const key in usersAlreadyIn) {
-                console.log(key + " : " + usersAlreadyIn[key]);
-            }
+            const usersAlreadyIn = (await Whiteboard.findById(filters.whiteboardId).select("users").lean()).users;
             for (let i = 0; i < users.length && i < LIMIT; i++) {
                 const user = users[i];
                 out.push({id: user._id, username: user.username, first_name: user.first_name, last_name: user.last_name,
-                    alreadyIn: usersAlreadyIn.includes(user._id)});
+                    alreadyIn: checkContains(usersAlreadyIn, user._id)});
             }
-            console.log("out")
-            console.log(out)
             return {users: out};
         } else {
             return (await User.find({}));
