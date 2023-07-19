@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
 const whiteboardSchema = new mongoose.Schema({
     name: String,
     ownerId: Object,
-    traits: mongoose.Schema.Types.Mixed,
+    traits: Object,
     freeId: Number,
     users: [Object]
 })

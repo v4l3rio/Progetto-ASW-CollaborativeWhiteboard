@@ -12,7 +12,6 @@ exports.authZ = authZ;
 */
 
 exports.getWhiteboardData = async (req, res) => {
-    console.log(req.query.accessToken)
     if (req.params?.id && req.query.accessToken) {
         authZ.normalUserToWhiteboard(req.query.accessToken, req.params.id).then(result => {
             const {err} = result;
@@ -93,7 +92,7 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err)
         } else {
-            console.log(line);
+            //console.log(line);
             Model.insertLine(whiteboardId, lineId, line).then((result) => {
                 if (result?.err) {
                     callback(result.err)

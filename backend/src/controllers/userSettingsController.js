@@ -8,7 +8,6 @@ exports.getUserData =  (req, res) => {
             if (result.err) {
                 res.status(401).json({message: "Invalid Access Token"})
             } else {
-                console.log(result.user.username)
                 Model.findOneUser(result.user.username).then(user => {
                     res.status(200).json(user);
                 })
