@@ -51,6 +51,7 @@ export default {
                     }, withCredentials: true
                 }).then(response => {
                     this.isLogged = true;
+                    this.username = localStorage.getItem("name")
                     console.log("Loggato")
                     this.$forceUpdate();
                 }).catch(error => {
