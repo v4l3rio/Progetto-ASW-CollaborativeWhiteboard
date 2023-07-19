@@ -79,7 +79,7 @@ export default {
     },
     props: {
         name: String,
-        whiteboardId: Number
+        whiteboardId: String
     },
     emits: ["invited"],
     methods: {

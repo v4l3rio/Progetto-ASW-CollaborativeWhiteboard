@@ -10,7 +10,7 @@
                         </button>
                         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
                             <li><a class="dropdown-item" role="button" @click="openWhiteboard(whiteboard._id)">Open</a></li>
-                            <li><a class="dropdown-item" role="button" @click="inviteToWhiteboard(whiteboard.name, whiteboard.id)" data-bs-toggle="modal" data-bs-target="#searchModal">Invite Users</a></li>
+                            <li><a class="dropdown-item" role="button" @click="inviteToWhiteboard(whiteboard.name, whiteboard._id)" data-bs-toggle="modal" data-bs-target="#searchModal">Invite Users</a></li>
                             <li><a class="dropdown-item" role="button" @click="renameCard(whiteboard._id)" data-bs-toggle="modal" data-bs-target="#whiteboardModalRename">Rename</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item link-danger" role="button" @click="deleteWhiteboard(whiteboard._id)">Delete</a></li>

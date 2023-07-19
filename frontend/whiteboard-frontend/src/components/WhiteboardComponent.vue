@@ -159,11 +159,7 @@ export default {
                         this.paths += traitToPaths(trait, this.board, id).outerHTML
                     }
                     this.error = false;
-                } else {
-                    this.showAlert("Some error occurred, cannot read traits")
-                    this.error = true;
-                }
-
+                } 
                 this.loading = false;
             }).catch(error => {
                 console.log(error)

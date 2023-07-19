@@ -91,7 +91,6 @@ export default {
         this.loading = false;
         const wb = [];
         const data = response.data.whiteboards;
-        console.log(data)
         for (let i = 0; i < data.length; i++) {
             if (data[i]) {
                 wb.push(data[i]);
@@ -109,8 +108,9 @@ export default {
 
     },
     setInviteWhiteboard(whiteboard) {
-        this.inviteId = whiteboard.id;
-        this.whiteboardInviteName = whiteboard.name;
+      console.log(whiteboard);
+      this.inviteId = whiteboard.id;
+      this.whiteboardInviteName = whiteboard.name;
     },
     createWhiteboard () {
         this.$refs.createModal.close();

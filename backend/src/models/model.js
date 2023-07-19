@@ -47,7 +47,7 @@ class RealDb {
             const toCreate = {
                 name: name,
                 ownerId: userId,
-                traits: {"0": {points: [], color: "#FFFFFF"}},
+                traits: {},
                 users: [userId]
             }
 
@@ -84,7 +84,6 @@ class RealDb {
 
     async generateFreshLineId(whiteboardId) {
         const lineId = await new mongoose.Types.ObjectId();
-        console.log("lineID " + lineId);
         return lineId;
     }
 
@@ -95,7 +94,6 @@ class RealDb {
             const trait = {}
             trait[string] = line;
             update["$set"] = trait;
-            console.log(update)
             await Whiteboard.findOneAndUpdate({_id: whiteboardId}, update);
         } catch (e) {
             console.error(e);
@@ -103,15 +101,19 @@ class RealDb {
     }
 
     async deleteLine(whiteboardId, lineId) {
-        delete this.whiteBoards[whiteboardId].traits[lineId];
+        const update = { }
+            const string = `traits.${lineId}`;
+            const trait = {}
+            trait[string] = 1;
+            update["$unset"] = trait;
+            await Whiteboard.findOneAndUpdate({_id: whiteboardId}, update);
     }
 
     async inviteUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
-        const id = user.id;
-        if (!this.whiteBoards[whiteboardId].users.includes(id)) {
-            this.whiteBoards[whiteboardId].users.push(id);
-            this.users[id].whiteboards.push(whiteboardId);
+        const whiteboard = await this.findOneWhiteboard(whiteboardId);
+        if (!whiteboard.users.includes(user.id) ) {
+            await Whiteboard.findByIdAndUpdate(whiteboardId, {$push: {users: user._id}})
         }
     }
     async validateUserToWhiteboard(username, whiteboardId) {
@@ -125,7 +127,9 @@ class RealDb {
         const user = await this.findOneUser(username);
         const whiteboard = await this.findOneWhiteboard(whiteboardId);
         if (user && whiteboard) {
-            return whiteboard.owner === user._id;
+            console.log(whiteboard.ownerId)
+            console.log(user._id)
+            return user._id.equals(whiteboard.ownerId);
         }
     }
 
@@ -138,7 +142,6 @@ class RealDb {
                 console.error(e);
             }
         }
-
     }
 
     async getUsersWithFilters(filters) {
