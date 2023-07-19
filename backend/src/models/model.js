@@ -127,8 +127,6 @@ class RealDb {
         const user = await this.findOneUser(username);
         const whiteboard = await this.findOneWhiteboard(whiteboardId);
         if (user && whiteboard) {
-            console.log(whiteboard.ownerId)
-            console.log(user._id)
             return user._id.equals(whiteboard.ownerId);
         }
     }
@@ -156,14 +154,19 @@ class RealDb {
                     }
                 }, {username: {"$ne": filters.excludes}}]
             }));
-            const usersAlreadyIn = (await Whiteboard.find({_id: filters.whiteboardId}, {users: 1}));
-            console.log(users);
-            console.log(usersAlreadyIn);
+            const usersAlreadyIn = (await Whiteboard.findById(filters.whiteboardId, "users"));
+            console.log("users already in ")
+            console.log(Object.values(usersAlreadyIn)[2].users);
+            for(const key in usersAlreadyIn) {
+                console.log(key + " : " + usersAlreadyIn[key]);
+            }
             for (let i = 0; i < users.length && i < LIMIT; i++) {
                 const user = users[i];
                 out.push({id: user._id, username: user.username, first_name: user.first_name, last_name: user.last_name,
                     alreadyIn: usersAlreadyIn.includes(user._id)});
             }
+            console.log("out")
+            console.log(out)
             return {users: out};
         } else {
             return (await User.find({}));
