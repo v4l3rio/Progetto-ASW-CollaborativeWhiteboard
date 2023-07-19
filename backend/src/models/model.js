@@ -47,7 +47,7 @@ class RealDb {
             const toCreate = {
                 name: name,
                 ownerId: userId,
-                traits: [],
+                traits: {"0": {points: [], color: "#FFFFFF"}},
                 users: [userId]
             }
 
@@ -83,19 +83,20 @@ class RealDb {
     }
 
     async generateFreshLineId(whiteboardId) {
-        const line = Whiteboard.findById(whiteboardId).then((whiteboard) => {
-            const line = whiteboard.traits.id();
-        });
-        //const lineId = await new mongoose.Types.ObjectId();
-        console.log("lineID " + line);
-        return line;
+        const lineId = await new mongoose.Types.ObjectId();
+        console.log("lineID " + lineId);
+        return lineId;
     }
 
     async insertLine(whiteboardId, lineId, line){
-        const object = {};
-        object[`traits.${lineId}`] = line;
         try {
-            await Trait.findByIdAndUpdate(lineId, {points: line.points, color: line.color})
+            const update = { }
+            const string = `traits.${lineId}`;
+            const trait = {}
+            trait[string] = line;
+            update["$set"] = trait;
+            console.log(update)
+            await Whiteboard.findOneAndUpdate({_id: whiteboardId}, update);
         } catch (e) {
             console.error(e);
         }

@@ -150,10 +150,11 @@ export default {
                     accessToken: localStorage.getItem("accessToken")
                 }
             }).then(result => {
+                console.log(result.data)
                 const traits = result.data.whiteboardData.traits;
                 this.$emit('setLoading', {loading:false, err: false});
                 if (traits) {
-                    for (const id in Object.keys(traits)) {
+                    for (const id in traits) {
                         const trait = traits[id];
                         this.paths += traitToPaths(trait, this.board, id).outerHTML
                     }

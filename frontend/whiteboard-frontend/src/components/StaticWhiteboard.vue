@@ -28,7 +28,9 @@ export default {
         traitToPaths,
         renderPaths() {
             if (this.traits) {
-                for (const id in Object.keys(this.traits)) {
+                console.log( Object.keys(this.traits))
+                for (const id in this.traits) {
+                    console.log(id);
                     const trait = this.traits[id];
                     console.log(trait);
                     this.paths += traitToPaths(trait, this.svg, id).outerHTML
