@@ -37,6 +37,9 @@ export default {
     methods: {
       onLogin() {
           this.$refs.navbar.reloadNavbar();
+      },
+      onBadToken() {
+          this.$refs.navbar.logout();
       }
     }
 }

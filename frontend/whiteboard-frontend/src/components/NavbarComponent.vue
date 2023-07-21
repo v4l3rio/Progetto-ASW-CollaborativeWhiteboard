@@ -37,7 +37,8 @@ export default {
     data() {
         return {
             isLogged: false,
-            username: ''
+            username: '',
+            defaultRefreshTimeoutMs: 1000 * 60 * 8
         }
     },
     methods: {
@@ -54,6 +55,22 @@ export default {
                     this.username = localStorage.getItem("name")
                     console.log("Loggato")
                     this.$forceUpdate();
+                    // REFRESH TOKEN EVERY 8 minutes (or so)
+                    setInterval(() => {
+                        axios.post('http://localhost:4000/auth/refresh', {
+                            accessToken: localStorage.getItem('accessToken'),
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }, withCredentials: true
+                        }).then(refresh => {
+                            console.log(refresh);
+                            localStorage.setItem('accessToken', refresh.data.token);
+                        }).catch(error => {
+                            console.log(error);
+                            this.logout();
+                        })
+                    }, this.defaultRefreshTimeoutMs)
                 }).catch(error => {
                     console.log(error)
                     console.log("Errore")
@@ -64,6 +81,7 @@ export default {
         logout() {
             localStorage.removeItem("accessToken")
             localStorage.removeItem("name")
+            localStorage.removeItem("userId")
             this.username = ''
             this.isLogged = false
             this.$router.replace({ path: '/' })
