@@ -41,9 +41,9 @@ exports.updatePassword = (req, res) => {
             } else {
                 Model.updateUserPassword(req.body.username, req.body.password).then(() => {
                     if (result.err) {
-                        res.status(401).json({message: "Somthing went wrong"})
+                        res.status(401).json({message: "Something went wrong"})
                     } else {
-                        res.status(200).json({message: "User informations updated successfully"});
+                        res.status(200).json({message: "User data updated successfully"});
                     }
                 })
             }

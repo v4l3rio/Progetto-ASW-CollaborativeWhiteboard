@@ -1,7 +1,7 @@
 <template>
   <NavbarComponent ref="navbar"></NavbarComponent>
   <NotificationComponent class="col"></NotificationComponent>
-  <router-view v-on:onLogin="this.onLogin"/>
+  <router-view v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
 </template>
 
 <style>
@@ -40,6 +40,10 @@ export default {
       },
       onBadToken() {
           this.$refs.navbar.logout();
+      },
+      onChangedInfo(name) {
+          console.log("Changing " + name)
+          this.$refs.navbar.changeName(name)
       }
     }
 }

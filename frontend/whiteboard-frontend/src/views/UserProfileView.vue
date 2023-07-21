@@ -62,7 +62,7 @@
                   <p>Insert a new password</p>
                   <div class="input-group flex-nowrap mb-3">
                       <span class="input-group-text" id="modalNameInput">Password</span>
-                      <input type="text"  class="form-control" placeholder="New user password" aria-label="New user password" aria-describedby="addon-wrapping">
+                      <input type="password" ref="newPassword" class="form-control" placeholder="New user password" aria-label="New user password" aria-describedby="addon-wrapping">
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -90,7 +90,6 @@ export default {
       email: '',
       name: '',
       surname: '',
-      password: '',
       image: '',
       isValid: false,
       isInvalid: false,
@@ -110,7 +109,7 @@ export default {
           accessToken: localStorage.getItem("accessToken")
         }
       }).then(response => {
-        var user = response.data
+        const user = response.data
         this.email = user.username
         this.name = user.first_name
         this.surname = user.last_name
@@ -118,13 +117,13 @@ export default {
         this.currentSurname = user.last_name
         this.password = user.password
       }).catch(error => {
+        this.$emit("onBadToken");
         console.log(error)
       })
     },
     updateUserInfo() {
       axios.put('http://localhost:4000/userSetting/updateInfo', {
         accessToken: localStorage.getItem("accessToken"),
-        username: this.email,
         first_name: this.name,
         last_name: this.surname,
         username: this.email
@@ -134,10 +133,14 @@ export default {
         this.isValid = true
         this.isInvalid = false
         const user = response.data
+        console.log("USER : ")
+        console.log(response)
         localStorage.setItem('name', user.first_name);
+        this.$emit("onChangedInfo", user.first_name);
         this.checkChanges()
         this.scrollToTop()
       }).catch(error => {
+          console.log(error)
         this.isInvalid = true
         this.isValid = false
         this.scrollToTop()
@@ -147,13 +150,14 @@ export default {
     updatePassword() {
       axios.put('http://localhost:4000/userSetting/updatePassword', {
         accessToken: localStorage.getItem("accessToken"),
-        password: this.password,
+        password: this.$refs.newPassword.value,
         username: this.email
       }).then(response => {
         this.isValid = true
         this.isInvalid = false
         this.scrollToTop()
       }).catch(error => {
+          console.log(error)
         this.isValid = false
         this.isInvalid = true
         this.scrollToTop()

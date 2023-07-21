@@ -17,7 +17,7 @@
             <div v-else class="dropdown">
                 <a role="button" class="btn btn-light link-body-emphasis text-decoration-none" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
                     <img src="../assets/icons/person-circle.svg" alt="mdo" width="30" height="30" class="rounded-circle">
-                    <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{username}}</small></p>
+                    <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
                 </a>
                 <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
                     <li> <router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
@@ -37,7 +37,7 @@ export default {
     data() {
         return {
             isLogged: false,
-            username: '',
+            first_name: '',
             defaultRefreshTimeoutMs: 1000 * 60 * 8
         }
     },
@@ -52,7 +52,7 @@ export default {
                     }, withCredentials: true
                 }).then(response => {
                     this.isLogged = true;
-                    this.username = localStorage.getItem("name")
+                    this.first_name = localStorage.getItem("name")
                     console.log("Loggato")
                     this.$forceUpdate();
                     // REFRESH TOKEN EVERY 8 minutes (or so)
@@ -82,9 +82,12 @@ export default {
             localStorage.removeItem("accessToken")
             localStorage.removeItem("name")
             localStorage.removeItem("userId")
-            this.username = ''
+            this.first_name = ''
             this.isLogged = false
             this.$router.replace({ path: '/' })
+        },
+        changeName(name) {
+            this.first_name = name;
         }
     },
     updated: function() {

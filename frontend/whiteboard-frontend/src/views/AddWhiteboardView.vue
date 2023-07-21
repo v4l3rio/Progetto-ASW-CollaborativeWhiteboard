@@ -135,7 +135,8 @@ export default {
             }).catch(error => {
                 console.log(error)
                 this.loading = false;
-                this.showAlert(error.response?.data?.message);
+                this.showAlert(error.response.data.message);
+                this.goToLogin();
             })
         },
         importWhiteboard() {
@@ -163,9 +164,14 @@ export default {
                 }).catch(error => {
                     this.whiteboardCreateName = "";
                     this.showAlert(error.response.data.message);
+                    this.goToLogin();
                     this.loading = false;
                 })
             }
+        },
+        goToLogin() {
+            this.$emit("onBadToken")
+            this.$router.replace({path: "/login"})
         },
         showAlert(text) {
             this.alertOn = true;
@@ -184,6 +190,7 @@ export default {
                 this.getWhiteboards();
             }).catch(error => {
                 this.showAlert(error.response.data.message);
+                this.goToLogin();
                 this.loading = false;
             });
         },
@@ -206,6 +213,7 @@ export default {
             }).catch(error => {
                 this.whiteboardRenameName = "";
                 this.showAlert(error.response.data.message);
+                this.goToLogin();
                 this.loading = false;
             });
         }

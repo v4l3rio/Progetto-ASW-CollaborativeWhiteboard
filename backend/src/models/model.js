@@ -2,6 +2,7 @@ const {log} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
 const {User, Whiteboard} = require("../models/dbModel");
 const {checkContains} = require("../util/arrayUtil")
+const bcrypt = require("bcrypt");
 
 class RealDb {
     constructor() {
@@ -40,6 +41,25 @@ class RealDb {
         }
     }
 
+    async updateUserInfo(username, newUsername, newFirstName, newLastName) {
+        const user = await this.findOneUser(username);
+        const alreadyExisting = await this.findOneUser(newUsername);
+        if (user && (!alreadyExisting || (newUsername === username))) {
+            return (await User.findByIdAndUpdate(user._id,{username: newUsername, first_name: newFirstName, last_name: newLastName},
+                {returnDocument: 'after'}));
+        }
+        return null;
+    }
+
+    async updateUserPassword(username, password) {
+        const user = await this.findOneUser(username);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        if(user) {
+            await User.findByIdAndUpdate(user._id, {password: hashedPassword},
+                {returnDocument: 'after'});
+        }
+    }
+
     async createWhiteboard(name, username) {
         const user = await this.findOneUser(username)
         const userId = user?._id;
@@ -50,7 +70,6 @@ class RealDb {
                 traits: {},
                 users: [userId]
             }
-
             try{
                 const currentWhiteboard  = await new Whiteboard(toCreate).save();
                 return currentWhiteboard;
@@ -148,11 +167,11 @@ class RealDb {
             const out = [];
             const word = filters.username
             const users = await (User.find({
-                "$and": [{username: {
+                "$and": [{first_name: {
                         "$regex": word,
                         "$options": "i"
                     }
-                }, {username: {"$ne": filters.excludes}}]
+                }, {first_name: {"$ne": filters.excludes}}]
             }));
             const usersAlreadyIn = (await Whiteboard.findById(filters.whiteboardId).select("users").lean()).users;
             for (let i = 0; i < users.length && i < LIMIT; i++) {
