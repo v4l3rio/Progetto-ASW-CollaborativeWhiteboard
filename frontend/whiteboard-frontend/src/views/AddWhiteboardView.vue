@@ -33,6 +33,7 @@
             <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal"
                            @invite-to-whiteboard="setInviteWhiteboard"
                            v-bind:whiteboards="myWhiteboards"
+                           v-bind:shared='false'
                            v-else-if="myWhiteboards?.length !== 0">
 
             </CardComponent>
@@ -44,6 +45,7 @@
             <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal"
                            @invite-to-whiteboard="setInviteWhiteboard"
                            v-bind:whiteboards="sharedWhiteboards"
+                           v-bind:shared='true'
                            v-else-if="sharedWhiteboards?.length !== 0">
 
             </CardComponent>
