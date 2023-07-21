@@ -3,7 +3,7 @@
         <div class="card border-secondary text-start h-100">
             <StaticWhiteboard :traits="whiteboard.traits"></StaticWhiteboard>
                 <div class="card-body justify-content-center align-items-center">
-                    <h6 class="card-title d-inline text-start"><strong>{{whiteboard.name}}</strong></h6>
+                    <h6 class="card-title d-inline text-start"><strong>{{whiteboard.name}} {{whiteboard.ownerId === this.userId ? "(MIO)" : ""}}</strong></h6>
                     <div class="dropdown text-end d-inline-flex align-items-center mx-auto">
                         <button class="btn btn-outline-light" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="z-index: 2;">
                             <img src="../assets/icons/three-dots-vertical.svg" width="20" height="20"/>
@@ -30,6 +30,11 @@ export default {
     components: {SearchModal, StaticWhiteboard},
     props: ['whiteboards'],
     emits:['card-deleted', 'card-renamed', 'invite-to-whiteboard'],
+    data() {
+        return {
+            userId: ""
+        }
+    },
     methods: {
         replaceByDefault(event) {
             event.target.src = "https://www.stillisolutions.com/wp-content/uploads/2017/09/no-image-box-300x155.png"
@@ -46,6 +51,9 @@ export default {
         renameCard(index) {
             this.$emit('card-renamed', index);
         }
+    },
+    mounted() {
+        this.userId = localStorage.getItem("userId");
     }
 }
 </script>

@@ -102,8 +102,8 @@ exports.login = (req, res) => {
                             .json({
                                 "message": "User logged successfully",
                                 "accessToken": logged.accessToken,
-                                "refreshToken": logged.refreshToken,
-                                "name": logged.first_name
+                                "name": logged.first_name,
+                                "userId": noPasswordUser.id
                             });
                     }
 

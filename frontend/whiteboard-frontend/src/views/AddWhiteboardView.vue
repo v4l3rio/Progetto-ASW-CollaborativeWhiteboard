@@ -97,6 +97,7 @@ export default {
             }
         }
         this.whiteboards = wb;
+        console.log(this.whiteboards)
         this.alertOn = false;
       }).catch(error => {
         console.log(error)
