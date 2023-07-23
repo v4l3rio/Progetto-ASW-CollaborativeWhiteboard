@@ -1,10 +1,10 @@
 <template>
-    <div class="modal" tabindex="-1" id="searchModal">
+    <div id="searchModal" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Invite to Whiteboard {{name}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <span>Search users to add to this whiteboard</span>
@@ -14,17 +14,17 @@
 
                     <div class="mb-3">
                             <div class="dropdown">
-                                <label for="dropdownSearch" class="form-label">Username</label>
+                                <label class="form-label" for="dropdownSearch">Username</label>
                                 <div class="row">
-                                    <input type="text" class="form-control" id="dropdownSearch" placeholder="name@example.com"
-                                           @focusin="focusIn" @click="click"
-                                           @focusout="focusOut" @input="inputChange" data-bs-toggle="dropdown" aria-expanded="true"
-                                            autocomplete="off">
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownSearch">
+                                    <input id="dropdownSearch" aria-expanded="true" autocomplete="off" class="form-control"
+                                           data-bs-toggle="dropdown" placeholder="name@example.com"
+                                           type="text" @click="click" @focusin="focusIn" @focusout="focusOut"
+                                            @input="inputChange">
+                                    <ul aria-labelledby="dropdownSearch" class="dropdown-menu">
                                         <li v-for="user in foundUsers">
 
-                                                <a class="dropdown-item" v-bind:class="{disabled: user.alreadyIn}"
-                                                   role="button" @click="invite(user.username)">
+                                                <a class="dropdown-item" role="button"
+                                                   v-bind:class="{disabled: user.alreadyIn}" @click="invite(user.username)">
                                                     <div class="m-1 d-inline-block align-top" style="width: 30px;">
                                                         <Identicon :seed="user.username"></Identicon>
                                                     </div>
@@ -32,7 +32,7 @@
                                                         <div class="list-group" style="width: 18rem;">
                                                             <div class="card-body">
                                                                 <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
-                                                                <span class="small text-secondary" v-if="user.alreadyIn">(Already on the whiteboard)</span>
+                                                                <span v-if="user.alreadyIn" class="small text-secondary">(Already on the whiteboard)</span>
                                                                 <p class="card-text">{{user.username}}</p>
                                                             </div>
                                                         </div>
@@ -50,7 +50,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeBtn">Close</button>
+                    <button ref="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
                 </div>
             </div>
         </div>
@@ -74,7 +74,8 @@ export default {
             coolDownMillis: 500,
             loading: false,
             foundUsers: [],
-            isFocus: false
+            isFocus: false,
+            enterFocus: false
         }
     },
     props: {
@@ -86,17 +87,26 @@ export default {
         focusIn(){
             this.inputChange();
             this.isFocus = true;
+            this.dropDownOn = true;
+            this.enterFocus = true;
         },
         focusOut(){
             this.isFocus = false;
-            this.dropDownOn = !this.dropDownOn;
+            this.dropDownOn = false;
         },
         click() {
-            this.dropDownOn = !this.dropDownOn;
+            if (!this.enterFocus) {
+                if (this.isFocus && this.dropDownOn) {
+                    $("#dropdownSearch").click();
+                }
+            } else {
+                this.enterFocus = false;
+            }
         },
         inputChange(input) {
             if (this.isFocus && !this.dropDownOn) {
                 $("#dropdownSearch").click();
+                this.dropDownOn = true;
             }
             const query = input?.srcElement.value.trim();
             if (query) {
@@ -127,7 +137,6 @@ export default {
             }
         },
         invite(username) {
-            this.dropDownOn = !this.dropDownOn;
             console.log("Inviting " + username);
             axios.put("http://localhost:4000/whiteboard/invite", {
                 accessToken: localStorage.getItem("accessToken"),
