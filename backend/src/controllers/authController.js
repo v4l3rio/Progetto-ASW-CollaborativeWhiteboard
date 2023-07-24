@@ -103,7 +103,8 @@ exports.login = (req, res) => {
                                 "message": "User logged successfully",
                                 "accessToken": logged.accessToken,
                                 "name": logged.first_name,
-                                "userId": noPasswordUser.id
+                                "userId": noPasswordUser.id,
+                                "username": noPasswordUser.username
                             });
                     }
 

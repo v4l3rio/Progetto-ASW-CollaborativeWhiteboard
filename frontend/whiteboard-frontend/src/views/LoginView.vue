@@ -52,10 +52,10 @@ export default {
                 username: this.email,
                 password: this.password,
             }, {withCredentials: true}).then(response => {
-                console.log(response)
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem('name', response.data.name);
                 localStorage.setItem('userId', response.data.userId);
+                localStorage.setItem('username', response.data.username);
                 this.$router.replace({ path: '/addwhiteboard' })
                 this.$emit("onLogin");
             }).catch(error => {

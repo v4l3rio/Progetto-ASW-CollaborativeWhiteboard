@@ -12,9 +12,9 @@
         <p>Upload your avatar here</p>
       </div>
       <div class="col m-3">
-        <div class="row">
-          <div class="col-3 text-center d-flex flex-wrap align-items-center">
-            <img src="../assets/icons/eye.svg" width="75" height="75" class="rounded-circle border"/>
+        <div class="row d-flex justify-content-center">
+          <div class="col-3 ">
+            <IdenticonComponent style="width: 75px; height: 75px;"  v-bind:seed="email"></IdenticonComponent>
           </div>
         </div>
       </div>
@@ -80,10 +80,12 @@
 
 import axios from "axios";
 import FooterComponent from "@/components/FooterComponent.vue"
+import IdenticonComponent from "@/components/Identicon.vue";
 export default {
   name: 'UserProfileView',
   components: {
     FooterComponent,
+    IdenticonComponent
 },
   data() {
     return {
@@ -96,7 +98,7 @@ export default {
       isEnabled: false,
       currentName: '',
       currentSurname: '',
-      password: ''
+      password: 'placeholder'
     }
   },
   methods: {
@@ -115,7 +117,6 @@ export default {
         this.surname = user.last_name
         this.currentName = user.first_name
         this.currentSurname = user.last_name
-        this.password = user.password
       }).catch(error => {
         this.$emit("onBadToken");
         console.log(error)
@@ -133,14 +134,11 @@ export default {
         this.isValid = true
         this.isInvalid = false
         const user = response.data
-        console.log("USER : ")
-        console.log(response)
         localStorage.setItem('name', user.first_name);
         this.$emit("onChangedInfo", user.first_name);
         this.checkChanges()
         this.scrollToTop()
       }).catch(error => {
-          console.log(error)
         this.isInvalid = true
         this.isValid = false
         this.scrollToTop()

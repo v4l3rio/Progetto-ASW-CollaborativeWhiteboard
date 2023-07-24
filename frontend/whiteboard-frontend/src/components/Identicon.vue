@@ -1,6 +1,6 @@
 <template>
     <svg width="100%" height="100%" viewBox="0 0 100 100"
-         xmlns="http://www.w3.org/2000/svg">
+         xmlns="http://www.w3.org/2000/svg" class="rounded-circle border">
         <image height="100%" width="100%" :href="`data:image/svg+xml;base64,${base64}`"  clip-path="inset(0% round 50px)"></image>
     </svg>
 </template>
@@ -18,7 +18,7 @@ export default {
             base64: ""
         }
     },
-    methods: {
+    getters: {
         update() {
             sha256(this.seed).then(res => {
                 this.base64 = new Identicon(res, {
@@ -28,8 +28,10 @@ export default {
             });
         }
     },
+    methods: {
+    },
     mounted() {
-        this.update();
+        update();
     }
 }
 </script>
