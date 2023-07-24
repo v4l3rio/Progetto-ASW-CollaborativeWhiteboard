@@ -18,7 +18,7 @@ export default {
             base64: ""
         }
     },
-    getters: {
+    methods: {
         update() {
             sha256(this.seed).then(res => {
                 this.base64 = new Identicon(res, {
@@ -28,10 +28,8 @@ export default {
             });
         }
     },
-    methods: {
-    },
     mounted() {
-        update();
+        this.update();
     }
 }
 </script>
