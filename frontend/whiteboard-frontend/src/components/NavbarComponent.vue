@@ -16,7 +16,7 @@
             </div>
             <div v-else class="dropdown">
                 <a role="button" class="btn btn-light link-body-emphasis text-decoration-none" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-                    <img src="../assets/icons/person-circle.svg" alt="mdo" width="30" height="30" class="rounded-circle">
+                    <IdenticonComponent style="width: 30px; height: 30px;" v-bind:seed="username"></IdenticonComponent>
                     <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
                 </a>
                 <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
@@ -31,14 +31,19 @@
 </template>
 <script>
 import axios from "axios";
+import IdenticonComponent from "@/components/Identicon.vue";
 export default {
     name: 'NavbarComponent',
     props: ['loginStatus'],
+    components: {
+        IdenticonComponent
+    },
     data() {
         return {
             isLogged: false,
             first_name: '',
-            defaultRefreshTimeoutMs: 1000 * 60 * 8
+            defaultRefreshTimeoutMs: 1000 * 60 * 8,
+            username: ''
         }
     },
     methods: {
@@ -53,7 +58,7 @@ export default {
                 }).then(response => {
                     this.isLogged = true;
                     this.first_name = localStorage.getItem("name")
-                    console.log("Loggato")
+                    this.username = localStorage.getItem("username")
                     this.$forceUpdate();
                     // REFRESH TOKEN EVERY 8 minutes (or so)
                     setInterval(() => {

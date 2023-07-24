@@ -20,12 +20,17 @@ export default {
     },
     methods: {
         update() {
-            sha256(this.seed).then(res => {
-                this.base64 = new Identicon(res, {
-                    background: [255, 255, 255, 0],
-                    format: 'svg'
-                }).toString();
-            });
+            if (localStorage.getItem("base64") === null) {
+                sha256(this.seed).then(res => {
+                    this.base64 = new Identicon(res, {
+                        background: [255, 255, 255, 0],
+                        format: 'svg'
+                    }).toString();
+                    localStorage.setItem("base64", this.base64);
+                 });
+            } else {
+                this.base64 = localStorage.getItem("base64");
+            }
         }
     },
     mounted() {
