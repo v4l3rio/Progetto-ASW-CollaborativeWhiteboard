@@ -87,6 +87,8 @@ export default {
             localStorage.removeItem("accessToken")
             localStorage.removeItem("name")
             localStorage.removeItem("userId")
+            localStorage.removeItem("username")
+            localStorage.removeItem("base64")
             this.first_name = ''
             this.isLogged = false
             this.$router.replace({ path: '/' })
