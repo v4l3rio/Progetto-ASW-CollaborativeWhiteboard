@@ -1,19 +1,10 @@
 <template>
-    <p style="font-weight: bold;">Utenti connessi</p>
-      <div class="col pt-3" v-for="user in this.onlineUser">
-          <div class="row shadow rounded border">
-              <div class="col-3">
-                <Identicon :seed="user" style="width: 20px;" class="col"></Identicon>
-              </div>
-              <div class="col-9">
-                  <container>
-                  <div id="front">
-                      {{ user }}
-                  </div>
-              </container>
-              </div>
-          </div>
-      </div>
+    <div class="row pb-3">
+      <template v-for="(user,index) in this.onlineUser">
+          <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="user"></Identicon></div>
+          <div class="col align-middle" v-if="true"><p>{{user}}</p></div>
+      </template>
+    </div>
 </template>
 
 <script>
@@ -27,6 +18,7 @@ export default {
     data() {
         return {
             onlineUser: [],
+            hover: [],
         };
     },
     created() {
@@ -52,6 +44,11 @@ export default {
     overflow-wrap: break-word;
 }
 
+.vcenter-item{
+    display: flex;
+    align-items: center;
+}
+
 container {
     position: relative;
     height: auto;
@@ -60,4 +57,5 @@ container {
     justify-content: center;
     align-items: center;
 }
+
 </style>

@@ -13,8 +13,7 @@
         >
         </WhiteboardComponent>
     </div>
-        <div class="col-1" v-if="!loading && !err">
-            <ActiveUserInWhiteboard/>
+        <div class="col-1">
         </div>
     </div>
 
@@ -31,7 +30,6 @@ export default {
     name: 'WhiteboardView',
     components: {
         WhiteboardComponent,
-        ActiveUserInWhiteboard
     },
     data() {
         return {

@@ -34,8 +34,9 @@
         <div class="buttons" v-bind:class="{ showButtons: undo }">
             <button v-on:click="download()" class="btn submitBtn"><img src="../assets/download.svg" alt="Download">
             </button>
-            <button v-on:click="clean()" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
+            <button v-on:click="clean()" style="margin-right: 6vh" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
             </button>
+            <ActiveUserInWhiteboard/>
             <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
 
@@ -84,6 +85,7 @@ import BigGlowingSpinner from "@/components/BigGlowingSpinner.vue";
 import axios from "axios";
 import Alert from "@/components/Alert.vue";
 import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
+import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
 
 require('../assets/css/freehandDraw.css')
 
@@ -93,7 +95,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
-    components: {Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
+    components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
     emits: ['setLoading'],
     props: [
         'title',
