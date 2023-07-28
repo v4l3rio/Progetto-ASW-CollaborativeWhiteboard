@@ -1,9 +1,10 @@
 <template>
+<p>I contatti funzionano</p>
 </template>
 
 <script>
 export default {
-    name: "ToolSelectorComponent"
+    name: "ContactsComponent"
 }
 </script>
 

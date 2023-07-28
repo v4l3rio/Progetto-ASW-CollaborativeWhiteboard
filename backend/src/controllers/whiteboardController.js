@@ -1,7 +1,8 @@
 const {Authorizer} = require("../auth/Authorizer");
-const {TestModel} = require("../models/testModel");
+const {Model} = require("../models/model");
+const {logErr} = require("../util/consoleUtil");
 
-const authZ = new Authorizer(TestModel);
+const authZ = new Authorizer(Model);
 exports.authZ = authZ;
 
 /*
@@ -11,13 +12,13 @@ exports.authZ = authZ;
 */
 
 exports.getWhiteboardData = async (req, res) => {
-    if (req.params?.whiteboardId && req.body.accessToken) {
-        authZ.normalUserToWhiteboard(req.body.accessToken, req.params.whiteboardId).then(result => {
+    if (req.params?.id && req.query.accessToken) {
+        authZ.normalUserToWhiteboard(req.query.accessToken, req.params.id).then(result => {
             const {err} = result;
             if (err) {
                 res.status(401).json({message: err})
             } else {
-                TestModel.findOneWhiteboard(req.params.whiteboardId).then(whiteboardData => {
+                Model.findOneWhiteboard(req.params.id).then(whiteboardData => {
                     if (whiteboardData) {
                         res.status(200).json({whiteboardData: whiteboardData});
                     } else {
@@ -32,13 +33,14 @@ exports.getWhiteboardData = async (req, res) => {
 }
 
 exports.inviteToWhiteboard = (req, res) => {
-    if (req.body.accessToken && req.body.username && req.body.whiteboardId) {
+    if (req.body.accessToken && req.body.username && (req.body.whiteboardId !== undefined)) {
         authZ.ownerToWhiteboard(req.body.accessToken, req.body.whiteboardId).then(result => {
             const {err} = result;
             if (err) {
+                logErr(err)
                 res.status(401).json({message: err});
             } else {
-                TestModel.inviteUserToWhiteboard(req.body.username, req.body.whiteboardId).then(() => {
+                Model.inviteUserToWhiteboard(req.body.username, req.body.whiteboardId).then(() => {
                     res.status(200).json({message: "User invited successfully"});
                 })
             }
@@ -71,7 +73,7 @@ exports.lineStarted = (line, accessToken, whiteboardId, callback) => {
         if (err) {
             callback(err, undefined);
         } else {
-            TestModel.generateFreshLineId(whiteboardId).then(id => {
+            Model.generateFreshLineId(whiteboardId).then(id => {
                 callback(undefined, id);
             })
         }
@@ -89,8 +91,8 @@ exports.lineEnd = (line, accessToken, lineId, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err)
         } else {
-            console.log(line);
-            TestModel.insertLine(whiteboardId, lineId, line).then((result) => {
+            //console.log(line);
+            Model.insertLine(whiteboardId, lineId, line).then((result) => {
                 if (result?.err) {
                     callback(result.err)
                 } else {
@@ -106,8 +108,8 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
         if (result.err) {
             callback(result.err);
         } else {
-            TestModel.deleteLine(whiteboardId, lineId).then(result => {
-                if (result.err) {
+            Model.deleteLine(whiteboardId, lineId).then(result => {
+                if (result) {
                     callback(result.err)
                 } else {
                     callback();

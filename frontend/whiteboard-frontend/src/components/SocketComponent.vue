@@ -9,11 +9,14 @@ const URL = "http://localhost:4000";
 
 export default {
     name: "SocketComponent",
+    props: {
+      whiteboardId: String
+    },
     data() {
         return {
             connected : false,
-            accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjg4NjU0OTI3LCJleHAiOjE2ODg3NDEzMjd9.9j_Q-VufaGdfaPfVq5cocQ3qP_2cMqPhcVTnGBQpucw", // todo take from local storage
             drawingId: "",
+            accessToken: localStorage.getItem("accessToken")
         }
     },
     created() {
@@ -24,7 +27,7 @@ export default {
        this.connected = true;
     },
     mounted() {
-        // todo add the remaining attributes to socket.IO calls
+        socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId);
         socket.on("drawStartBC", (line, newId) => {
             this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
         });
@@ -34,16 +37,18 @@ export default {
         socket.on("drawEndBC", (line, lineId) => {
             this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
         });
+        socket.on("lineDeleteBC", (lineId) => {
+            console.log("DSAKLDJAKSJDAKJ" + lineId)
+            this.$emit("lineDeleteBC", {id: lineId});
+        })
 
     },
     unmounted() {
         this.connected = false;
-        socket.disconnect();
     },
     methods:{
         drawStart(cursorX, cursorY, color){
            socket.emit("drawStart", {cursorX, cursorY, color}, this.accessToken, (response) => {
-                console.log(response.newId);
                 this.drawingId = response.newId;
             });
         },
@@ -53,6 +58,9 @@ export default {
         drawEnd(lineToSend, color){
             socket.emit("drawEnd", {points:lineToSend, color}, this.drawingId, this.accessToken);
         },
+        undoLine(id) {
+            socket.emit("lineDelete", id, this.accessToken);
+        }
     }
 }
 

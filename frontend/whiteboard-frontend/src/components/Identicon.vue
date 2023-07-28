@@ -1,7 +1,7 @@
 <template>
     <svg width="100%" height="100%" viewBox="0 0 100 100"
-         xmlns="http://www.w3.org/2000/svg">
-        <image height="100%" width="100%" :href="`data:image/svg+xml;base64,${base64}`"></image>
+         xmlns="http://www.w3.org/2000/svg" class="rounded-circle border">
+        <image height="100%" width="100%" :href="`data:image/svg+xml;base64,${base64}`" clip-path="inset(0% round 50px)"></image>
     </svg>
 </template>
 
@@ -20,12 +20,17 @@ export default {
     },
     methods: {
         update() {
-            sha256(this.seed).then(res => {
-                this.base64 = new Identicon(res, {
-                    background: [255, 255, 255, 0],
-                    format: 'svg'
-                }).toString();
-            });
+            if (localStorage.getItem("base64") === null) {
+                sha256(this.seed).then(res => {
+                    this.base64 = new Identicon(res, {
+                        background: [255, 255, 255, 0],
+                        format: 'svg'
+                    }).toString();
+                    localStorage.setItem("base64", this.base64);
+                 });
+            } else {
+                this.base64 = localStorage.getItem("base64");
+            }
         }
     },
     mounted() {

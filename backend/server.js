@@ -10,18 +10,24 @@ const cors = require('cors');
 
 const {printServerStart} = require("./src/util/consoleUtil");
 
+const {Model} = require("./src/models/model");
+
 // ----------------------------------------------------------------------------
 const PORT = 4000;
 process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
 process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
-process.env.MODE = "test";
+process.env.MODE = "prod"; //set "test" to create example users and whiteboards
 process.env.TEST_WHITEBOARD = "yes"
 // ----------------------------------------------------------------------------
 
 
 const corsOptions = {
-    origin: "http://localhost:8080"
+    origin: ["http://localhost:8080"],
+    credentials: true,
+    exposedHeaders: ['set-cookie'],
 }
+
+
 
 /*
  * Routers for this API
@@ -30,6 +36,7 @@ const indexRouter = require('./src/routes/indexRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const profileRoutes = require('./src/routes/profileRoutes');
 const whiteboardRoutes = require('./src/routes/whiteboardRoutes');
+const userSettingsRoutes = require('./src/routes/userSettingsRoutes');
 
 /*
  * Middlewares
@@ -47,6 +54,7 @@ app.use(indexRouter);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/whiteboard", whiteboardRoutes)
+app.use("/userSetting", userSettingsRoutes)
 
 const server = http.createServer(app);
 
@@ -61,9 +69,9 @@ rt.listen();
 exports.realtime = rt;
 
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
     printServerStart(PORT);
     if (process.env.MODE === "test") {
-        createTestEnvironment();
+        await createTestEnvironment();
     }
 });

@@ -8,11 +8,12 @@
                              v-bind:bgColor="drawProps.bgColor"
                              v-on:changeLineColor="changeLineColor"
                              v-on:changeBgColor="changeBgColor"
-                             v-on:drawSubmit="saveDrawing">
+                             v-on:drawSubmit="saveDrawing"
+                             v-on:setLoading="setLoading"
+        >
         </WhiteboardComponent>
     </div>
         <div class="col-1">
-            <ActiveUserInWhiteboard/>
         </div>
     </div>
 
@@ -23,15 +24,17 @@
 // @ is an alias to /src
 import WhiteboardComponent from '@/components/WhiteboardComponent.vue'
 import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
+import {socket} from "@/scripts/socket";
 
 export default {
     name: 'WhiteboardView',
     components: {
         WhiteboardComponent,
-        ActiveUserInWhiteboard
     },
     data() {
         return {
+            loading: true,
+            err: false,
             drawProps:
                 {
                     title: "Freehand SVG Draw",
@@ -55,10 +58,18 @@ export default {
 
         saveDrawing: function (drawSvg) {
             console.log(drawSvg)
+        },
+        setLoading(args) {
+            this.loading = args.loading;
+            this.err = args.err;
         }
     },
 
     mounted: function () {
+    },
+    unmounted() {
+        console.log("Esco");
+        socket.emit("leftWhiteboard");
     }
 
 }

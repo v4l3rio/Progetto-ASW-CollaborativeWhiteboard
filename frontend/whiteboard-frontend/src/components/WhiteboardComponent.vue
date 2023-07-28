@@ -1,5 +1,9 @@
 <template>
-    <div class="draw">
+    <div class="position-fixed w-100">
+        <Alert class="w-75 text-center d-inline-block" v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
+        <BigGlowingSpinner v-if="loading" class="align-content-center"></BigGlowingSpinner>
+    </div>
+    <div v-bind:class="{'visually-hidden': this.loading || this.error}"  class="draw">
 
         <div class="toolbar" :style="{ right: toolBarRight }">
 
@@ -30,9 +34,10 @@
         <div class="buttons" v-bind:class="{ showButtons: undo }">
             <button v-on:click="download()" class="btn submitBtn"><img src="../assets/download.svg" alt="Download">
             </button>
-            <button v-on:click="clean()" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
+            <button v-on:click="clean()" style="margin-right: 6vh" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
             </button>
-            <UndoStack ref="undoStack"></UndoStack>
+            <ActiveUserInWhiteboard/>
+            <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
 
         <div class="canvas rounded shadow">
@@ -53,6 +58,7 @@
 
                 <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
                 <Interpolation ref="interpolation"></Interpolation>
+                <g v-html="paths"></g>
             </svg>
 
             <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
@@ -64,6 +70,8 @@
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
+                     v-on:lineDeleteBC="remoteLineDelete"
+                     :whiteboard-id="this.$route.params.id"
     ></SocketComponent>
 </template>
 
@@ -72,6 +80,12 @@ import Interpolation from "@/components/Interpolation.vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
 import UndoStack from "@/components/UndoStack.vue";
 import SocketComponent from "@/components/SocketComponent.vue";
+import Spinner from "@/components/Spinner.vue";
+import BigGlowingSpinner from "@/components/BigGlowingSpinner.vue";
+import axios from "axios";
+import Alert from "@/components/Alert.vue";
+import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
+import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
 
 require('../assets/css/freehandDraw.css')
 
@@ -81,7 +95,8 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
     name: 'WhiteboardComponent',
-    components: {SocketComponent, UndoStack, Interpolation},
+    components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
+    emits: ['setLoading'],
     props: [
         'title',
         'colors',
@@ -98,10 +113,15 @@ export default {
             line: '',
             radius: 2.5,
             width: 8,
-            undo: false,
+            undo: true,
             onCanvas: false, // mouseout event is not firing, dunno why,
             lineToSend: [],
-            drawingId: ""
+            drawingId: "",
+            loading: true,
+            alertOn: false,
+            error: false,
+            alertText: "",
+            paths: ""
         }
     },
 
@@ -119,9 +139,7 @@ export default {
             get: function () {
                 return -this.colors.length * 51.5 + 'px'
             },
-
         }
-
     },
 
     methods: {
@@ -129,8 +147,35 @@ export default {
         initBoard: function () {
             this.board = $('.drawSvg')
             this.cursor = $('#cursor')
+            axios.get(`http://localhost:4000/whiteboard/${this.$route.params.id}`, {
+                params: {
+                    accessToken: localStorage.getItem("accessToken")
+                }
+            }).then(result => {
+                console.log(result.data)
+                const traits = result.data.whiteboardData.traits;
+                this.$emit('setLoading', {loading:false, err: false});
+                if (traits) {
+                    for (const id in traits) {
+                        const trait = traits[id];
+                        this.paths += traitToPaths(trait, this.board, id).outerHTML
+                    }
+                    this.error = false;
+                } 
+                this.loading = false;
+            }).catch(error => {
+                console.log(error)
+                this.showAlert(error.response?.data?.message)
+                this.$emit('setLoading', {loading:false, err: true});
+                this.loading = false;
+                this.error = true;
+            })
             this.gesture = false
+        },
 
+        showAlert(text) {
+            this.alertText = text;
+            this.alertOn = true;
         },
 
         lineStart: function () {
@@ -229,6 +274,11 @@ export default {
 
         },
 
+        undoLine: function(id) {
+            document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
+            this.$refs.socket.undoLine(id);
+        },
+
         remoteLineStart: function (data) {
             //console.log("Line start" + JSON.stringify(data))
             if (data.id !== undefined) {
@@ -267,6 +317,9 @@ export default {
                 remoteLine = "";
                 data.points = [];
             }
+        },
+        remoteLineDelete: function(data) {
+            document.getElementById(data.id).remove();
         },
 
         createPath: function(id, line, lineColor, width){
@@ -393,8 +446,6 @@ export default {
         this.initBoard()
         this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
         this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
-
-
     },
 
 }

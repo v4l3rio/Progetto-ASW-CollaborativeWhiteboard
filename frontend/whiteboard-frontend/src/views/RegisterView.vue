@@ -85,18 +85,32 @@ export default {
         },
         submitForm: function () {
             const ref = this;
-            axios.post('http://localhost:4000/auth/register', {
+            var req = axios.post('http://localhost:4000/auth/register', {
                 username:this.username,
                 password:this.password,
                 first_name:this.name,
                 last_name:this.lastName
             }).then(function (response) {
-                ref.isFormSubmitted = true;
-                ref.showAlert = false;
             }).catch(function (error) {
                 ref.showAlert = true;
                 ref.alertMessage = error.response.data.message ? error.response.data.message : "There was an error";
             });
+            req.then(x => {
+                const ref = this;
+                axios.post('http://localhost:4000/auth/login',
+                {
+                    username: this.username,
+                    password: this.password,
+                }, {withCredentials: true}).then(response => {
+                    console.log(response)
+                    localStorage.setItem('accessToken', response.data.accessToken);
+                    localStorage.setItem('name', response.data.name);
+                    this.$router.replace({ path: '/addwhiteboard' })
+                    this.$emit("onLogin")
+                }).catch(error => {
+                    this.isInvalid = true;
+                });
+            })
 
         },
         passwordHandler(password) {

@@ -2,18 +2,28 @@ version: "3"
 
 services:
     # This service starts a static resource web server that will be used by clients
-    client:
-        image: progetto-distribuiti/frontend:latest
+
+#    client:
+#        image: progetto-distribuiti/frontend:latest
+#        ports:
+#            - 8080:8080
+#        volumes:
+#            - .:/usr/src/app/app
+#            - /usr/src/app/app/node_modules
+#    server:
+#        hostname: collaborative_whiteboard_api
+#        image: collaborative-whiteboard-api
+#        ports:
+#        - 4000:4000
+#        expose:
+#        - 4000
+    db:
+        image: mongo:latest
         ports:
-            - 8080:8080
+            - '27017:27017'
         volumes:
-            - .:/usr/src/app/app
-            - /usr/src/app/app/node_modules
-    server:
-        hostname: collaborative_whiteboard_api
-        image: collaborative-whiteboard-api
-        ports:
-        - 4000:4000
-        expose:
-        - 4000
+            - dbdata6:/data/db
+
+volumes:
+    dbdata6:
         

@@ -1,4 +1,5 @@
 const {log} = require("../util/consoleUtil");
+const bcrypt = require('bcrypt')
 
 class Db {
     constructor() {
@@ -19,7 +20,7 @@ class Db {
     async findOneWhiteboard(whiteboardId) {
         for (const id in this.whiteBoards) {
             const whiteboard = this.whiteBoards[id];
-            if (whiteboard.id === whiteboardId) {
+            if (whiteboard?.id === parseInt(whiteboardId)) {
                 return whiteboard;
             }
         }
@@ -39,6 +40,24 @@ class Db {
         this.users.push(toCreate);
         this.userFreeId++;
         return toCreate;
+    }
+    async updateUserInfo(username, newUsername, newFirstName, newLastName) {
+        const user = await this.findOneUser(username);
+        if (user) {
+            user.username = newUsername;
+            user.first_name = newFirstName;
+            user.last_name = newLastName;
+            return user;
+        }
+    }
+    
+    async updateUserPassword(username, password) {
+        const user = await this.findOneUser(username);
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        if(user) {
+            user.password = encryptedPassword;
+        }
+
     }
 
     async createWhiteboard(name, username) {
@@ -104,8 +123,10 @@ class Db {
     async inviteUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
         const id = user.id;
-        this.whiteBoards[whiteboardId].users.push(id);
-        this.users[id].whiteboards.push(whiteboardId);
+        if (!this.whiteBoards[whiteboardId].users.includes(id)) {
+            this.whiteBoards[whiteboardId].users.push(id);
+            this.users[id].whiteboards.push(whiteboardId);
+        }
     }
     async validateUserToWhiteboard(username, whiteboardId) {
         const user = await this.findOneUser(username);
@@ -131,6 +152,27 @@ class Db {
             return outWhiteboards;
         }
 
+    }
+
+    async getUsersWithFilters(filters) {
+        const LIMIT = 20;
+        if (filters) {
+            const out = [];
+            for (let i = 0; i < this.users.length && i < LIMIT; i++) {
+                const user = this.users[i];
+                if (user.username.includes((filters.username)) && (!filters.excludes?.includes(user.username))) {
+                    let alreadyIn = false;
+                    if (filters.whiteboardId !== undefined) {
+                        alreadyIn = user.whiteboards.includes(parseInt(filters.whiteboardId));
+                    }
+                    out.push({id: user.id, username: user.username, first_name: user.first_name, last_name: user.last_name,
+                        alreadyIn: alreadyIn});
+                }
+            }
+            return {users: out};
+        } else {
+            return this.users.slice(0, LIMIT);
+        }
     }
 }
 exports.TestModel = new Db();

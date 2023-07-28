@@ -1,9 +1,14 @@
 const {logErr, log} = require("../../util/consoleUtil");
 const {auth} = require("../../controllers/authController");
-const {TestModel} = require("../../models/testModel");
+const {Model} = require("../../models/model");
 
-exports.createTestEnvironment = () => {
-    auth.register({first_name: "Admin", last_name: "Admin", username: "admin@admin.com", password: "admin"})
+exports.createTestEnvironment = async () => {
+    await registerLoginWithWhiteboard("admin@admin.com", "admin")
+    await registerLoginWithWhiteboard("admin2@admin.com", "admin")
+}
+
+async function registerLoginWithWhiteboard(username, password) {
+    await auth.register({first_name: "Test", last_name: "Test", username: username, password: password})
         .then((result) => {
             if (result.err) {
                 logErr("Error: " + result.err)
@@ -15,41 +20,45 @@ exports.createTestEnvironment = () => {
                 };
                 log("Created user " + JSON.stringify(noPasswordUser));
 
-                auth.login({username: "admin@admin.com", password: "admin"})
-                    .then((result) => {
-                        if (result.err) {
-                            logErr("Error: " + result.err)
-                        } else {
-                            const logged = result.user;
-                            const noPasswordUser = {id: logged.id, username: logged.username};
+            }
+        })
 
-                            log("Logged user " + JSON.stringify(noPasswordUser));
-                            log(`Access Token: ${logged.accessToken}`);
+    let accessToken;
+    await auth.login({username: username, password: password})
+        .then((result) => {
+            if (result.err) {
+                logErr("Error: " + result.err)
+            } else {
+                const logged = result.user;
+                const noPasswordUser = {id: logged.id, username: logged.username};
 
-                            if (process.env.TEST_WHITEBOARD === "yes") {
-                                auth.validateAccessToken(logged.accessToken).then(result => {
-                                    if (result.err) {
-                                        logErr("Invalid Access Token");
-                                    } else {
-                                        if (result.user) {
-                                            const whiteboardName = "Test Whiteboard"
-                                            TestModel.createWhiteboard(whiteboardName, result.user.username).then(result => {
-                                                if (result) {
-                                                     log(`Whiteboard created successfully, ID:${result.id}`);
-                                                } else {
-                                                    logErr("Test ERROR")
-                                                }
-                                            })
-                                        }
-                                    }
-                                })
-                            }
-                        }
-
-                    });
+                log("Logged user " + JSON.stringify(noPasswordUser));
+                log(`Access Token: ${logged.accessToken}`);
+                accessToken = logged.accessToken;
             }
 
         });
+    if (process.env.TEST_WHITEBOARD === "yes") {
+        await auth.validateAccessToken(accessToken).then(result => {
+            if (result.err) {
+                logErr("Invalid Access Token");
+            } else {
+                if (result.user) {
+                    const whiteboardName = "Test Whiteboard"
+                    Model.createWhiteboard(whiteboardName, result.user.username).then(result => {
+                        if (result) {
+                            log(`Whiteboard created successfully, ID:${result._id}`);
+                        } else {
+                            logErr("Test ERROR")
+                        }
+                    })
+                }
+
+            }
+
+
+        });
+    }
 }
 
 

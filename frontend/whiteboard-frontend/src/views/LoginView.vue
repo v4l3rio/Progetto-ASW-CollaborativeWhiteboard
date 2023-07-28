@@ -34,9 +34,10 @@ export default {
         return {
             email: '',
             password: '',
-            isInvalid: false
+            isInvalid: false,
         }
     },
+    emits: ['onLogin'],
     methods: {
         emailHandler(email) {
             this.email = email;
@@ -50,15 +51,17 @@ export default {
             {
                 username: this.email,
                 password: this.password,
-            },).then(response => {
+            }, {withCredentials: true}).then(response => {
                 localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('name', response.data.name);
+                localStorage.setItem('userId', response.data.userId);
+                localStorage.setItem('username', response.data.username);
                 this.$router.replace({ path: '/addwhiteboard' })
+                this.$emit("onLogin");
             }).catch(error => {
                 this.isInvalid = true;
             });
         }
-    },
-    mounted: function () {
     }
 }
 </script>
