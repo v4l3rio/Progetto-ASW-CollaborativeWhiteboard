@@ -131,6 +131,11 @@ exports.Realtime = class Realtime {
                                     logRealtime(username + " has disconnected from the whiteboard");
                                     this.roomData.rooms[room] = this.roomData.rooms[room].filter(connection => connection.id !== socket.id);
                                     this.roomData.usersInWhiteboard[room] = this.roomData.usersInWhiteboard[room].filter(user => user !== username);
+                                    this.roomData.rooms[room].forEach(connection => {
+                                        if(socket.id !== connection.id){
+                                            connection.emit("user-disconnected", username);
+                                        }
+                                    })
                                     socket.removeAllListeners("drawStart");
                                     socket.removeAllListeners("getAllConnectedUsers");
                                     socket.removeAllListeners("drawing");

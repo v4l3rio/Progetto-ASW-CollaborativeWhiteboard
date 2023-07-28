@@ -29,8 +29,15 @@ export default {
     },
     mounted() {
         socket.on("user-connected", (username) => {
-            this.onlineUser.push(username);
+            if(!this.onlineUser.includes(username)){
+                this.onlineUser.push(username);
+            }
         });
+        socket.on("user-disconnected", (username) =>{
+            if(this.onlineUser.includes(username)){
+                this.onlineUser.splice(this.onlineUser.indexOf(username),1);
+            }
+        })
     },
     unmounted() {
         this.onlineUser = [];
