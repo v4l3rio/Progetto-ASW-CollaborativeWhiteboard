@@ -1,6 +1,6 @@
 <template>
   <NavbarComponent ref="navbar"></NavbarComponent>
-  <NotificationComponent class="col"></NotificationComponent>
+  <NotificationComponent></NotificationComponent>
   <router-view v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
 </template>
 

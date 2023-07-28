@@ -1,8 +1,8 @@
 <template>
-    <div class="container">
-        <div class="rectangle bg-primary" :class="{ animate: animationEffect}">
+    <div class="notification">
+        <div class="rectangle bg-primary p-4 mt-1 rounded-2 shadow-lg" :hidden="hide" >
             <div class="notification-text">
-                <span>{{username}} si è connesso alla tua lavagna!</span>
+                <span class="text-white">{{username}} si è connesso alla tua lavagna!</span>
             </div>
         </div>
     </div>
@@ -15,10 +15,10 @@ export default {
     name: "NotificationComponent",
     data() {
         return {
-            animationEffect: false,
+            hide: true,
             connected : false,
             accessToken: localStorage.getItem("accessToken"),
-            username: ""
+            username: "Guest"
         }
     },
     created() {
@@ -27,13 +27,11 @@ export default {
     mounted() {
         // todo add the remaining attributes to socket.IO calls
         socket.on("user-connected", (username) => {
-            console.log("notifica arrivata")
             this.username = username;
-            this.animationEffect = true;
+            this.hide = false;
             setTimeout(() => {
-                this.animationEffect = false;
-            }, 3000)
-
+                this.hide = true;
+            }, 3000);
         });
 
     },
@@ -49,83 +47,11 @@ export default {
 </script>
 
 <style scoped>
-html,
-body {
-    height: 100%;
+.notification{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 2vh;
 }
 
-.container {
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-.rectangle {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    positon: relative;
-    width: 50px;
-    height: 50px;
-    transform: scale(0);
-    border-radius: 50%;
-    color: white;
-    opacity: 0;
-    overflow: hidden;
-}
-
-.animate{
-    animation: scale-in .3s ease-out forwards,
-    expand .35s .25s ease-out forwards;
-}
-
-
-.notification-text {
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity:1;
-    }
-    100% {
-        opacity:0;
-    }
-}
-
-@keyframes scale-in {
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes expand {
-    50% {
-        width: 350px;
-        border-radius: 6px;
-    }
-    100% {
-        width: 300px;
-        border-radius: 4px;
-        box-shadow: 0px 1px 3px 0px rgba(0,0,0,.2),
-        0px 1px 1px 0px rgba(0,0,0,.14),
-        0px 3px 3px -1px rgba(0,0,0,.12);
-    }
-}
-
-@keyframes fade-in {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: .8;
-    }
-}
 </style>
