@@ -120,7 +120,7 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
     });
 }
 
-exports.joinApplication = (accessToken, callback) =>{
+exports.checkToken = (accessToken, callback) =>{
     auth.validateAccessToken(accessToken).then(result => {
         if(result.err){
             callback(result.err)

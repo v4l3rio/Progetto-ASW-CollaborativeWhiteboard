@@ -12,27 +12,49 @@ exports.Realtime = class Realtime {
         });
         this.controller = controller;
         this.roomData = {users: {}, connections: {}, rooms: {}, usersInWhiteboard: {}};
+        this.applicationData = {};
     }
 
     listen() {
 
         // Listen for when the client connects via socket.io-client
         this.io.on('connection', (socket) => {
-            console.log("connection");
             if (socket.handshake.query.accessToken) {
-                console.log("token");
                 socket.on("joinApplication", (accessToken) => {
-                    console.log("SONO STATO CHIAMATO PD");
-                    this.controller.joinApplication(accessToken, (err, result) => {
+                    this.controller.checkToken(accessToken, (err, result) => {
                         if(err){
                             // todo manage unauthorized access
-                            console.log("ERRORE CAZZO!");
                             logRealtime("Error connecting: " + err)
                             socket.disconnect();
                         } else{
-                            console.log(result);
-                        }
+                            this.applicationData[result.username] = socket;
 
+
+                            socket.on('inviteCollaborator', (accessToken, username) =>{
+                                this.controller.checkToken(accessToken, (err, result) =>{
+                                    if(err){
+                                        // todo manage unauthorized access
+                                        logRealtime("Error connecting: " + err)
+                                        socket.disconnect();
+                                    } else{
+                                        //todo add notification to db
+                                        this.applicationData[username]?.emit('receiveCollaborationInvite', (result.username));
+                                    }
+                                })
+                            })
+                        }
+                    })
+                })
+
+                socket.on("disconnectApplication", (accessToken) => {
+                    this.controller.checkToken(accessToken, (err, result) => {
+                        if (err) {
+                            // todo manage unauthorized access
+                            logRealtime("Error connecting: " + err)
+                        } else {
+                            delete this.applicationData[result.username];
+                        }
+                        socket.disconnect();
                     })
                 })
                 socket.on("joinWhiteboard", (accessToken, whiteboardId)=> {

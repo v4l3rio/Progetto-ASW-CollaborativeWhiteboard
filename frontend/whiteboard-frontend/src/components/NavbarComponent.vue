@@ -86,6 +86,7 @@ export default {
             }
         },
         logout() {
+            socket.emit('disconnectApplication', localStorage.getItem('accessToken'));
             localStorage.removeItem("accessToken")
             localStorage.removeItem("name")
             localStorage.removeItem("userId")

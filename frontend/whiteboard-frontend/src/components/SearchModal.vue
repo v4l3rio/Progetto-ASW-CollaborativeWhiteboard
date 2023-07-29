@@ -61,6 +61,7 @@
 import Spinner from "@/components/Spinner.vue";
 import axios from "axios";
 import Identicon from "@/components/Identicon.vue";
+import {socket} from "@/scripts/socket";
 
 const $ = document.querySelector.bind(document);
 
@@ -144,6 +145,7 @@ export default {
                 whiteboardId: this.whiteboardId
             }).then(result => {
                 console.log(result)
+                socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
                 this.$emit("invited", username);
             }).catch(error => {
                 console.log(error.response.data.message)

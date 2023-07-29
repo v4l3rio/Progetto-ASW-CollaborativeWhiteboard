@@ -2,7 +2,7 @@
     <div class="notification">
         <div class="rectangle bg-primary p-4 mt-1 rounded-2 shadow-lg" :hidden="hide" >
             <div class="notification-text">
-                <span class="text-white">{{username}} si è connesso alla tua lavagna!</span>
+                <span class="text-white">{{ notificationBody }}</span>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@ export default {
             hide: true,
             connected : false,
             accessToken: localStorage.getItem("accessToken"),
-            username: "Guest"
+            notificationBody: "notifica vuota"
         }
     },
     created() {
@@ -27,13 +27,20 @@ export default {
     mounted() {
         // todo add the remaining attributes to socket.IO calls
         socket.on("user-connected", (username) => {
-            this.username = username;
+            this.notificationBody = username + " si è connesso alla tua lavagna!";
             this.hide = false;
             setTimeout(() => {
                 this.hide = true;
             }, 3000);
         });
 
+        socket.on('receiveCollaborationInvite', (from) => {
+            this.notificationBody = from + " ti ha invitato a collaborare ad una sua lavagna!";
+            this.hide = false;
+            setTimeout(() => {
+                this.hide = true;
+            }, 3000);
+        })
     },
     unmounted() {
         this.connected = false;
