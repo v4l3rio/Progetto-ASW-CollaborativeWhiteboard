@@ -18,7 +18,23 @@ exports.Realtime = class Realtime {
 
         // Listen for when the client connects via socket.io-client
         this.io.on('connection', (socket) => {
+            console.log("connection");
             if (socket.handshake.query.accessToken) {
+                console.log("token");
+                socket.on("joinApplication", (accessToken) => {
+                    console.log("SONO STATO CHIAMATO PD");
+                    this.controller.joinApplication(accessToken, (err, result) => {
+                        if(err){
+                            // todo manage unauthorized access
+                            console.log("ERRORE CAZZO!");
+                            logRealtime("Error connecting: " + err)
+                            socket.disconnect();
+                        } else{
+                            console.log(result);
+                        }
+
+                    })
+                })
                 socket.on("joinWhiteboard", (accessToken, whiteboardId)=> {
                     const room = whiteboardId;
                     // get the user ID from the connection query and assign that user to the correct room (whiteboard)

@@ -32,6 +32,7 @@
 <script>
 import axios from "axios";
 import IdenticonComponent from "@/components/Identicon.vue";
+import {socket} from "@/scripts/socket";
 export default {
     name: 'NavbarComponent',
     props: ['loginStatus'],
@@ -56,6 +57,7 @@ export default {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 }).then(response => {
+                    socket.emit("joinApplication", localStorage.getItem('accessToken'));
                     this.isLogged = true;
                     this.first_name = localStorage.getItem("name")
                     this.username = localStorage.getItem("username")

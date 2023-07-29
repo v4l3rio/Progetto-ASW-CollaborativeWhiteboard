@@ -1,6 +1,7 @@
 const {Authorizer} = require("../auth/Authorizer");
 const {Model} = require("../models/model");
 const {logErr} = require("../util/consoleUtil");
+const {auth} = require("./authController");
 
 const authZ = new Authorizer(Model);
 exports.authZ = authZ;
@@ -115,6 +116,16 @@ exports.lineDelete = (lineId, accessToken, whiteboardId, callback) => {
                     callback();
                 }
             })
+        }
+    });
+}
+
+exports.joinApplication = (accessToken, callback) =>{
+    auth.validateAccessToken(accessToken).then(result => {
+        if(result.err){
+            callback(result.err)
+        }else{
+            callback(undefined, result.user);
         }
     });
 }
