@@ -24,13 +24,17 @@
                        aria-label="Whiteboard New Name" aria-describedby="addon-wrapping">
             </div>
         </ModalWithButton>
+        <ModalWithButton modal-id="whiteboardModalDelete" ref="deleteModal" title="Delete the Whiteboard"
+                         :click="deleteWhiteboard" button-text="Delete">
+            <p>Are you sure you want to delete this whiteboard?</p>
+        </ModalWithButton>
         <h1 class="h3 mb-3">Your files</h1>
         <div v-if="loading" class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-            <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal"
+            <CardComponent @card-deleted="openDeleteModal" @card-renamed="openRenameModal"
                            @invite-to-whiteboard="setInviteWhiteboard"
                            v-bind:whiteboards="myWhiteboards"
                            v-bind:shared='false'
@@ -94,6 +98,7 @@ export default {
             whiteboardInviteName: "",
             inviteId: -1,
             renameId: -1,
+            deleteId: -1,
             myWhiteboards: [],
             sharedWhiteboards: []
         }
@@ -177,21 +182,25 @@ export default {
             this.alertOn = true;
             this.alertText = text;
         },
-        deleteWhiteboard(id) {
-            console.log(id)
+        openDeleteModal(id) {
+            this.deleteId = id;
+        },
+        deleteWhiteboard() {
             const token = localStorage.getItem("accessToken");
-            console.log(token)
+            this.$refs.deleteModal.close();
             axios.delete('http://localhost:4000/profile/deleteWhiteboard', {
                 "data": {
                     accessToken: token,
-                    whiteboardId: id
+                    whiteboardId: this.deleteId
                 }
             }).then(result => {
+                this.deleteId = -1;
                 this.getWhiteboards();
             }).catch(error => {
                 this.showAlert(error.response.data.message);
                 this.goToLogin();
                 this.loading = false;
+                this.deleteId = -1;
             });
         },
         openRenameModal(id) {
@@ -210,11 +219,13 @@ export default {
                 console.log(response.data.message);
                 this.whiteboardRenameName = "";
                 this.alertOn = false;
+                this.renameId = -1;
             }).catch(error => {
                 this.whiteboardRenameName = "";
                 this.showAlert(error.response.data.message);
                 this.goToLogin();
                 this.loading = false;
+                this.renameId = -1;
             });
         }
     },

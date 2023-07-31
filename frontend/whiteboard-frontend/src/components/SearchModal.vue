@@ -7,6 +7,7 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
+                    <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}" :type="this.alertType"></Alert>
                     <span>Search users to add to this whiteboard</span>
                     <div class="m-1">
                         <Spinner v-if="this.loading"></Spinner>
@@ -62,12 +63,13 @@ import Spinner from "@/components/Spinner.vue";
 import axios from "axios";
 import Identicon from "@/components/Identicon.vue";
 import {socket} from "@/scripts/socket";
+import Alert from "@/components/Alert.vue";
 
 const $ = document.querySelector.bind(document);
 
 export default {
     name: "SearchModal",
-    components: {Identicon, Spinner},
+    components: {Alert, Identicon, Spinner},
     data() {
         return {
             dropDownOn: false,
@@ -76,7 +78,10 @@ export default {
             loading: false,
             foundUsers: [],
             isFocus: false,
-            enterFocus: false
+            enterFocus: false,
+            alertOn: false,
+            alertText: "",
+            alertType: "alert-danger"
         }
     },
     props: {
@@ -147,9 +152,16 @@ export default {
                 console.log(result)
                 socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
                 this.$emit("invited", username);
+                this.showAlert(`User ${username} invited successfully`, "alert-success")
             }).catch(error => {
                 console.log(error.response.data.message)
+                this.showAlert(error?.response?.data?.message, "alert-danger")
             })
+        },
+        showAlert(text, type) {
+            this.alertText = text;
+            this.alertType = type;
+            this.alertOn = true;
         }
     }
 }
