@@ -11,7 +11,7 @@ app.config.globalProperties.$socket = {};
 
 axios.defaults.withCredentials = true;
 
-app.use(store).use(router).use(VueCookies, { expires: '7d'}).mount('#app');
+app.use(store).use(router)/*.use(VueCookies, { expires: '7d'})*/.mount('#app');
 
 
 

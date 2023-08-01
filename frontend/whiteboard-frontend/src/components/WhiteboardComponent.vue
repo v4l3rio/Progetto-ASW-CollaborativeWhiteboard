@@ -40,7 +40,7 @@
             <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
 
-        <div class="canvas rounded shadow">
+        <div class="canvas rounded shadow ">
 
             <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
@@ -67,6 +67,7 @@
 
     </div>
     <SocketComponent ref="socket"
+                     v-on:whiteboardJoined="onJoinedWhiteboard"
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
@@ -96,7 +97,7 @@ const $$ = document.querySelectorAll.bind(document);
 export default {
     name: 'WhiteboardComponent',
     components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
-    emits: ['setLoading'],
+    emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit"],
     props: [
         'title',
         'colors',
@@ -106,6 +107,7 @@ export default {
     ],
     data() {
         return {
+            whiteboardJoined: false,
             board: '',
             cursor: '',
             colorNum: 0,
@@ -128,11 +130,11 @@ export default {
     computed: {
 
         canvasWidth: function () {
-            return this.board.clientWidth
+            return this.board?.clientWidth
         },
 
         canvasHeight: function () {
-            return this.board.clientHeight
+            return this.board?.clientHeight
         },
 
         toolBarRight: {
@@ -143,6 +145,17 @@ export default {
     },
 
     methods: {
+        onJoinedWhiteboard(status) {
+            if (status === 'ok') {
+                this.whiteboardJoined = true;
+                this.initBoard()
+            } else if (status === "ko") {
+                console.log("ERRORE nel connettersi alla lavagna")
+                this.error = true;
+                this.showAlert("There was an error. Maybe expired Token");
+                this.loading = false;
+            }
+        },
 
         initBoard: function () {
             this.board = $('.drawSvg')
@@ -161,7 +174,7 @@ export default {
                         this.paths += traitToPaths(trait, this.board, id).outerHTML
                     }
                     this.error = false;
-                } 
+                }
                 this.loading = false;
             }).catch(error => {
                 console.log(error)
@@ -171,6 +184,8 @@ export default {
                 this.error = true;
             })
             this.gesture = false
+            this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
+            this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
         },
 
         showAlert(text) {
@@ -179,6 +194,8 @@ export default {
         },
 
         lineStart: function () {
+
+            if (!this.whiteboardJoined) {return}
 
             this.undo = true;
 
@@ -203,6 +220,8 @@ export default {
         },
 
         lineMove: function () {
+
+            if (!this.whiteboardJoined) {return}
 
             let e = event
             let rect = this.board.getBoundingClientRect();
@@ -247,6 +266,8 @@ export default {
 
         lineEnd: function () {
 
+            if (!this.whiteboardJoined) {return}
+
             let e = event;
             let cursorX;
             let cursorY;
@@ -275,6 +296,9 @@ export default {
         },
 
         undoLine: function(id) {
+
+            if (!this.whiteboardJoined) {return}
+
             document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
             this.$refs.socket.undoLine(id);
         },
@@ -442,11 +466,7 @@ export default {
 
     },
 
-    mounted: function () {
-        this.initBoard()
-        this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
-        this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
-    },
+
 
 }
 </script>

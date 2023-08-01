@@ -6,6 +6,8 @@ exports.Authenticator = class Authenticator {
         this.model = model;
         this.refreshTokenKey = process.env.REFRESH_TOKEN_KEY;
         this.accessTokenKey = process.env.ACCESS_TOKEN_KEY;
+        this.accessTokenExpiration = "10m";
+        this.refreshTokenExpiration = "7d";
     }
 
     async register(userData) {
@@ -59,7 +61,7 @@ exports.Authenticator = class Authenticator {
                 {user_id: user._id, username},
                 this.refreshTokenKey,
                 {
-                    expiresIn: "1d",
+                    expiresIn: this.refreshTokenExpiration,
                 }
             );
 
@@ -67,7 +69,7 @@ exports.Authenticator = class Authenticator {
                 {user_id: user._id, username},
                 this.accessTokenKey,
                 {
-                    expiresIn: process.env.MODE === "test" ? "1d" : "10m"
+                    expiresIn: this.accessTokenExpiration
                 }
             )
 
@@ -87,7 +89,7 @@ exports.Authenticator = class Authenticator {
                 {username:decoded.username, user_id: decoded._user_id},
                 this.accessTokenKey,
                 {
-                    expiresIn: "10m"
+                    expiresIn: this.accessTokenExpiration
                 }
             ), err: undefined}
         } catch (err) {
@@ -105,7 +107,7 @@ exports.Authenticator = class Authenticator {
                     {username:result.user.username, user_id: result.user._user_id},
                     this.accessTokenKey,
                     {
-                        expiresIn: "10m"
+                        expiresIn: this.accessTokenExpiration
                     }
                 )
             }
