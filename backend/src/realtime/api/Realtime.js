@@ -57,7 +57,7 @@ exports.Realtime = class Realtime {
                         socket.disconnect();
                     })
                 })
-                socket.on("joinWhiteboard", (accessToken, whiteboardId)=> {
+                socket.on("joinWhiteboard", (accessToken, whiteboardId, callback)=> {
                     const room = whiteboardId;
                     // get the user ID from the connection query and assign that user to the correct room (whiteboard)
                     // the room is also get from the connection query
@@ -182,10 +182,12 @@ exports.Realtime = class Realtime {
                                     socket.removeAllListeners("lineDelete")
                                     //todo implementare l'aggiornamento di roomData
                                 });
+                                callback({status:'ok'})
                             } else {
                                 // todo manage internal server error
                                 logErr("Internal server error")
                             }
+
                         })
 
 

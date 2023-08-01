@@ -96,9 +96,9 @@ export default {
             whiteboardCreateName: "",
             whiteboardRenameName: "",
             whiteboardInviteName: "",
-            inviteId: -1,
-            renameId: -1,
-            deleteId: -1,
+            inviteId: "",
+            renameId: "",
+            deleteId: "",
             myWhiteboards: [],
             sharedWhiteboards: []
         }

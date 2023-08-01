@@ -67,6 +67,7 @@
 
     </div>
     <SocketComponent ref="socket"
+                     v-on:whiteboardJoined="onJoinedWhiteboard"
                      v-on:drawStartBC="remoteLineStart"
                      v-on:drawingBC="remoteLineMove"
                      v-on:drawEndBC="remoteLineEnd"
@@ -96,7 +97,7 @@ const $$ = document.querySelectorAll.bind(document);
 export default {
     name: 'WhiteboardComponent',
     components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
-    emits: ['setLoading'],
+    emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit"],
     props: [
         'title',
         'colors',
@@ -106,6 +107,7 @@ export default {
     ],
     data() {
         return {
+            whiteboardJoined: false,
             board: '',
             cursor: '',
             colorNum: 0,
@@ -128,11 +130,11 @@ export default {
     computed: {
 
         canvasWidth: function () {
-            return this.board.clientWidth
+            return this.board?.clientWidth
         },
 
         canvasHeight: function () {
-            return this.board.clientHeight
+            return this.board?.clientHeight
         },
 
         toolBarRight: {
@@ -143,6 +145,12 @@ export default {
     },
 
     methods: {
+        onJoinedWhiteboard(status) {
+            if (status === 'ok') {
+                this.whiteboardJoined = true;
+                this.initBoard()
+            }
+        },
 
         initBoard: function () {
             this.board = $('.drawSvg')
@@ -171,6 +179,8 @@ export default {
                 this.error = true;
             })
             this.gesture = false
+            this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
+            this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
         },
 
         showAlert(text) {
@@ -442,11 +452,7 @@ export default {
 
     },
 
-    mounted: function () {
-        this.initBoard()
-        this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
-        this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
-    },
+
 
 }
 </script>

@@ -27,7 +27,9 @@ export default {
        this.connected = true;
     },
     mounted() {
-        socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId);
+        socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId, (response) => {
+            this.$emit('whiteboardJoined', response.status);
+        });
         socket.on("drawStartBC", (line, newId) => {
             this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
         });
