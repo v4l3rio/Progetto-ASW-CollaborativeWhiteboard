@@ -66,6 +66,7 @@ exports.Realtime = class Realtime {
                             if (err) {
                                 // todo manage unauthorized access
                                 logRealtime("Error connecting: " + err)
+                                callback({status: "ko"})
                                 socket.disconnect();
                             } else if (username) {
 

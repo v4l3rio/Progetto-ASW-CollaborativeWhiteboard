@@ -40,7 +40,7 @@
             <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
 
-        <div class="canvas rounded shadow">
+        <div class="canvas rounded shadow ">
 
             <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
@@ -149,6 +149,11 @@ export default {
             if (status === 'ok') {
                 this.whiteboardJoined = true;
                 this.initBoard()
+            } else if (status === "ko") {
+                console.log("ERRORE nel connettersi alla lavagna")
+                this.error = true;
+                this.showAlert("There was an error. Maybe expired Token");
+                this.loading = false;
             }
         },
 
@@ -169,7 +174,7 @@ export default {
                         this.paths += traitToPaths(trait, this.board, id).outerHTML
                     }
                     this.error = false;
-                } 
+                }
                 this.loading = false;
             }).catch(error => {
                 console.log(error)
@@ -189,6 +194,8 @@ export default {
         },
 
         lineStart: function () {
+
+            if (!this.whiteboardJoined) {return}
 
             this.undo = true;
 
@@ -213,6 +220,8 @@ export default {
         },
 
         lineMove: function () {
+
+            if (!this.whiteboardJoined) {return}
 
             let e = event
             let rect = this.board.getBoundingClientRect();
@@ -257,6 +266,8 @@ export default {
 
         lineEnd: function () {
 
+            if (!this.whiteboardJoined) {return}
+
             let e = event;
             let cursorX;
             let cursorY;
@@ -285,6 +296,9 @@ export default {
         },
 
         undoLine: function(id) {
+
+            if (!this.whiteboardJoined) {return}
+
             document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
             this.$refs.socket.undoLine(id);
         },

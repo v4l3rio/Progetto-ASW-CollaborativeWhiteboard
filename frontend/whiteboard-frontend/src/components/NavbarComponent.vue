@@ -43,7 +43,7 @@ export default {
         return {
             isLogged: false,
             first_name: '',
-            defaultRefreshTimeoutMs: 1000 * 60 * 8,
+            defaultRefreshTimeoutMs: 5 * 60 * 1000,
             username: ''
         }
     },
