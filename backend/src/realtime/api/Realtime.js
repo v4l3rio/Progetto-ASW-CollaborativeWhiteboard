@@ -70,7 +70,7 @@ exports.Realtime = class Realtime {
                                 socket.disconnect();
                             } else if (username) {
 
-                                logRealtime(`${username} has connected`);
+                                logRealtime(`${username} has connected to whiteboard`);
 
                                 socket.join(room);
                                 logRealtime(`${socket.id} has joined the room: ${room}`)
@@ -162,8 +162,7 @@ exports.Realtime = class Realtime {
 
                                 })
 
-                                // Listen for when the client disconnects
-                                socket.on('disconnect', () => {
+                                const leftListener = () => {
                                     logRealtime(username + " has disconnected from the whiteboard");
                                     this.roomData.rooms[room] = this.roomData.rooms[room].filter(connection => connection.id !== socket.id);
                                     this.roomData.usersInWhiteboard[room] = this.roomData.usersInWhiteboard[room].filter(user => user !== username);
@@ -179,15 +178,26 @@ exports.Realtime = class Realtime {
                                     socket.removeAllListeners("leftWhiteboard");
                                     socket.removeAllListeners("lineDelete")
                                     //todo implementare l'aggiornamento di roomData
-                                });
-                                callback({status:'ok'})
+                                };
+
+
+                                // Listen for when the client disconnects
+                                socket.on('leftWhiteboard',leftListener);
+                                socket.on('disconnect', leftListener);
+                                callback({status:'ok'});
                             } else {
                                 // todo manage internal server error
                                 logErr("Internal server error")
                             }
 
+
                         })
 
+                });
+                // Listen for when the client disconnects
+                socket.on('disconnect', () => {
+                    logRealtime(socket.id + " has disconnected");
+                    socket.removeAllListeners();
                 });
 
             } else {
