@@ -7,22 +7,37 @@
             <p class="r two"><span class="w">time</span></p>
         </div>
         <router-link
-            to="/login"
+            :to="isLogged ? '/addwhiteboard' : '/login'"
             custom
             v-slot="{ navigate }"
         >
-        <button class="btn btn-primary shadow mt-5" @click="navigate" role="link">Accedi</button> <!-- se l'utente non ha fatto il login, altrimenti mettere un pulsante che rimanda alle lavagne-->
+        <button
+            class="btn btn-primary shadow mt-5"
+            @click="navigate"
+            role="link">
+          {{ isLogged ? "Vai alle lavagne" : "Accedi" }}
+        </button>
         </router-link>
         <div class="container">
-            <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt=""></div>
-            <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt=""></div>
-            <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt=""></div>
+            <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt="Drawing 1"></div>
+            <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt="Drawing 2"></div>
+            <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt="Drawing 3"></div>
         </div>
     </div>
 </template>
 <script>
+
+
 export default {
     name: 'HomepageComponent',
+    data() {
+       return {
+         isLogged: false
+       }
+    },
+    mounted() {
+      this.isLogged = localStorage.getItem('accessToken');
+    }
 }
 </script>
 <style scoped>
@@ -61,9 +76,8 @@ export default {
 }
 
 .wrap {
-    width: 350px;
+    width: 100%;
     height: 250px;
-    margin: auto;
     text-align: center;
     zoom: 150%;
     margin-top: 50px;
@@ -111,7 +125,9 @@ h1, .realtime-container {
 }
 
 h1 {
-    font-size: 48px;
+  width: 100%;
+  text-align: center;
+    font-size: 3vw;
     transform: translateX(-30px);
     animation: rotate 0.3s ease 1;
     -webkit-animation-fill-mode: both;
@@ -123,6 +139,8 @@ h1 {
 }
 
 .realtime-container {
+  width: 100%;
+  text-align: center;
     color: #979599;
     font-size: 25px;
 }
@@ -169,5 +187,11 @@ h1 {
     to {
         transform: translateY(-25px) translateX(13px) rotateZ(0deg);
     }
+}
+
+@media screen and (max-width: 500px) {
+  p {
+    font-size: 14px;
+  }
 }
 </style>
