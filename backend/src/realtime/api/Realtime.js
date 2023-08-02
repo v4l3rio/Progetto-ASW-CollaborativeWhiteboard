@@ -176,7 +176,8 @@ exports.Realtime = class Realtime {
                                     socket.removeAllListeners("drawing");
                                     socket.removeAllListeners("drawEnd");
                                     socket.removeAllListeners("leftWhiteboard");
-                                    socket.removeAllListeners("lineDelete")
+                                    socket.removeAllListeners("lineDelete");
+                                    socket.off("disconnect", leftListener);
                                     //todo implementare l'aggiornamento di roomData
                                 };
 
