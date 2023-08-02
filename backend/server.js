@@ -1,3 +1,14 @@
+
+// ----------------------------------------------------------------------------
+const PORT = 4000;
+process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
+process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
+process.env.MODE = "prod"; //set "test" to create example users and whiteboards
+process.env.TEST_WHITEBOARD = "yes"
+process.env.DB_ADDRESS = 'mongodb://localhost:27017/whiteboard-db';
+// ----------------------------------------------------------------------------
+
+
 /*
  * Required packages
  */
@@ -12,13 +23,6 @@ const {printServerStart} = require("./src/util/consoleUtil");
 
 const {Model} = require("./src/models/model");
 
-// ----------------------------------------------------------------------------
-const PORT = 4000;
-process.env.REFRESH_TOKEN_KEY = "213918903"; // todo move somewhere safe
-process.env.ACCESS_TOKEN_KEY = "142530983"; // todo move somewhere safe
-process.env.MODE = "prod"; //set "test" to create example users and whiteboards
-process.env.TEST_WHITEBOARD = "yes"
-// ----------------------------------------------------------------------------
 
 
 const corsOptions = {

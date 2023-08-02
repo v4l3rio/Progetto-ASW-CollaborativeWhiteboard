@@ -49,13 +49,19 @@ exports.printServerStart = (port) => {
     nl();
     printWithColor(FgCyan + Bright,"------------------------------------------------------------------------");
     nl()
-    printWithColor(FgGreen, `Server is running on http://localhost:${port}`)
+    printWithColor(FgGreen, `   Server is running on http://localhost:${port}`)
     nl();
+    console.log("------------------------------------------------------------------------");
 }
 
 exports.log = (string) => {
      console.log(" --- LOG --- " + string);
 }
+
+exports.logSuccess = (string) => {
+    printWithColor(FgGreen, " --- SUCCESS --- " + string);
+}
+
 exports.logErr = (err) => {
     printWithColor(FgRed, " --- ERR --- " + err);
 }

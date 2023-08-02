@@ -1,4 +1,4 @@
-const {log} = require("../util/consoleUtil");
+const {log, logSuccess} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
 const {User, Whiteboard} = require("../models/dbModel");
 const {checkContains} = require("../util/arrayUtil")
@@ -6,8 +6,10 @@ const bcrypt = require("bcrypt");
 
 class RealDb {
     constructor() {
-        mongoose.connect('mongodb://localhost:27017/whiteboard-db')
-            .then(() => {log("MI SONO CONNESSOOOOOOOO!")})
+        this.dbAddress = process.env.DB_ADDRESS;
+        console.log(this.dbAddress)
+        mongoose.connect(this.dbAddress)
+            .then(() => {logSuccess(`Successfully connected to ${this.dbAddress}`)})
             .catch((e)=>{console.error(e)});
     }
 

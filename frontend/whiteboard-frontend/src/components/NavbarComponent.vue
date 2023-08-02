@@ -81,6 +81,7 @@ export default {
                 }).catch(error => {
                     console.log(error)
                     console.log("Errore")
+                    localStorage.removeItem("accessToken");
                     this.isLogged = false;
                 });
             }

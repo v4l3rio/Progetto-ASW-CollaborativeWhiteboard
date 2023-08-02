@@ -1,7 +1,7 @@
 <template>
 <div class="container min-vh-100">
     <div class="row min-vh-100 justify-content-center align-items-center">
-        <div class="col-4">
+        <div class="w-100" style="max-width: 400px;">
             <form @submit.prevent="submitForm">
                 <h1 class="h3 mb-5">Login</h1>
                 <EmailFormComponent @email-changed="emailHandler"></EmailFormComponent>

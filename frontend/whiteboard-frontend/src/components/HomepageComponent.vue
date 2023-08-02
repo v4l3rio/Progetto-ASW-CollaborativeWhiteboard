@@ -2,10 +2,10 @@
     <div class="wrap">
         <div class="whiteBoard"></div>
         <h1><span class="w">W</span>hiteboard</h1>
-        <h3>
+        <div class="realtime-container">
             <p class="r one">Real</p>
             <p class="r two"><span class="w">time</span></p>
-        </h3>
+        </div>
         <router-link
             to="/login"
             custom
@@ -14,9 +14,9 @@
         <button class="btn btn-primary shadow mt-5" @click="navigate" role="link">Accedi</button> <!-- se l'utente non ha fatto il login, altrimenti mettere un pulsante che rimanda alle lavagne-->
         </router-link>
         <div class="container">
-            <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg"></div>
-            <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg"></div>
-            <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg"></div>
+            <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt=""></div>
+            <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt=""></div>
+            <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt=""></div>
         </div>
     </div>
 </template>
@@ -102,7 +102,7 @@ export default {
     animation-delay: 0.2s;
 }
 
-h1, h3 {
+h1, .realtime-container {
     text-align: right;
     font-weight: normal;
     height: 20px;
@@ -122,7 +122,7 @@ h1 {
     font-family: 'Titillium Web', sans-serif;
 }
 
-h3 {
+.realtime-container {
     color: #979599;
     font-size: 25px;
 }
