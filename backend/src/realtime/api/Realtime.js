@@ -93,6 +93,8 @@ exports.Realtime = class Realtime {
                                     }
                                 })
 
+                                socket.emit('allConnectedUsers', this.roomData.usersInWhiteboard[room]);
+
                                 //this.io.sockets.in(room).emit('welcome', `${username} has joined the Whiteboard!`);
 
                                 socket.on('drawStart', (line, accessToken, callback) => {
@@ -110,11 +112,6 @@ exports.Realtime = class Realtime {
                                             })
                                         }
                                     })
-                                })
-
-
-                                socket.on('getAllConnectedUsers', ()=>{
-                                    socket.emit('allConnectedUsers', this.roomData.usersInWhiteboard[room]);
                                 })
 
 
@@ -166,7 +163,7 @@ exports.Realtime = class Realtime {
                                 })
 
                                 // Listen for when the client disconnects
-                                socket.on('leftWhiteboard', () => {
+                                socket.on('disconnect', () => {
                                     logRealtime(username + " has disconnected from the whiteboard");
                                     this.roomData.rooms[room] = this.roomData.rooms[room].filter(connection => connection.id !== socket.id);
                                     this.roomData.usersInWhiteboard[room] = this.roomData.usersInWhiteboard[room].filter(user => user !== username);
@@ -191,13 +188,6 @@ exports.Realtime = class Realtime {
 
                         })
 
-
-
-                });
-                // Listen for when the client disconnects
-                socket.on('disconnect', () => {
-                    logRealtime(socket.id + " has disconnected");
-                    socket.removeAllListeners();
                 });
 
             } else {

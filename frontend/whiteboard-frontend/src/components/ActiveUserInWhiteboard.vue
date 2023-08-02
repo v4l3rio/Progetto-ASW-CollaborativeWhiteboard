@@ -22,7 +22,6 @@ export default {
         };
     },
     created() {
-        socket.emit('getAllConnectedUsers');
         socket.on('allConnectedUsers', (usernames) => {
             this.onlineUser = usernames;
         })

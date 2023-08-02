@@ -45,6 +45,7 @@ export default {
 
     },
     unmounted() {
+        socket.disconnect();
         this.connected = false;
     },
     methods:{
