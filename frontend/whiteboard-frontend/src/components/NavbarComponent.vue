@@ -16,7 +16,7 @@
         <li v-for="link in this.links"><router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
                       :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link></li>
       </ul>
-        <div class="col links-desktop d-flex align-items-center justify-content-center">
+        <div class="col loginButtons">
             <div v-if="!isLogged">
                 <a role="button" class="btn btn-light mx-2"  href="#/login">Sign In</a>
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
@@ -168,18 +168,27 @@ li {
   max-height: 38px;
 }
 
+.loginButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .nav-container {
   background-color: white;
   box-shadow: 0 1px 2px #cecece;
   min-height: 77px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
 
   .menu-mobile {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .loginButtons {
+    display: none;
   }
   .menu-mobile-button {
     transition: all 300ms ease;
