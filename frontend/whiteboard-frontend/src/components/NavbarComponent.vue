@@ -1,5 +1,5 @@
 <template>
-    <nav class="row nav-container">
+    <nav class="row nav-container mb-4">
       <div class="col-3 menu-mobile">
         <a class="menu-mobile-button" data-bs-toggle="collapse" href="#menuMobileCollapse"
            role="button" aria-expanded="false" aria-controls="menuMobileCollapse">
@@ -13,9 +13,10 @@
       </div>
 
       <ul class="links-desktop nav nav-pills col text-center align-items-center justify-content-center ">
-        <router-link v-for="link in this.links" :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link>
+        <li v-for="link in this.links"><router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
+                      :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link></li>
       </ul>
-        <div class="col links-desktop">
+        <div class="col links-desktop d-flex align-items-center justify-content-center">
             <div v-if="!isLogged">
                 <a role="button" class="btn btn-light mx-2"  href="#/login">Sign In</a>
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
@@ -47,8 +48,11 @@
         <div class="collapse-body">
           <ul>
             <li v-for="link in this.links">
-              <router-link  :to="link.href" class="navbar-links">{{ link.name }}</router-link>
-              <hr/>
+              <div v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)">
+                <router-link  :to="link.href" class="navbar-links">{{ link.name }}</router-link>
+                <hr/>
+              </div>
+
             </li>
           </ul>
         </div>
@@ -75,7 +79,8 @@ export default {
             first_name: '',
             defaultRefreshTimeoutMs: 5 * 60 * 1000,
             username: '',
-            links: [{href: "/", name: "Home"}, {href: "/contacts", name: "Contacts"}]
+            links: [{href: "/", name: "Home", loginNeeded: false}, {href: "/contacts", name: "Contacts", loginNeeded: false},
+              {href: "/addwhiteboard", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ]
         }
     },
     methods: {
@@ -136,10 +141,6 @@ export default {
         this.reloadNavbar();
     },
     mounted: function() {
-      if (this.isLogged) {
-        this.links.push({href: "/addwhiteboard", name: "Whiteboards"});
-        this.links.push({href: "/profile", name: "Profile"});
-      }
         this.reloadNavbar();
     }
 }
@@ -149,7 +150,13 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 .logo-container {
-  align-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+li {
+  list-style-type: none;
 }
 
 .menu-mobile {
@@ -164,6 +171,7 @@ export default {
 .nav-container {
   background-color: white;
   box-shadow: 0 1px 2px #cecece;
+  min-height: 77px;
 }
 
 @media (max-width: 600px) {
