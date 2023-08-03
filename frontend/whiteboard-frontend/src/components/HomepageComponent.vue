@@ -1,23 +1,32 @@
 <template>
     <div class="wrap">
-        <div class="whiteBoard"></div>
-        <h1><span class="w">W</span>hiteboard</h1>
-        <div class="realtime-container">
+      <header class="w-100 text-center">
+        <div class="whiteboard-container">
+          <div class="whiteBoard d-inline-block"></div>
+        </div>
+
+        <div class="d-inline-block">
+          <h1><span class="w">W</span>hiteboard</h1>
+          <div class="realtime-container">
             <p class="r one">Real</p>
             <p class="r two"><span class="w">time</span></p>
+          </div>
         </div>
-        <router-link
-            :to="isLogged ? '/addwhiteboard' : '/login'"
-            custom
-            v-slot="{ navigate }"
-        >
+
+
+      </header>
+      <router-link
+          :to="isLogged ? '/addwhiteboard' : '/login'"
+          custom
+          v-slot="{ navigate }"
+      >
         <button
             class="btn btn-primary shadow mt-5"
             @click="navigate"
             role="link">
           {{ isLogged ? "Vai alle lavagne" : "Accedi" }}
         </button>
-        </router-link>
+      </router-link>
         <div class="container">
             <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt="Drawing 1"></div>
             <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt="Drawing 2"></div>
@@ -68,6 +77,7 @@ export default {
 }
 .container{
     position: relative;
+  width: 100%;
 }
 
 * {
@@ -81,6 +91,13 @@ export default {
     text-align: center;
     zoom: 150%;
     margin-top: 50px;
+}
+
+.whiteboard-container {
+  display: inline-block;
+  text-align: left;
+  width: 110px;
+  height: 90px;
 }
 
 .whiteBoard {
@@ -126,8 +143,8 @@ h1, .realtime-container {
 
 h1 {
   width: 100%;
-  text-align: center;
-    font-size: 3vw;
+  text-align: right;
+    font-size: 30px;
     transform: translateX(-30px);
     animation: rotate 0.3s ease 1;
     -webkit-animation-fill-mode: both;
@@ -140,7 +157,7 @@ h1 {
 
 .realtime-container {
   width: 100%;
-  text-align: center;
+  text-align: right;
     color: #979599;
     font-size: 25px;
 }
@@ -190,8 +207,10 @@ h1 {
 }
 
 @media screen and (max-width: 500px) {
-  p {
-    font-size: 14px;
+  .whiteboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

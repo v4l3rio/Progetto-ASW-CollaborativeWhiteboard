@@ -1,15 +1,21 @@
 <template>
-    <nav class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <nav class="row nav-container">
+      <div class="col-3 menu-mobile">
+        <a class="menu-mobile-button" data-bs-toggle="collapse" href="#menuMobileCollapse"
+           role="button" aria-expanded="false" aria-controls="menuMobileCollapse">
+          <BootstrapIcon icon="bi bi-list" size="2.3rem" color="black"></BootstrapIcon>
+        </a>
+      </div>
+      <div class="col logo-container">
         <router-link to="/" class="col-md-3 mb-2 mb-md-0">
-            <img src="../assets/icons/Logo.png" width="135" height="38">
+          <img class="logo" src="../assets/icons/Logo.png" width="675" height="190" alt="Site Logo">
         </router-link>
-        <ul class="nav nav-pills col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <router-link to="/" class="nav-item nav-link px-2">Home</router-link>
-            <router-link to="/addwhiteboard" v-if="isLogged" class="nav-item nav-link px-2">Whiteboards</router-link>
-            <router-link to="/profile" v-if="isLogged" class="nav-item nav-link px-2">Settings</router-link>
-            <router-link to="/contacts" class="nav-item nav-link px-2">Contacts</router-link>
-        </ul>
-        <div class="col-md-3">
+      </div>
+
+      <ul class="links-desktop nav nav-pills col text-center align-items-center justify-content-center ">
+        <router-link v-for="link in this.links" :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link>
+      </ul>
+        <div class="col links-desktop">
             <div v-if="!isLogged">
                 <a role="button" class="btn btn-light mx-2"  href="#/login">Sign In</a>
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
@@ -27,16 +33,40 @@
                 </ul>
             </div>
         </div>
+      <div class="col-3 menu-mobile">
+        <div v-if="!isLogged">
+          <a role="button" href="#/login">
+            <BootstrapIcon icon="bi bi-box-arrow-in-right" size="1.8rem" color="black"></BootstrapIcon>
+          </a>
+        </div>
+        <div v-else>
+          <NavbarUserDropdown :first_name="this.first_name"></NavbarUserDropdown>
+        </div>
+      </div>
+      <div class="collapse menu-mobile" id="menuMobileCollapse">
+        <div class="collapse-body">
+          <ul>
+            <li v-for="link in this.links">
+              <router-link  :to="link.href" class="navbar-links">{{ link.name }}</router-link>
+              <hr/>
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
 </template>
 <script>
 import axios from "axios";
 import IdenticonComponent from "@/components/Identicon.vue";
 import {socket} from "@/scripts/socket";
+import BootstrapIcon from "@/components/BootstrapIcon.vue";
+import NavbarUserDropdown from "@/components/NavbarUserDropdown.vue";
 export default {
     name: 'NavbarComponent',
     props: ['loginStatus'],
     components: {
+      NavbarUserDropdown,
+      BootstrapIcon,
         IdenticonComponent
     },
     data() {
@@ -44,7 +74,8 @@ export default {
             isLogged: false,
             first_name: '',
             defaultRefreshTimeoutMs: 5 * 60 * 1000,
-            username: ''
+            username: '',
+            links: [{href: "/", name: "Home"}, {href: "/contacts", name: "Contacts"}]
         }
     },
     methods: {
@@ -105,7 +136,89 @@ export default {
         this.reloadNavbar();
     },
     mounted: function() {
+      if (this.isLogged) {
+        this.links.push({href: "/addwhiteboard", name: "Whiteboards"});
+        this.links.push({href: "/profile", name: "Profile"});
+      }
         this.reloadNavbar();
     }
 }
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+.logo-container {
+  align-content: center;
+}
+
+.menu-mobile {
+  display: none;
+}
+
+.logo {
+  max-width: 135px;
+  max-height: 38px;
+}
+
+.nav-container {
+  background-color: white;
+  box-shadow: 0 1px 2px #cecece;
+}
+
+@media (max-width: 600px) {
+
+  .menu-mobile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .menu-mobile-button {
+    transition: all 300ms ease;
+  }
+  .menu-mobile-button:active {
+    filter: brightness(50%);
+  }
+  .links-desktop {
+    display: none;
+  }
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .nav-container {
+    min-height: 80px;
+  }
+  .logo {
+    display: inline-block;
+
+  }
+  .collapse-body {
+    padding: 10px;
+  }
+
+  .navbar-links {
+    font-size: 1rem;
+    display: block;
+    margin: 15px;
+    text-decoration: none;
+  }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+  }
+
+}
+
+</style>
