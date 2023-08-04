@@ -1,5 +1,5 @@
 <template>
-    <nav class="row nav-container mb-4">
+    <nav class="row nav-container mb-4 no-gutters">
       <div class="col-3 menu-mobile">
         <a class="menu-mobile-button" data-bs-toggle="collapse" href="#menuMobileCollapse"
            role="button" aria-expanded="false" aria-controls="menuMobileCollapse">
@@ -148,6 +148,16 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
 
 .logo-container {
   display: flex;
@@ -235,6 +245,7 @@ li {
     margin: 1em 0;
     padding: 0;
   }
+
 
 }
 

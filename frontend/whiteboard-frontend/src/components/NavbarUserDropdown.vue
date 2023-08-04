@@ -6,8 +6,8 @@
             </div>
         </a>
         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
-            <li> <router-link to="/" class="dropdown-item">Profilo</router-link></li>
-            <li><router-link to="/" class="dropdown-item">Impostazioni Account</router-link></li>
+            <li> <router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
+            <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item  link-danger" role="button" @click="logout">Esci</a></li>
         </ul>
