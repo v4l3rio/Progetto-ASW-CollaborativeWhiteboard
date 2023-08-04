@@ -34,13 +34,30 @@
             <div class="canvas canvas3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt="Drawing 3"></div>
           </div>
         </div>
+      <div class="carousel-container">
+        <Carousel>
+          <div class="carousel-item active">
+            <img class="imgSvg rounded shadow" src="../assets/home/home1.svg" alt="Drawing 1">
+          </div>
+          <div class="carousel-item">
+            <img class="imgSvg rounded shadow" src="../assets/home/home2.svg" alt="Drawing 2">
+          </div>
+          <div class="carousel-item">
+            <img class="imgSvg rounded shadow m-1" src="../assets/home/home3.svg" alt="Drawing 3">
+          </div>
+        </Carousel>
+      </div>
+
     </div>
 </template>
 <script>
 
 
+import Carousel from "@/components/Carousel.vue";
+
 export default {
     name: 'HomepageComponent',
+  components: {Carousel},
     data() {
        return {
          isLogged: false
@@ -74,25 +91,25 @@ export default {
 .canvas {
   position: absolute;
   display: block;
-  max-width:230px;
-  max-height:230px;
+  max-width: 230px;
+  max-height: 230px;
   width: auto;
   height: auto;
   border: none;
 }
 .canvas1{
     top: 25%;
-    z-index: 0;
-    left: 15%;
+    z-index: 2;
+    left: 10%;
 }
 .canvas2{
-    top: 30%;
-    left: 33%;
+    top: 20%;
+    left: 36%;
     z-index: 1;
 }
 .canvas3{
-    top: 28%;
-    left: 50%;
+    top: 30%;
+    left: 65%;
     z-index: 2;
 }
 
@@ -103,11 +120,11 @@ export default {
 
 .wrap {
   display: block;
-    width: 100%;
-    height: 250px;
-    text-align: center;
-    zoom: 150%;
-    margin-top: 30px;
+  width: 100%;
+  height: 250px;
+  text-align: center;
+  margin-top: 30px;
+  zoom: 150%;
 }
 
 .headerWrap {
@@ -226,6 +243,10 @@ h1 {
   max-width: 300px;
   margin: 30px auto auto;
 }
+
+.carousel-container {
+  display: none;
+}
 @keyframes rotate {
     to {
         transform: rotateX(0deg);
@@ -251,6 +272,11 @@ h1 {
 }
 
 @media screen and (max-width: 500px) {
+
+  .wrap {
+    zoom: 100%;
+  }
+
   .whiteboard-container {
     display: flex;
     margin: auto;
@@ -279,6 +305,17 @@ h1 {
 
   .canvasContainer {
     display: none;
+  }
+
+  .carousel-container {
+    display: block;
+    width: 100%;
+    padding-top: 40px;
+  }
+
+  .imgSvg {
+    width: auto;
+    max-width: 300px;
   }
 }
 </style>
