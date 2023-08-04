@@ -1,28 +1,71 @@
 <template>
     <div class="wrap">
-        <div class="whiteBoard"></div>
-        <h1><span class="w">W</span>hiteboard</h1>
-        <h3>
-            <p class="r one">Real</p>
-            <p class="r two"><span class="w">time</span></p>
-        </h3>
+      <div class="headerWrap">
+        <header class="w-100 text-center mainHeader">
+          <div class="whiteboard-container">
+            <div class="whiteBoard d-inline-block"></div>
+          </div>
+
+          <div class="headerText">
+            <h1><span class="w">W</span>hiteboard</h1>
+            <div class="realtime-container">
+              <p class="r one">Real</p>
+              <p class="r two"><span class="w">time</span></p>
+            </div>
+          </div>
+        </header>
         <router-link
-            to="/login"
+            :to="isLogged ? '/addwhiteboard' : '/login'"
             custom
             v-slot="{ navigate }"
         >
-        <button class="btn btn-primary shadow mt-5" @click="navigate" role="link">Accedi</button> <!-- se l'utente non ha fatto il login, altrimenti mettere un pulsante che rimanda alle lavagne-->
+          <button
+              class="btn btn-primary shadow mt-5 mainBtn"
+              @click="navigate"
+              role="link">
+            {{ isLogged ? "Vai alle lavagne" : "Accedi" }}
+          </button>
         </router-link>
-        <div class="container">
-            <div class="canva1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg"></div>
-            <div class="canva2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg"></div>
-            <div class="canva3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg"></div>
+      </div>
+        <div class="canvasContainer">
+          <div class="canvasWrap">
+            <div class="canvas canvas1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt="Drawing 1"></div>
+            <div class="canvas canvas2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt="Drawing 2"></div>
+            <div class="canvas canvas3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt="Drawing 3"></div>
+          </div>
         </div>
+      <div class="carousel-container">
+        <Carousel>
+          <div class="carousel-item active">
+            <img class="imgSvg rounded shadow" src="../assets/home/home1.svg" alt="Drawing 1">
+          </div>
+          <div class="carousel-item">
+            <img class="imgSvg rounded shadow" src="../assets/home/home2.svg" alt="Drawing 2">
+          </div>
+          <div class="carousel-item">
+            <img class="imgSvg rounded shadow m-1" src="../assets/home/home3.svg" alt="Drawing 3">
+          </div>
+        </Carousel>
+      </div>
+
     </div>
 </template>
 <script>
+
+
+import Carousel from "@/components/Carousel.vue";
+
 export default {
     name: 'HomepageComponent',
+  components: {Carousel},
+    data() {
+       return {
+         isLogged: false
+       }
+    },
+    mounted() {
+      this.isLogged = localStorage.getItem('accessToken');
+    }
 }
 </script>
 <style scoped>
@@ -30,29 +73,44 @@ export default {
 .imgSvg{
     width: 30vh;
 }
-.canva1{
-    width: 30vh;
-    position: absolute;
-    top: 15vh;
-    z-index: 1;
-    left: 0vh;
+
+.canvasContainer{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 100%;
+  padding-top: 20px;
 }
-.canva2{
-    width: 30vh;
-    position: absolute;
-    top: 10vh;
-    left: -20vh;
+.canvasWrap {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  display: inline-block;
+}
+.canvas {
+  position: absolute;
+  display: block;
+  max-width: 230px;
+  max-height: 230px;
+  width: auto;
+  height: auto;
+  border: none;
+}
+.canvas1{
+    top: 25%;
     z-index: 2;
+    left: 10%;
 }
-.canva3{
-    width: 30vh;
-    position: absolute;
-    top: 10vh;
-    left: 20vh;
-    z-index: 0;
+.canvas2{
+    top: 20%;
+    left: 36%;
+    z-index: 1;
 }
-.container{
-    position: relative;
+.canvas3{
+    top: 30%;
+    left: 65%;
+    z-index: 2;
 }
 
 * {
@@ -61,12 +119,26 @@ export default {
 }
 
 .wrap {
-    width: 350px;
-    height: 250px;
-    margin: auto;
-    text-align: center;
-    zoom: 150%;
-    margin-top: 50px;
+  display: block;
+  width: 100%;
+  height: 250px;
+  text-align: center;
+  margin-top: 30px;
+  zoom: 150%;
+}
+
+.headerWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.whiteboard-container {
+  display: flex;
+  width: 110px;
+  height: 90px;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-content: flex-end;
 }
 
 .whiteBoard {
@@ -102,33 +174,38 @@ export default {
     animation-delay: 0.2s;
 }
 
-h1, h3 {
+h1, .realtime-container {
     text-align: right;
     font-weight: normal;
-    height: 20px;
+    height: 30px;
     font-family: 'Raleway', sans-serif;
-    margin-top: 25px;
 }
 
 h1 {
-    font-size: 48px;
-    transform: translateX(-30px);
-    animation: rotate 0.3s ease 1;
-    -webkit-animation-fill-mode: both;
-    animation-delay: 0.3s;
+  width: 100%;
+  text-align: right;
+  display: block;
+  font-size: 40px;
+  transform: translateX(-30px);
+  animation: rotate 0.3s ease 1;
+  -webkit-animation-fill-mode: both;
+  animation-delay: 0.3s;
 }
 
 .w {
     font-family: 'Titillium Web', sans-serif;
 }
 
-h3 {
-    color: #979599;
-    font-size: 25px;
+.realtime-container {
+  width: 100%;
+  text-align: right;
+  color: #979599;
+  font-size: 25px;
+  display: block;
 }
 
 .r {
-    margin-top: 0px;
+    margin-top: 0;
     display: inline-block;
     transform: rotateX(90deg);
     transform-origin: 50% 100%;
@@ -146,7 +223,30 @@ h3 {
     animation-delay: 0.75s;
 }
 
+.headerText {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 10px;
+  width: auto
+}
 
+.mainHeader {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.mainBtn {
+  max-width: 300px;
+  margin: 30px auto auto;
+}
+
+.carousel-container {
+  display: none;
+}
 @keyframes rotate {
     to {
         transform: rotateX(0deg);
@@ -169,5 +269,53 @@ h3 {
     to {
         transform: translateY(-25px) translateX(13px) rotateZ(0deg);
     }
+}
+
+@media screen and (max-width: 500px) {
+
+  .wrap {
+    zoom: 100%;
+  }
+
+  .whiteboard-container {
+    display: flex;
+    margin: auto;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 30px;
+    height: 20px;
+  }
+  .headerText {
+    width: auto;
+  }
+
+  .realtime-container {
+    text-align: center;
+    margin: auto;
+  }
+
+  .mainHeader {
+    display: block;
+
+  }
+
+  .canvasContainer {
+    display: none;
+  }
+
+  .carousel-container {
+    display: block;
+    width: 100%;
+    padding-top: 40px;
+  }
+
+  .imgSvg {
+    width: auto;
+    max-width: 300px;
+  }
 }
 </style>
