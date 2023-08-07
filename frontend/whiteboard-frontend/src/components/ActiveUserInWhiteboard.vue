@@ -2,7 +2,7 @@
     <div class="row pb-3">
       <template v-for="(user,index) in this.onlineUser">
           <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="user"></Identicon></div>
-          <div class="col align-middle" v-if="true"><p>{{user}}</p></div>
+          <div class="col align-middle hideDesktop" v-if="true"><p>{{user}}</p></div>
       </template>
     </div>
 </template>
@@ -62,6 +62,12 @@ container {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media screen and (max-width: 720px) {
+  .hideDesktop {
+    display: none;
+  }
 }
 
 </style>

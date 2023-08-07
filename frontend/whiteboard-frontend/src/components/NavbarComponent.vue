@@ -190,7 +190,7 @@ li {
   min-height: 77px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 930px) {
 
   .menu-mobile {
     display: flex;

@@ -1,6 +1,6 @@
 <template>
     <div class="row p-1 m-0">
-    <div class="col-11">
+    <div class="col-11 mobile-full">
         <WhiteboardComponent v-bind:title="drawProps.title"
                              v-bind:colors="drawProps.colors"
                              v-bind:bgColors="drawProps.bgColors"
@@ -13,7 +13,7 @@
         >
         </WhiteboardComponent>
     </div>
-        <div class="col-1">
+        <div class="col-1 hideDesktop">
         </div>
     </div>
 
@@ -74,3 +74,16 @@ export default {
 
 }
 </script>
+
+<style scoped>
+
+@media only screen and (max-width: 720px) {
+  .hideDesktop {
+    display: none;
+  }
+  .mobile-full {
+    width: 100%;
+  }
+}
+</style>
+
