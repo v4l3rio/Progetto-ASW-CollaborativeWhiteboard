@@ -1,9 +1,9 @@
 <template>
     <div class="container text-start">
         <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
-        <div class="row row-cols-1 row-cols-sm-5 g-3">
-            <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
-        </div>
+
+        <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
+
         <SearchModal v-bind:name="whiteboardInviteName" v-bind:whiteboard-id="inviteId"
                      @invited="getWhiteboards"></SearchModal>
         <ModalWithButton modal-id="whiteboardModal" ref="createModal" title="Create a Whiteboard"
@@ -43,6 +43,7 @@
             </CardComponent>
             <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
         </div>
+      <hr class="mt-5 mb-5 justify-content-center" />
         <h1 class="h3 mb-3 mt-3">Shared with you</h1>
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
@@ -53,7 +54,7 @@
                            v-else-if="sharedWhiteboards?.length !== 0">
 
             </CardComponent>
-            <div class="col align-self-center" v-else>No one has shared slates with you yet</div>
+            <div class="col align-self-center pb-5" v-else>No one has shared slates with you yet</div>
         </div>
     </div>
 </template>
@@ -234,3 +235,5 @@ export default {
     }
 }
 </script>
+
+
