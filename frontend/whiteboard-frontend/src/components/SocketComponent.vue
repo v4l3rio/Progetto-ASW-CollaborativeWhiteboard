@@ -25,29 +25,30 @@ export default {
 
        this.connected = true;
     },
-    mounted() {
-        socket.emit("joinWhiteboard", localStorage.getItem("accessToken"), this.whiteboardId, (response) => {
-            this.$emit('whiteboardJoined', response.status);
-        });
-        socket.on("drawStartBC", (line, newId) => {
-            this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
-        });
-        socket.on("drawingBC", (line, lineId) => {
-            this.$emit('drawingBC', {id: lineId, point:{x: line.cursorX, y: line.cursorY}})
-        });
-        socket.on("drawEndBC", (line, lineId) => {
-            this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
-        });
-        socket.on("lineDeleteBC", (lineId) => {
-            console.log("DSAKLDJAKSJDAKJ" + lineId)
-            this.$emit("lineDeleteBC", {id: lineId});
-        })
-
-    },
     unmounted() {
         this.connected = false;
     },
     methods:{
+        connect() {
+          console.log("connetto")
+            socket.emit("joinWhiteboard", localStorage.getItem("accessToken"), this.whiteboardId, (response) => {
+              console.log("mi sono connesso")
+              this.$emit('whiteboardJoined', response.status);
+            });
+            socket.on("drawStartBC", (line, newId) => {
+              this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
+            });
+            socket.on("drawingBC", (line, lineId) => {
+              this.$emit('drawingBC', {id: lineId, point:{x: line.cursorX, y: line.cursorY}})
+            });
+            socket.on("drawEndBC", (line, lineId) => {
+              this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
+            });
+            socket.on("lineDeleteBC", (lineId) => {
+              console.log("DSAKLDJAKSJDAKJ" + lineId)
+              this.$emit("lineDeleteBC", {id: lineId});
+            })
+        },
         drawStart(cursorX, cursorY, color){
            socket.emit("drawStart", {cursorX, cursorY, color}, localStorage.getItem("accessToken"), (response) => {
                 this.drawingId = response.newId;

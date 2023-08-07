@@ -4,28 +4,6 @@
         <BigGlowingSpinner v-if="loading" class="align-content-center"></BigGlowingSpinner>
     </div>
     <div v-bind:class="{'visually-hidden': this.loading || this.error}"  class="draw">
-
-        <div class="toolbar" :style="{ right: toolBarRight }">
-
-            <div class="allColors">
-
-                <div class="panelUp mobile"></div>
-
-                <transition-group class="lineColor" name="color-list" tag="ul">
-                    <li v-for="(color, $index) in colors" v-bind:style='{ "background-color": color }'
-                        v-on:click="changeLineColor(color, $index)" v-bind:key="color"></li>
-                </transition-group>
-
-
-                <transition-group class="bgColor" name="color-list" tag="ul">
-                    <li v-for="(color, $index) in bgColors" v-bind:key="color"
-                        v-bind:style='{ "background-color": color }' @click="changeBg(color, $index)"></li>
-                </transition-group>
-
-            </div>
-
-        </div>
-
         <!--     <ul class="toolbar" v-bind:style='{ "background-color": bgColor }'>
               <li v-for="color in colors" v-bind:style='{ "background-color": color }' v-on:click="changeLineColor(color)" v-bind:key="color"></li>
               <li class="bgColor" v-bind:style='{ "background-color": bgColor }' @click="changeBg()" ></li>
@@ -64,6 +42,27 @@
             <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
 
         </div>
+
+        <div class="toolbar" :style="{ right: toolBarRight }">
+
+        <div class="allColors">
+
+          <div class="panelUp mobile"></div>
+
+          <transition-group class="lineColor" name="color-list" tag="ul">
+            <li v-for="(color, $index) in colors" v-bind:style='{ "background-color": color }'
+                v-on:click="changeLineColor(color, $index)" v-bind:key="color"></li>
+          </transition-group>
+
+
+          <transition-group class="bgColor" name="color-list" tag="ul">
+            <li v-for="(color, $index) in bgColors" v-bind:key="color"
+                v-bind:style='{ "background-color": color }' @click="changeBg(color, $index)"></li>
+          </transition-group>
+
+        </div>
+
+      </div>
 
     </div>
     <SocketComponent ref="socket"
@@ -143,6 +142,9 @@ export default {
             },
         }
     },
+  mounted() {
+    this.$refs.socket.connect()
+  },
 
     methods: {
         onJoinedWhiteboard(status) {
@@ -158,6 +160,7 @@ export default {
         },
 
         initBoard: function () {
+          console.log("ehi")
             this.board = $('.drawSvg')
             this.cursor = $('#cursor')
             axios.get(`http://localhost:4000/whiteboard/${this.$route.params.id}`, {
@@ -470,3 +473,4 @@ export default {
 
 }
 </script>
+
