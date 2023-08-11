@@ -59,14 +59,34 @@ exports.log = (string) => {
 }
 
 exports.logSuccess = (string) => {
-    printWithColor(FgGreen, " --- SUCCESS --- " + string);
+    printWithColor(FgGreen, " --- LOG --- " + string);
 }
 
 exports.logErr = (err) => {
     printWithColor(FgRed, " --- ERR --- " + err);
 }
 
-exports.logRealtime = (string) => {
-    printWithColor(FgYellow, " --- SOCKET.IO --- " + string)
+exports.logYellow = (string) => {
+    printWithColor(FgYellow, " --- LOG --- " + string)
 }
 
+exports.logCyan = (string) => {
+    printWithColor(FgCyan, " --- LOG --- " + string)
+}
+
+exports.logJoinedApp = (string) => {
+    printWithColor(BgGreen + FgBlack, " --- JOINED APP --- " + string)
+}
+
+
+exports.logExited = (string) => {
+    printWithColor(BgRed + FgBlack, " --- EXITED --- " + string)
+}
+
+exports.logConnected = (string) => {
+    printWithColor(BgWhite + FgBlack, " --- CONNECTED --- " + string)
+}
+
+exports.logDisconnected = (string) => {
+    printWithColor(BgGray + FgBlack, " --- DISCONNECTED --- " + string)
+}
