@@ -181,6 +181,7 @@
     .canvas{
         top: 70px;
         position: static;
+        min-height: 80vh;
     }
 
     .drawSvg{
