@@ -1,10 +1,10 @@
 <template>
-    <div class="row pb-3">
-      <template v-for="(user,index) in this.onlineUser">
+    <ul class="row pb-3 activeUsers">
+      <template v-for="(user,index) in this.onlineUsers" :key="user">
           <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="user"></Identicon></div>
           <div class="col align-middle hideDesktop" v-if="true"><p>{{user}}</p></div>
       </template>
-    </div>
+    </ul>
 </template>
 
 <script>
@@ -17,29 +17,32 @@ export default {
     components: {Identicon},
     data() {
         return {
-            onlineUser: [],
+            onlineUsers: [],
             hover: [],
         };
     },
     created() {
         socket.on('allConnectedUsers', (usernames) => {
-            this.onlineUser = usernames;
+            this.onlineUsers = usernames;
         })
     },
     mounted() {
         socket.on("user-connected", (username) => {
-            if(!this.onlineUser.includes(username)){
-                this.onlineUser.push(username);
+            if(!this.onlineUsers.includes(username)){
+                this.onlineUsers.push(username);
             }
+            console.log(this.onlineUsers)
         });
         socket.on("user-disconnected", (username) =>{
-            if(this.onlineUser.includes(username)){
-                this.onlineUser.splice(this.onlineUser.indexOf(username),1);
+            if(this.onlineUsers.includes(username)){
+                this.onlineUsers.splice(this.onlineUsers.indexOf(username),1);
             }
+          console.log(this.onlineUsers)
+
         })
     },
     unmounted() {
-        this.onlineUser = [];
+        this.onlineUsers = [];
     }
 }
 </script>
@@ -55,6 +58,12 @@ export default {
     align-items: center;
 }
 
+.activeUsers {
+  list-style-type: none;
+  margin-bottom: 0;
+  padding-left: 0;
+  flex-direction: row;
+}
 container {
     position: relative;
     height: auto;

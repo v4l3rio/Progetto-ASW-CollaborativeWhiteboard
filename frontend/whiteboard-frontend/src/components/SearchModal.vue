@@ -22,7 +22,7 @@
                                            type="text" @click="click" @focusin="focusIn" @focusout="focusOut"
                                             @input="inputChange">
                                     <ul aria-labelledby="dropdownSearch" class="dropdown-menu">
-                                        <li v-for="user in foundUsers">
+                                        <li v-for="user in foundUsers" :key="user.username">
 
                                                 <a class="dropdown-item" role="button"
                                                    v-bind:class="{disabled: user.alreadyIn}" @click="invite(user.username)">

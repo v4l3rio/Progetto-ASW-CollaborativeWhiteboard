@@ -11,7 +11,11 @@ import Identicon from "identicon.js"
 export default {
     name: "Identicon",
     props: {
-      seed: String
+      seed: String,
+      takeFromStorage: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
         return {
@@ -20,16 +24,19 @@ export default {
     },
     methods: {
         update() {
-            if (localStorage.getItem("base64") === null) {
+          const computed = localStorage.getItem("base64");
+            if (computed === null || !this.takeFromStorage) {
                 sha256(this.seed).then(res => {
                     this.base64 = new Identicon(res, {
                         background: [255, 255, 255, 0],
                         format: 'svg'
                     }).toString();
-                    localStorage.setItem("base64", this.base64);
+                    if (this.takeFromStorage) {
+                      localStorage.setItem("base64", this.base64);
+                    }
                  });
             } else {
-                this.base64 = localStorage.getItem("base64");
+                this.base64 = computed;
             }
         }
     },

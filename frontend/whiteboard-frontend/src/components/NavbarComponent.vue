@@ -23,7 +23,7 @@
             </div>
             <div v-else class="dropdown">
                 <a role="button" class="btn btn-light link-body-emphasis text-decoration-none" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-                    <IdenticonComponent style="width: 30px; height: 30px;" v-bind:seed="username"></IdenticonComponent>
+                    <IdenticonComponent style="width: 30px; height: 30px;" v-bind:seed="username" :take-from-storage="true"></IdenticonComponent>
                     <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
                 </a>
                 <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">

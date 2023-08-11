@@ -67,7 +67,6 @@ import ImportWhiteboardComponent from "@/components/ImportWhiteboardComponent.vu
 import axios from "axios";
 import ModalWithButton from "@/components/ModalWithButton.vue";
 import Alert from "@/components/Alert.vue";
-import Identicon from "@/components/Identicon.vue";
 import SearchModal from "@/components/SearchModal.vue";
 
 export default {
