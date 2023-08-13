@@ -1,7 +1,7 @@
 
 
 <template>
-  <div id="carouselExampleSlidesOnly" class="carousel slide pb-4" data-ride="carousel" data-bs-interval="1000">
+  <div id="carouselExampleSlidesOnly" class="carousel slide pb-4" data-bs-ride="carousel" data-bs-interval="2000">
     <div class="carousel-inner p-4">
       <slot></slot>
     </div>
@@ -11,8 +11,7 @@
 
 import * as bootstrap from 'bootstrap';
 export default {
-  name: "Carousel",
-
+    name: "Carousel",
 }
 </script>
 <style scoped>
