@@ -80,7 +80,7 @@ export default {
   align-content: center;
   width: 100%;
   height: 100%;
-  padding-top: 20px;
+  padding-top: 1vh;
 }
 .canvasWrap {
   position: relative;
@@ -91,26 +91,24 @@ export default {
 .canvas {
   position: absolute;
   display: block;
-  max-width: 230px;
-  max-height: 230px;
-  width: auto;
+  width: 25vh;
   height: auto;
   border: none;
 }
 .canvas1{
-    top: 25%;
+    top: 11vh;
     z-index: 2;
-    left: 10%;
+    left: 17.5vh;
 }
 .canvas2{
-    top: 20%;
-    left: 36%;
+    top: 5vh;
+    left: 37.5vh;
     z-index: 1;
 }
 .canvas3{
-    top: 30%;
-    left: 65%;
-    z-index: 2;
+    top: 11vh;
+    left: 57.5vh;
+    z-index: 0;
 }
 
 * {

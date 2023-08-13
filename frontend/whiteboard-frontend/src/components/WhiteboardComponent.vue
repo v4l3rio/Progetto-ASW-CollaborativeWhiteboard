@@ -12,8 +12,6 @@
         <div class="buttons" v-bind:class="{ showButtons: undo }">
             <button v-on:click="download()" class="btn submitBtn"><img src="../assets/download.svg" alt="Download">
             </button>
-            <button v-on:click="clean()" style="margin-right: 6vh" class="btn clearBtn"><img src="../assets/clear.svg" alt="Clear Canvas">
-            </button>
             <ActiveUserInWhiteboard/>
             <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
         </div>
@@ -419,22 +417,6 @@ export default {
 
 
 
-        clean: function () {
-            this.line = '';
-            this.undo = false;
-
-            let paths = $$('.drawSvg path').length
-
-            let i = 0
-
-            for (i = 0; i < paths; i++) {
-                this.board.removeChild(this.board.querySelectorAll('path')[0])
-            }
-
-            // this.board.innerHTML = ''; more effective, but removes bg also
-
-        },
-
         download: function () {
             var dl = document.createElement("a");
 
@@ -447,7 +429,6 @@ export default {
             dl.setAttribute("download", "freehand-svg-drawing.svg");
             dl.click();
         },
-
 
         svgDataURL: function () {
             // let drawSvg = new XMLSerializer().serializeToString(this.board)
