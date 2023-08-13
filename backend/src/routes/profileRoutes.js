@@ -17,4 +17,7 @@ router.route('/deleteWhiteboard')
 router.route('/users')
     .get(profileController.getUserWithFilters);
 
+router.route('/notifications')
+    .get(profileController.getNotificationOfUser);
+
 module.exports = router;

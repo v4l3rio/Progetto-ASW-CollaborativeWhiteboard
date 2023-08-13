@@ -114,3 +114,21 @@ exports.getUserWithFilters = (req, res) => {
         res.status(400).json({message: "Missing access token in the request"})
     }
 }
+
+exports.getNotificationOfUser = (req, res) => {
+    if(req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result =>{
+            if(result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else{
+                Model.getNotificationOfUser(result.user.username).then(result => {
+                    if (result.err) {
+                        res.status(500).json({message: "Cannot get notification"})
+                    } else {
+                        res.status(200).json({notification: result});
+                    }
+                });
+            }
+        })
+    }
+}

@@ -4,7 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import AddWhiteboardView from '../views/AddWhiteboardView.vue'
 import HomepageComponent from "@/components/HomepageComponent.vue";
 import UserProfileView from '../views/UserProfileView.vue'
-import ContactsComponent from "@/components/ContactsComponent.vue";
+import ContactsComponent from "@/components/NotificationPageComponent.vue";
 
 const routes = [
   {

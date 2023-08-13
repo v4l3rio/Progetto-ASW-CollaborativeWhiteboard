@@ -183,8 +183,21 @@ class RealDb {
             }
             return {users: out};
         } else {
-            return (await User.find({}));
+            return (await User.find({notifications: {}}));
         }
     }
+
+    async getNotificationOfUser(username) {
+        const user = await this.findOneUser(username);
+        if (user !== undefined) {
+            try {
+                return user.notification;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+    }
+
 }
 exports.Model = new RealDb();
