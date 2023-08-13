@@ -28,11 +28,7 @@
         </router-link>
       </div>
         <div class="canvasContainer">
-          <div class="canvasWrap">
-            <div class="canvas canvas1 rounded shadow"><img class="imgSvg" src="../assets/home/home1.svg" alt="Drawing 1"></div>
-            <div class="canvas canvas2 rounded shadow"><img class="imgSvg" src="../assets/home/home2.svg" alt="Drawing 2"></div>
-            <div class="canvas canvas3 rounded shadow"><img class="imgSvg" src="../assets/home/home3.svg" alt="Drawing 3"></div>
-          </div>
+         <img class="imgHomeDesktop m-1" src="../assets/home/homeall.png">
         </div>
       <div class="carousel-container">
         <Carousel>
@@ -74,42 +70,16 @@ export default {
     width: 30vh;
 }
 
+.imgHomeDesktop{
+    width: 60%;
+}
 .canvasContainer{
-  display: flex;
   justify-content: center;
-  align-content: center;
   width: 100%;
   height: 100%;
   padding-top: 1vh;
 }
-.canvasWrap {
-  position: relative;
-  width: 80%;
-  height: 100%;
-  display: inline-block;
-}
-.canvas {
-  position: absolute;
-  display: block;
-  width: 25vh;
-  height: auto;
-  border: none;
-}
-.canvas1{
-    top: 11vh;
-    z-index: 2;
-    left: 17.5vh;
-}
-.canvas2{
-    top: 5vh;
-    left: 37.5vh;
-    z-index: 1;
-}
-.canvas3{
-    top: 11vh;
-    left: 57.5vh;
-    z-index: 0;
-}
+
 
 * {
     transition: all 0.3s ease;

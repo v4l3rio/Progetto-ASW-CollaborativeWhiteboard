@@ -5,7 +5,6 @@
 
 import {socket} from "@/scripts/socket";
 
-const URL = "http://localhost:4000";
 
 export default {
     name: "SocketComponent",
@@ -15,7 +14,8 @@ export default {
     data() {
         return {
             connected : false,
-            drawingId: ""
+            drawingId: "",
+            accessToken: localStorage.getItem("accessToken")
         }
     },
     created() {
@@ -31,9 +31,9 @@ export default {
     methods:{
         connect() {
           console.log("connetto")
-            socket.emit("joinWhiteboard", localStorage.getItem("accessToken"), this.whiteboardId, (response) => {
+            socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId, (response) => {
               console.log("mi sono connesso")
-              this.$emit('whiteboardJoined', response.status);
+                this.$emit('whiteboardJoined', response.status);
             });
             socket.on("drawStartBC", (line, newId) => {
               this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
@@ -62,7 +62,7 @@ export default {
         },
         undoLine(id) {
             socket.emit("lineDelete", id, localStorage.getItem("accessToken"));
-        }
+        },
     }
 }
 

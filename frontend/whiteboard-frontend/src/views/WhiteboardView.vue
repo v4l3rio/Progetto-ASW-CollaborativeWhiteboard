@@ -23,7 +23,6 @@
 <script>
 // @ is an alias to /src
 import WhiteboardComponent from '@/components/WhiteboardComponent.vue'
-import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
 import {socket} from "@/scripts/socket";
 
 export default {
