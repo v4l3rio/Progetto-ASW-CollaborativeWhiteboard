@@ -132,3 +132,17 @@ exports.getNotificationOfUser = (req, res) => {
         })
     }
 }
+
+exports.addNotificationForUser = (req, res) => {
+    if(req.body.accessToken) {
+        auth.validateAccessToken(req.body.accessToken).then(result =>{
+            if(result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else{
+                Model.addNotificationForUser(req.body.notification, req.body.username).then(result => {
+                        res.status(200).json({message: "Notificication sended successfully"});
+                });
+            }
+        })
+    }
+}

@@ -1,6 +1,6 @@
 const {log, logSuccess} = require("../util/consoleUtil");
 const mongoose = require("mongoose");
-const {User, Whiteboard} = require("../models/dbModel");
+const {User, Whiteboard, Notification} = require("../models/dbModel");
 const {checkContains} = require("../util/arrayUtil")
 const bcrypt = require("bcrypt");
 
@@ -191,12 +191,33 @@ class RealDb {
         const user = await this.findOneUser(username);
         if (user !== undefined) {
             try {
-                return user.notification;
+                const notification = [];
+                const notificationIdArray = user.notifications;
+                for (const elem of notificationIdArray) {
+                    notification.push(await Notification.findById(elem));
+                }
+                return notification;
             } catch (e) {
                 console.error(e);
             }
         }
 
+    }
+
+    async addNotificationForUser(notification, username) {
+        const user = await this.findOneUser(username);
+        if (user !== undefined) {
+            try {
+                const notificationToAdd = {};
+                notificationToAdd.body = notification.body;
+                notificationToAdd.visualized = false;
+                const notif = await new Notification(notificationToAdd).save();
+                await User.findByIdAndUpdate(user._id, {$push: {notifications: notif._id}})
+            } catch (e) {
+                console.error(e)
+            }
+
+        }
     }
 
 }

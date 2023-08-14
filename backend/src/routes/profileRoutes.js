@@ -20,4 +20,7 @@ router.route('/users')
 router.route('/notifications')
     .get(profileController.getNotificationOfUser);
 
+router.route('/addNotification')
+    .post(profileController.addNotificationForUser);
+
 module.exports = router;

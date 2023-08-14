@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     first_name: String,
     last_name: String,
-    notifications: [{id: Number, text: String}]
+    notifications: [Object]
 })
 
 const whiteboardSchema = new mongoose.Schema({
@@ -16,5 +16,11 @@ const whiteboardSchema = new mongoose.Schema({
     users: [Object]
 })
 
+const notificationSchema = new mongoose.Schema({
+    body: String,
+    visualized: Boolean
+})
+
 module.exports.User = mongoose.model('User', userSchema);
 module.exports.Whiteboard = mongoose.model('Whiteboard', whiteboardSchema);
+module.exports.Notification = mongoose.model('Notification', notificationSchema);

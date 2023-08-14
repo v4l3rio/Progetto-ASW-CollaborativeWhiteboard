@@ -151,6 +151,13 @@ export default {
             }).then(result => {
                 console.log(result)
                 socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
+
+                axios.post('http://localhost:4000/profile/addNotification/', {
+                    accessToken: localStorage.getItem("accessToken"),
+                    notification: {body: localStorage.getItem("username") + " ti ha invitato a collaborare ad una sua lavagna!", visualized: false},
+                    username: username
+                })
+
                 this.$emit("invited", username);
                 this.showAlert(`User ${username} invited successfully`, "alert-success")
             }).catch(error => {
