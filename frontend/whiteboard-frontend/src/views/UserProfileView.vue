@@ -89,7 +89,7 @@ export default {
 },
   data() {
     return {
-      email: '',
+      email: localStorage.getItem('username'),
       name: '',
       surname: '',
       image: '',

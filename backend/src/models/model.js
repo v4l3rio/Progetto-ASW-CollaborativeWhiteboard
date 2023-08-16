@@ -191,12 +191,7 @@ class RealDb {
         const user = await this.findOneUser(username);
         if (user !== undefined) {
             try {
-                const notification = [];
-                const notificationIdArray = user.notifications;
-                for (const elem of notificationIdArray) {
-                    notification.push(await Notification.findById(elem));
-                }
-                return notification;
+                return await Notification.find({user: user._id});
             } catch (e) {
                 console.error(e);
             }
@@ -211,12 +206,37 @@ class RealDb {
                 const notificationToAdd = {};
                 notificationToAdd.body = notification.body;
                 notificationToAdd.visualized = false;
-                const notif = await new Notification(notificationToAdd).save();
-                await User.findByIdAndUpdate(user._id, {$push: {notifications: notif._id}})
+                notificationToAdd.user = user._id;
+                await new Notification(notificationToAdd).save();
             } catch (e) {
                 console.error(e)
             }
 
+        }
+    }
+
+    async deleteNotification(notificationId, username) {
+        try {
+            const notification = await Notification.findById(notificationId)
+            const user = this.findOneUser(username)
+            // remove the notification from all the profiles
+            if (notification && user) {
+                await Notification.findByIdAndDelete(notificationId);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async updateNotification(notificationId) {
+        try {
+            const notification = await Notification.findById(notificationId)
+            // check if exist firts
+            if (notification) {
+                await Notification.findByIdAndUpdate(notification._id, {visualized: true});
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 

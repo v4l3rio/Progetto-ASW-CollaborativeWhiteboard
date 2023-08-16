@@ -140,9 +140,39 @@ exports.addNotificationForUser = (req, res) => {
                 res.status(401).json({message: "Invalid Access Token"})
             } else{
                 Model.addNotificationForUser(req.body.notification, req.body.username).then(result => {
-                        res.status(200).json({message: "Notificication sended successfully"});
+                        res.status(200).json({message: "Notification sended successfully"});
                 });
             }
         })
     }
+}
+
+exports.deleteNotification = (req, res) => {
+    if(req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result =>{
+            if(result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else{
+                Model.deleteNotification(req.query.id, result.user.username).then(result => {
+                    res.status(200).json({message: "Notification deleted successfully"});
+                });
+            }
+        })
+    }
+
+}
+
+exports.updateNotification = (req, res) => {
+    if(req.body.accessToken) {
+        auth.validateAccessToken(req.body.accessToken).then(result =>{
+            if(result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else{
+                Model.updateNotification(req.body.id).then(result => {
+                    res.status(200).json({message: "Notification updated successfully"});
+                });
+            }
+        })
+    }
+
 }

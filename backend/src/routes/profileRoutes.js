@@ -23,4 +23,10 @@ router.route('/notifications')
 router.route('/addNotification')
     .post(profileController.addNotificationForUser);
 
+router.route('/deleteNotifications')
+    .delete(profileController.deleteNotification);
+
+router.route('/updateNotification')
+    .patch(profileController.updateNotification)
+
 module.exports = router;

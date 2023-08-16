@@ -18,7 +18,8 @@ const whiteboardSchema = new mongoose.Schema({
 
 const notificationSchema = new mongoose.Schema({
     body: String,
-    visualized: Boolean
+    visualized: Boolean,
+    user: Object
 })
 
 module.exports.User = mongoose.model('User', userSchema);

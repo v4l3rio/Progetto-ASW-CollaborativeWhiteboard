@@ -4,7 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import AddWhiteboardView from '../views/AddWhiteboardView.vue'
 import HomepageComponent from "@/components/HomepageComponent.vue";
 import UserProfileView from '../views/UserProfileView.vue'
-import ContactsComponent from "@/components/NotificationPageComponent.vue";
+import NotificationPageComponent from "@/components/NotificationPageComponent.vue";
 
 const routes = [
   {
@@ -38,9 +38,9 @@ const routes = [
     component: UserProfileView
   },
   {
-    path: '/contacts',
-    name: 'Contacts',
-    component: ContactsComponent
+    path: '/notifications',
+    name: 'Notifications',
+    component: NotificationPageComponent
   }
 ]
 
