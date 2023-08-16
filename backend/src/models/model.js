@@ -191,7 +191,7 @@ class RealDb {
         const user = await this.findOneUser(username);
         if (user !== undefined) {
             try {
-                return await Notification.find({user: user._id});
+                return (await Notification.find({user: user._id}));
             } catch (e) {
                 console.error(e);
             }
@@ -238,6 +238,12 @@ class RealDb {
         } catch (e) {
             console.error(e);
         }
+    }
+
+    async getUnreadNotificationNumber(username){
+        const user = await this.findOneUser(username);
+        return (await Notification.count({visualized: false, user: user._id}));
+
     }
 
 }

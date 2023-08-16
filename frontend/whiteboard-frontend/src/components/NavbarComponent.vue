@@ -13,8 +13,18 @@
       </div>
 
       <ul class="links-desktop nav nav-pills col text-center align-items-center justify-content-center ">
-        <li v-for="link in this.links"><router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
+        <li v-for="link in this.links">
+            <router-link v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)"
                       :to="link.href" class="nav-item nav-link px-2 navbar-links">{{link.name}}</router-link></li>
+
+          <li>
+              <div v-if="this.isLogged" class="position-relative">
+                  <router-link :to="this.linkToNotification" class="nav-item nav-link px-2 navbar-links">{{ "Notifications" }}</router-link>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{this.unreadMessage}}
+              </span>
+              </div>
+          </li>
       </ul>
         <div class="col loginButtons">
             <div v-if="!isLogged">
@@ -52,8 +62,16 @@
                 <router-link  :to="link.href" class="navbar-links">{{ link.name }}</router-link>
                 <hr/>
               </div>
-
             </li>
+              <li>
+                  <div v-if="this.isLogged" class="position-relative">
+                      <router-link :to="this.linkToNotification" class="navbar-links">{{ "Notifications" }}</router-link>
+                      <hr/>
+                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{this.unreadMessage}}
+              </span>
+                  </div>
+              </li>
           </ul>
         </div>
       </div>
@@ -79,11 +97,29 @@ export default {
             first_name: '',
             defaultRefreshTimeoutMs: 5 * 60 * 1000,
             username: '',
-            links: [{href: "/", name: "Home", loginNeeded: false}, {href: "/notifications", name: "Notifications", loginNeeded: false},
-              {href: "/addwhiteboard", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ]
+            links: [{href: "/", name: "Home", loginNeeded: false},
+              {href: "/addwhiteboard", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ],
+            linkToNotification: '/notifications',
+            unreadMessage:  -1
         }
     },
+    created() {
+        this.loadUnreadNotification();
+    },
     methods: {
+        loadUnreadNotification(){
+            axios.get('http://localhost:4000/profile/unreadNotifications/', {
+                params: {
+                    accessToken: localStorage.getItem("accessToken"),
+                }
+            }).then(response => {
+                this.unreadMessage = response.data.number;
+                console.log(this.unreadMessage);
+            }).catch(error => {
+                this.$emit("onBadToken");
+                console.log(error)
+            })
+        },
         reloadNavbar() {
             if (localStorage.getItem('accessToken') && !this.isLogged) {
                 axios.post('http://localhost:4000/auth/refresh', {
@@ -92,7 +128,7 @@ export default {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
-                }).then(response => {
+                }).then(() => {
                     socket.emit("joinApplication", localStorage.getItem('accessToken'));
                     this.isLogged = true;
                     this.first_name = localStorage.getItem("name")

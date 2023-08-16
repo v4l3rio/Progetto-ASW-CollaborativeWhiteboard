@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
     password: String,
     first_name: String,
     last_name: String,
-    notifications: [Object]
 })
 
 const whiteboardSchema = new mongoose.Schema({

@@ -176,3 +176,18 @@ exports.updateNotification = (req, res) => {
     }
 
 }
+
+exports.getUnreadNotification = (req, res) => {
+    if(req.query.accessToken) {
+        auth.validateAccessToken(req.query.accessToken).then(result =>{
+            if(result.err) {
+                res.status(401).json({message: "Invalid Access Token"})
+            } else{
+                Model.getUnreadNotificationNumber(result.user.username).then(r =>{
+                    res.status(200).json({number: r});
+                }
+            );
+            }
+        })
+    }
+}

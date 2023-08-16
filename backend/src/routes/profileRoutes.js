@@ -27,6 +27,9 @@ router.route('/deleteNotifications')
     .delete(profileController.deleteNotification);
 
 router.route('/updateNotification')
-    .patch(profileController.updateNotification)
+    .patch(profileController.updateNotification);
+
+router.route("/unreadNotifications")
+    .get(profileController.getUnreadNotification);
 
 module.exports = router;
