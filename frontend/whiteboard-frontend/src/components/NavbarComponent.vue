@@ -174,10 +174,12 @@ export default {
         }
     },
     updated: function() {
-        this.reloadNavbar();
+      this.reloadNavbar();
+      this.loadUnreadNotification();
     },
     mounted: function() {
         this.reloadNavbar();
+        this.loadUnreadNotification();
     }
 }
 </script>
