@@ -1,7 +1,7 @@
 <template>
   <NavbarComponent ref="navbar"></NavbarComponent>
    <NotificationComponent></NotificationComponent>
-   <router-view v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
+   <router-view v-on:updateNotificationBadge="this.onVisualizeNotification" v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
  </template>
 
  <style>
@@ -39,6 +39,10 @@
        onChangedInfo(name) {
            console.log("Changing " + name)
            this.$refs.navbar.changeName(name)
+       },
+       onVisualizeNotification(){
+         console.log("aggiorno il badge")
+         this.$refs.navbar.loadUnreadNotification();
        }
      }
  }

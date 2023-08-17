@@ -43,16 +43,6 @@ export default {
     mounted() {
       this.getNotification();
     },
-    created() {
-        /*
-        axios.post('http://localhost:4000/profile/addNotification/', {
-            accessToken: localStorage.getItem("accessToken"),
-            notification: {body: localStorage.getItem("username") + " ti ha invitato a collaborare ad una sua lavagna!", visualized: false},
-            username: 'v@v.it'
-        })
-
-         */
-    },
     methods: {
         getNotification(){
             axios.get('http://localhost:4000/profile/notifications/', {
@@ -61,6 +51,7 @@ export default {
                 }
             }).then(response => {
                 this.notification = response.data.notification;
+                this.$emit('updateNotificationBadge');
             }).catch(error => {
                 this.$emit("onBadToken");
                 console.log(error)
