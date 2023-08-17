@@ -6,7 +6,7 @@
             </div>
         </a>
       <a role="button" class="btn btn-light link-body-emphasis text-decoration-none hideDesktop" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-        <IdenticonComponent style="width: 30px; height: 30px;" v-bind:seed="username" :take-from-storage="true"></IdenticonComponent>
+        <IdenticonComponent style="width: 30px; height: 30px;" :take-from-storage="true"></IdenticonComponent>
         <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
       </a>
         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end"
@@ -30,9 +30,9 @@ export default {
   emits: ['logout'],
   components: {IdenticonComponent, BootstrapIcon},
   methods: {
-      logout() {
-        this.$emit("logout")
-      }
+    logout() {
+      this.$emit("logout")
+    }
   }
 }
 </script>

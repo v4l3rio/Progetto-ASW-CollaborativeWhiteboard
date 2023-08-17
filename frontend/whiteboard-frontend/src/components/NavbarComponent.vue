@@ -45,18 +45,18 @@
           <NavbarUserDropdown :first_name="this.first_name" @logout="this.logout"></NavbarUserDropdown>
         </div>
       </div>
-      <div class="collapse menu-mobile" id="menuMobileCollapse">
+      <div class="collapse menu-mobile" id="menuMobileCollapse" ref="collapse">
         <div class="collapse-body">
           <ul>
             <li v-for="link in this.links">
               <div v-if="(link.loginNeeded && this.isLogged) || (!link.loginNeeded)">
-                <router-link  :to="link.href" class="navbar-links">{{ link.name }}</router-link>
+                <router-link :to="link.href" class="navbar-links" @click="this.collapse">{{ link.name }}</router-link>
                 <hr/>
               </div>
             </li>
               <li>
                   <div v-if="this.isLogged" class="position-relative">
-                      <router-link :to="this.linkToNotification" class="navbar-links">{{ "Notifications" }}</router-link>
+                      <router-link :to="this.linkToNotification" class="navbar-links" @click="this.collapse">{{ "Notifications" }}</router-link>
                       <hr/>
                       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{this.unreadMessage}}
@@ -98,6 +98,9 @@ export default {
         this.loadUnreadNotification();
     },
     methods: {
+        collapse() {
+            this.$refs.collapse.classList.remove("show")
+        },
         loadUnreadNotification(){
             axios.get('http://localhost:4000/profile/unreadNotifications/', {
                 params: {
