@@ -41,7 +41,6 @@
            this.$refs.navbar.changeName(name)
        },
        onVisualizeNotification(){
-         console.log("aggiorno il badge")
          this.$refs.navbar.loadUnreadNotification();
        }
      }

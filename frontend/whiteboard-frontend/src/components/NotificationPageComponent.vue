@@ -1,50 +1,46 @@
 <template>
 <div class="row p-2" v-for="notif in notification">
-      <div class="col-lg-4"></div>
-      <div class="col-lg-4 col-12">
-          <div class="card shadow-lg">
-              <div class="card-body">
-                  <div class="row pb-3">
-                      <div class="col-2 rounded justify-content-center"  style="background-color: lightgreen; color: black" v-if="notif.visualized">
-                          <i class="bi bi-envelope-open-fill"></i>
-                      </div>
-                      <div class="col-2 rounded justify-content-center"  style="background-color: #f44336; color: white" v-if="!notif.visualized">
-                          <i class="bi bi-envelope-fill"></i>
-                      </div>
-                      <div class="col-8"><p class="card-text">{{notif.body}}</p> </div>
-                      <div class="col-2"></div>
-                  </div>
-                  <div class="row">
-                      <div class="col-6"></div>
-                      <div class="col-6">
-                        <a @click="this.deleteNotification(notif._id)" class="btn btn-sm btn-danger card-link"><i class="bi bi-trash"></i> Delete</a>
-                        <a @click="this.setVisualized(notif._id)" class="btn btn-sm btn-info card-link" v-if="!notif.visualized"><i class="bi bi-check-circle-fill"></i> Mark as read</a>
-                        <a class="btn btn-sm btn-info card-link disabled" v-if="notif.visualized"><i class="bi bi-check-circle-fill"></i> Readed</a>
-                      </div>
-                  </div>
-              </div>
+      <div class="d-flex justify-content-center align-items-center w-100">
+          <div class="toast position-relative">
+            <div class="toast-header">
+              <i class="bi bi-bell-fill" style="padding-right: 5px"></i>
+              <strong class="me-auto">Notifica</strong>
+              <small></small>
+              <button type="button" class="btn-close" @click="this.deleteNotification(notif._id)" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              {{notif.body}}
+            </div>
+            <span v-if="!notif.visualized" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">New!</span>
           </div>
       </div>
-      <div class="col-lg-4"></div>
 </div>
 </template>
 
 <script>
 
 import axios from "axios";
+import {Toast} from "bootstrap";
 
 export default {
     name: "NotificationPageComponent",
     data(){
       return{
-          notification: []
+        notification: [],
       }
     },
-    mounted() {
+  mounted() {
       this.getNotification();
     },
-    methods: {
-        getNotification(){
+  beforeUnmount: function() {
+     this.notification.filter(function (el){
+        return !el.visualized
+      }).forEach(toVisualize => {
+        this.setVisualized(toVisualize._id);
+     })
+  },
+  methods: {
+       getNotification(){
             axios.get('http://localhost:4000/profile/notifications/', {
                 params: {
                     accessToken: localStorage.getItem("accessToken"),
@@ -90,5 +86,7 @@ export default {
 </script>
 
 <style scoped>
-
+.toast{
+  display: block !important;
+}
 </style>
