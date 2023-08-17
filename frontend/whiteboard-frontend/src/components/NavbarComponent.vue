@@ -31,17 +31,8 @@
                 <a role="button" class="btn btn-light mx-2"  href="#/login">Sign In</a>
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
             </div>
-            <div v-else class="dropdown">
-                <a role="button" class="btn btn-light link-body-emphasis text-decoration-none" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-                    <IdenticonComponent style="width: 30px; height: 30px;" v-bind:seed="username" :take-from-storage="true"></IdenticonComponent>
-                    <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
-                </a>
-                <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
-                    <li> <router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
-                    <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item  link-danger" role="button" @click="logout">Sign out</a></li>
-                </ul>
+            <div v-else>
+              <NavbarUserDropdown :first_name="this.first_name"></NavbarUserDropdown>
             </div>
         </div>
       <div class="col-3 menu-mobile">
@@ -100,7 +91,7 @@ export default {
             links: [{href: "/", name: "Home", loginNeeded: false},
               {href: "/addwhiteboard", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ],
             linkToNotification: '/notifications',
-            unreadMessage:  -1
+            unreadMessage:  0
         }
     },
     created() {
