@@ -1,6 +1,6 @@
 <template>
   <NavbarComponent ref="navbar"></NavbarComponent>
-   <NotificationComponent></NotificationComponent>
+   <NotificationComponent v-on:notification="this.onLiveNotification"></NotificationComponent>
    <router-view v-on:updateNotificationBadge="this.onVisualizeNotification" v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
  </template>
 
@@ -42,6 +42,9 @@
        },
        onVisualizeNotification(){
          this.$refs.navbar.loadUnreadNotification();
+       },
+       onLiveNotification(){
+         this.$refs.navbar.updateNotificationNumber();
        }
      }
  }

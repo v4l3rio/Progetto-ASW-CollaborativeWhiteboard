@@ -35,15 +35,9 @@ export default {
       notification: [],
     }
   },
+  emits: ['updateNotificationBadge', 'onBadToken'],
   mounted() {
     this.getNotification();
-  },
-  beforeUnmount: function () {
-    this.notification.filter(function (el) {
-      return !el.visualized
-    }).forEach(toVisualize => {
-      this.setVisualized(toVisualize._id);
-    })
   },
   methods: {
     getNotification() {
@@ -53,7 +47,16 @@ export default {
         }
       }).then(response => {
         this.notification = response.data.notification;
-        this.$emit('updateNotificationBadge');
+        /*
+        this.notification.sort(function (x, y) {
+          return (x.visualized === y.visualized) ? 0 : x ? 1 : -1;
+        });
+        */
+        this.notification.filter(function (el) {
+          return !el.visualized
+        }).forEach(toVisualize => {
+          this.setVisualized(toVisualize._id);
+        })
       }).catch(error => {
         this.$emit("onBadToken");
         console.log(error)
@@ -80,7 +83,7 @@ export default {
         accessToken: localStorage.getItem("accessToken"),
         id: id
       }).then(() => {
-        this.getNotification();
+        this.$emit('updateNotificationBadge');
       }).catch(error => {
         this.$emit("onBadToken");
         console.log(error)

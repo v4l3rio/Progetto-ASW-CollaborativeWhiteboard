@@ -107,6 +107,9 @@ export default {
         this.loadUnreadNotification();
     },
     methods: {
+        updateNotificationNumber(){
+          this.unreadMessage++;
+        },
         loadUnreadNotification(){
             axios.get('http://localhost:4000/profile/unreadNotifications/', {
                 params: {
