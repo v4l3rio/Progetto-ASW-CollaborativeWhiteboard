@@ -100,7 +100,7 @@ export default {
     methods: {
         collapse() {
             this.$refs.collapse.classList.remove("show")
-        }
+        },
         updateNotificationNumber(){
           this.unreadMessage++;
         },
