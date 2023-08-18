@@ -8,7 +8,7 @@
       <div class="toast position-relative">
         <div class="toast-header">
           <i class="bi bi-bell-fill" style="padding-right: 5px"></i>
-          <strong class="me-auto">Notifica</strong>
+          <strong class="me-auto">{{notif.type ? notif.type : "Generic Notification"}}</strong>
           <small></small>
           <button type="button" class="btn-close" @click="this.deleteNotification(notif._id)"
                   aria-label="Close"></button>

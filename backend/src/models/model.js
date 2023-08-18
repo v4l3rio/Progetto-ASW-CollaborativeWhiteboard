@@ -205,6 +205,7 @@ class RealDb {
             try {
                 const notificationToAdd = {};
                 notificationToAdd.body = notification.body;
+                notificationToAdd.type = notification.type;
                 notificationToAdd.visualized = false;
                 notificationToAdd.user = user._id;
                 await new Notification(notificationToAdd).save();

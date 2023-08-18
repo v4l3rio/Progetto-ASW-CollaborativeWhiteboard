@@ -18,6 +18,7 @@ const whiteboardSchema = new mongoose.Schema({
 const notificationSchema = new mongoose.Schema({
     body: String,
     visualized: Boolean,
+    type: String,
     user: Object
 })
 
