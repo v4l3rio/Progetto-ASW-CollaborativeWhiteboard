@@ -12,8 +12,8 @@
                             <li><a class="dropdown-item" role="button" @click="openWhiteboard(whiteboard._id)">Open</a></li>
                             <li v-if="!shared"><a class="dropdown-item" role="button" @click="inviteToWhiteboard(whiteboard.name, whiteboard._id)" data-bs-toggle="modal" data-bs-target="#searchModal">Invite Users</a></li>
                             <li><a class="dropdown-item" role="button" @click="renameCard(whiteboard._id)" data-bs-toggle="modal" data-bs-target="#whiteboardModalRename">Rename</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item link-danger" role="button" @click="deleteWhiteboard(whiteboard._id)" data-bs-toggle="modal" data-bs-target="#whiteboardModalDelete">Delete</a></li>
+                            <li v-if="!shared"><hr class="dropdown-divider"></li>
+                            <li v-if="!shared"><a class="dropdown-item link-danger" role="button" @click="deleteWhiteboard(whiteboard._id)" data-bs-toggle="modal" data-bs-target="#whiteboardModalDelete">Delete</a></li>
                         </ul>
                     </div>
                 </div>
