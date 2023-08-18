@@ -98,6 +98,9 @@ export default {
         this.loadUnreadNotification();
     },
     methods: {
+        updateNotificationNumber(){
+          this.unreadMessage++;
+        },
         loadUnreadNotification(){
             axios.get('http://localhost:4000/profile/unreadNotifications/', {
                 params: {
@@ -105,7 +108,6 @@ export default {
                 }
             }).then(response => {
                 this.unreadMessage = response.data.number;
-                console.log(this.unreadMessage);
             }).catch(error => {
                 this.$emit("onBadToken");
                 console.log(error)
@@ -165,10 +167,12 @@ export default {
         }
     },
     updated: function() {
-        this.reloadNavbar();
+      this.reloadNavbar();
+      this.loadUnreadNotification();
     },
     mounted: function() {
         this.reloadNavbar();
+        this.loadUnreadNotification();
     }
 }
 </script>
