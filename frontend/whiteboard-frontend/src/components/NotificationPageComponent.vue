@@ -47,11 +47,11 @@ export default {
         }
       }).then(response => {
         this.notification = response.data.notification;
-        /*
+
         this.notification.sort(function (x, y) {
-          return (x.visualized === y.visualized) ? 0 : x ? 1 : -1;
+          return (x.visualized === y.visualized) ? 0 : x ? -1 : 1;
         });
-        */
+
         this.notification.filter(function (el) {
           return !el.visualized
         }).forEach(toVisualize => {
