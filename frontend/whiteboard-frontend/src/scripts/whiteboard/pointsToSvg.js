@@ -4,12 +4,11 @@ exports.traitToPaths = function (trait, svg, id) {
     const LINE_WIDTH = 8;
     let pathString = "";
     if (trait?.points && trait.points.length > 0) {
-        let point = getCursors(trait.points[0].x, trait.points[0].y, svg);
+        let point = trait.points[0];
         //console.log(point);
         pathString += 'M' + point.x + ',' + point.y;
         trait.points.splice(0, 1);
-        trait.points.forEach(p => {
-            point = getCursors(p.x, p.y, svg);
+        trait.points.forEach(point => {
             pathString += 'L' + point.x + ',' + point.y;
         })
         return createPath(id, pathString, trait.color, LINE_WIDTH);

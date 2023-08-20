@@ -20,16 +20,14 @@
 
       <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
-      <svg xmlns=http://www.w3.org/2000/svg version="1.1" class="drawSvg" :width="canvasWidth"
-           :height="canvasHeight"
-           @mousedown="lineStart()"
-           @touchstart="lineStart()"
-           @mousemove="lineMove()"
-           @touchmove="lineMove()"
-           @mouseup="lineEnd()"
-           @touchend="lineEnd()"
-           @onmouseleave="outOfCanvas()"
-           @touchcancel="outOfCanvas()"
+      <svg class="drawSvg" :width="canvasWidth"
+           :height="canvasHeight" viewBox="0 0 1000 1000" ref="svg"
+           @mousedown="lineStart"
+           @touchstart="lineStart"
+           @mousemove="lineMove"
+           @touchmove="lineMove"
+           @mouseup="lineEnd"
+           @touchend="lineEnd"
       >
 
         <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
@@ -158,7 +156,6 @@ export default {
     },
 
     initBoard: function () {
-      console.log("ehi")
       this.board = $('.drawSvg')
       this.cursor = $('#cursor')
       axios.get(`http://localhost:4000/whiteboard/${this.$route.params.id}`, {
@@ -166,7 +163,6 @@ export default {
           accessToken: localStorage.getItem("accessToken")
         }
       }).then(result => {
-        console.log(result.data)
         const traits = result.data.whiteboardData.traits;
         this.$emit('setLoading', {loading:false, err: false});
         if (traits) {
@@ -194,63 +190,50 @@ export default {
       this.alertOn = true;
     },
 
-    lineStart: function () {
+    lineStart: function (e) {
 
       if (!this.whiteboardJoined) {return}
 
       this.undo = true;
 
-      let e = event
-
-      let cursorX;
-      let cursorY;
-      let rect = this.board.getBoundingClientRect();
-
-      this.lineToSend.push({x: e.clientX || e.changedTouches[0].clientX, y: e.clientY || e.changedTouches[0].clientY});
-      cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-      cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
-      this.$refs.socket.drawStart(e.clientX, e.clientY, this.lineColor);
-
-
-      this.line += 'M' + cursorX + ',' + cursorY
-
+      let pointToAdd = this.getViewBoxCoordinates(e);
+      this.$refs.socket.drawStart(pointToAdd.x, pointToAdd.y, this.lineColor)
+      this.addPointToLine(pointToAdd);
 
       this.cursor.style.opacity = 0.5
       this.gesture = true
       e.preventDefault()
     },
 
-    lineMove: function () {
+    lineMove: function (e) {
 
       if (!this.whiteboardJoined) {return}
 
-      let e = event
-      let rect = this.board.getBoundingClientRect();
-
-      let cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches ? e.changedTouches[0].clientX - rect.x : -1)
-      let cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches ? e.changedTouches[0].clientY - rect.y : -1)
+      let pointToAdd = this.getViewBoxCoordinates(e);
+      const rect = this.board.getBoundingClientRect();
 
       if (this.gesture === true) {
-        this.line += 'L' + cursorX + ',' + cursorY
-        this.$refs.socket.drawing(e.clientX, e.clientY);
-
-        // this.line += 'L'+(e.clientX||e.touches[0].clientX)+','+(e.clientY||e.touches[0].clientY)+' '
-        const x = (e.clientX || e.touches[0].clientX);
-        const y = (e.clientY || e.touches[0].clientY);
-        this.trace(x, y);
-        this.lineToSend.push({x: e.clientX || e.changedTouches[0].clientX, y: e.clientY || e.changedTouches[0].clientY});
+        this.addPointToLine(pointToAdd);
+        this.$refs.socket.drawing(pointToAdd.x, pointToAdd.y);
+        this.traceCursorMovement(e)
       }
+
+      this.cursorX = pointToAdd.x;
+      this.cursorY = pointToAdd.y;
 
       this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
       this.cursor.style.left = e.clientX - rect.x - this.radius + 'px'
 
-      this.cursorX = cursorX
-      this.cursorY = cursorY
-
       this.onCanvas = true
     },
 
-    trace: function (x, y) {
+    traceCursorMovement: function (e) {
+
+      // adding scroll to this calculation to fix messed up cursor position when the user scrolls the page
+      // (mainly on mobile)
+      const x = (e.clientX || e.touches[0].clientX) + window.scrollX;
+      const y = (e.clientY || e.touches[0].clientY) + window.scrollY;
+
       let dot = document.createElement('div');
       dot.classList.add('dot')
       dot.style.top = y - this.radius + 'px';
@@ -258,32 +241,22 @@ export default {
       dot.style.background = this.lineColor;
       dot.style.width = dot.style.height = this.radius * 2 + 'px';
       document.body.appendChild(dot);
-      //setTimeout(function(){dot.style.opacity=0},500);
-      //setTimeout(function(){document.body.removeChild(dot)},1000);
     },
 
-    lineEnd: function () {
+    lineEnd: function (e) {
 
       if (!this.whiteboardJoined) {return}
 
-      let e = event;
-      let cursorX;
-      let cursorY;
-      let rect = this.board.getBoundingClientRect();
-
-      cursorX = Math.round(e.clientX - rect.x) || Math.round(e.changedTouches[0].clientX - rect.x)
-      cursorY = Math.round(e.clientY - rect.y) || Math.round(e.changedTouches[0].clientY - rect.y)
+      const pointToAdd = this.getViewBoxCoordinates(e);
+      this.addPointToLine(pointToAdd);
 
       this.$refs.socket.drawEnd(this.lineToSend, this.lineColor);
 
-
-      this.line += 'L' + cursorX + ',' + cursorY;
       this.cursor.style.opacity = .5
       const id = this.$refs.socket.drawingId;  // taken from the socket component, just updated with the new id
 
       this.createPath(id, this.line, this.lineColor, this.width);
-      // TODO broadcast all the points added
-      // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
+
       this.gesture = false;
       this.line = '';
       this.lineToSend = [];
@@ -298,43 +271,34 @@ export default {
 
       if (!this.whiteboardJoined) {return}
 
-      document.getElementById(id).remove(); // todo also removes on all clients and server, so it must broadcast this change
+      document.getElementById(id).remove();
       this.$refs.socket.undoLine(id);
     },
 
     remoteLineStart: function (data) {
-      //console.log("Line start" + JSON.stringify(data))
       if (data.id !== undefined) {
-        //console.log("Line start with ID")
         this.$refs.interpolation.createInterpolatingPath(data.id, data.color);
       }
     },
     remoteLineMove: function (data) {
-      //console.log("Line Move" +JSON.stringify(data))
       if (data.id && data.point) {
-        //console.log(`Line move with point : ${data}`)
-
-        const point = this.getCursors(data.point.x, data.point.y)
+        const point = data.point
         this.$refs.interpolation.interpolate(point.x, point.y, data.id)
       }
     },
     remoteLineEnd: function (data) {
-      //console.log("Line end")
       if (data.id && data.points) {
-        //console.log(`Line end with data ${data}`)
-
         this.$refs.interpolation.deleteInterpolatingPath(data.id);
 
         let remoteLine = "";
-        let point = this.getCursors(data.points[0].x, data.points[0].y);
-        //console.log(point);
+        let point = data.points[0];
+
         remoteLine += 'M' + point.x + ',' + point.y;
         data.points.splice(0, 1);
-        data.points.forEach(p => {
-          point = this.getCursors(p.x, p.y);
+        data.points.forEach(point => {
           remoteLine += 'L' + point.x + ',' + point.y;
         })
-        //console.log("Linea "+remoteLine);
+
         const id = data.id;
         this.createPath(id, remoteLine, data.color, this.width);
         remoteLine = "";
@@ -409,14 +373,12 @@ export default {
 
       arrayMove(this.bgColors, index, 0)
 
-      // this.board.innerHTML = this.board.innerHTML // force SVG repaint after DOM change
-
     },
 
 
 
     download: function () {
-      var dl = document.createElement("a");
+      const dl = document.createElement("a");
 
       let drawing = this.svgDataURL($('.drawSvg'))
 
@@ -429,21 +391,29 @@ export default {
     },
 
     svgDataURL: function () {
-      // let drawSvg = new XMLSerializer().serializeToString(this.board)
       let serialSvg = (new XMLSerializer).serializeToString(this.board);
       return "data:image/svg+xml," + encodeURIComponent(serialSvg);
 
-
-      // this.$emit('drawSubmit', drawSvg);
     },
 
-    getCursors(x,y) {
-      const point = {}
-      let rect = this.board.getBoundingClientRect();
-      point.x = Math.round(x - rect.x)
-      point.y = Math.round(y - rect.y)
-      return point;
-    }
+    getViewBoxCoordinates(event) {
+      const screenPoint = this.$refs.svg.createSVGPoint();
+      if (event.clientX && event.clientY) {
+        screenPoint.x = event.clientX;
+        screenPoint.y = event.clientY;
+      } else if (event.changedTouches[0].clientX && event.changedTouches[0].clientY) {
+        screenPoint.x = event.changedTouches[0].clientX;
+        screenPoint.y = event.changedTouches[0].clientY;
+      }
+
+      return screenPoint.matrixTransform(this.$refs.svg.getScreenCTM().inverse());
+    },
+
+    addPointToLine(point) {
+      const letter = this.line && this.line.length ? 'L' : 'M';
+      this.line += letter + Math.round(point.x) + ',' + Math.round(point.y);
+      this.lineToSend.push({x: Math.round(point.x), y: Math.round(point.y)})
+    },
 
 
   },
