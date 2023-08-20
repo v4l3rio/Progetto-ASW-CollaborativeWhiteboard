@@ -8,7 +8,7 @@
       <div class="toast position-relative">
         <div class="toast-header">
           <i class="bi bi-bell-fill" style="padding-right: 5px"></i>
-          <strong class="me-auto">Notifica</strong>
+          <strong class="me-auto">Notification</strong>
           <small></small>
           <button type="button" class="btn-close" @click="this.deleteNotification(notif._id)"
                   aria-label="Close"></button>
@@ -47,11 +47,6 @@ export default {
         }
       }).then(response => {
         this.notification = response.data.notification;
-        /*
-        this.notification.sort(function (x, y) {
-          return (x.visualized === y.visualized) ? 0 : x ? 1 : -1;
-        });
-        */
         this.notification.filter(function (el) {
           return !el.visualized
         }).forEach(toVisualize => {

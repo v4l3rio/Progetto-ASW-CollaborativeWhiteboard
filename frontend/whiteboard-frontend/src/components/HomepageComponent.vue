@@ -23,7 +23,7 @@
               class="btn btn-primary shadow mt-5 mainBtn"
               @click="navigate"
               role="link">
-            {{ isLogged ? "Vai alle lavagne" : "Accedi" }}
+            {{ isLogged ? "Your Whiteboards" : "Sign In" }}
           </button>
         </router-link>
       </div>

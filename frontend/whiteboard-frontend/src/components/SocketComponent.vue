@@ -30,9 +30,7 @@ export default {
     },
     methods:{
         connect() {
-          console.log("connetto")
             socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId, (response) => {
-              console.log("mi sono connesso")
                 this.$emit('whiteboardJoined', response.status);
             });
             socket.on("drawStartBC", (line, newId) => {

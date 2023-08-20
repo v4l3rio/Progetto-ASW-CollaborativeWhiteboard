@@ -38,14 +38,14 @@ export default {
     // todo add the remaining attributes to socket.IO calls
     socket.on("user-connected", (username) => {
       this.notificationType = "User Connected to Whiteboard"
-      this.notificationBody = username + " si è connesso alla tua lavagna!";
+      this.notificationBody = username + " successfully connected to your whiteboard!";
       this.$emit('notification');
       this.toast.show();
     });
 
     socket.on('receiveCollaborationInvite', (from) => {
       this.notificationType = "Invite to Whiteboard"
-      this.notificationBody = from + " ti ha invitato a collaborare ad una sua lavagna!";
+      this.notificationBody = from + " invited you to their whiteboard!";
       this.$emit('notification');
       this.toast.show();
     })

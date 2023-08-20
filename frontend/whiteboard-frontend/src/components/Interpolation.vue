@@ -46,7 +46,6 @@ export default {
         },
 
         deleteInterpolatingPath(id) {
-            //document.getElementById(id).remove();
             delete this.interpolatingPoints[id]
             delete this.interpolatingPaths[id]
         },

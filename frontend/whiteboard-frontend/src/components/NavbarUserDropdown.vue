@@ -14,7 +14,7 @@
             <li><router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
             <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
             <li><hr class="dropdown-divider active"></li>
-            <li><a class="dropdown-item  link-danger" role="button" @click="logout">Esci</a></li>
+            <li><a class="dropdown-item  link-danger" role="button" @click="logout">Logout</a></li>
         </ul>
     </div>
 </template>
