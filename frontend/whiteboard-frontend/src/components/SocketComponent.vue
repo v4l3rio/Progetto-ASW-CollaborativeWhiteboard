@@ -45,7 +45,6 @@ export default {
               this.$emit('drawEndBC', {id:lineId, points:line.points, color: line.color});
             });
             socket.on("lineDeleteBC", (lineId) => {
-              console.log("DSAKLDJAKSJDAKJ" + lineId)
               this.$emit("lineDeleteBC", {id: lineId});
             })
         },
