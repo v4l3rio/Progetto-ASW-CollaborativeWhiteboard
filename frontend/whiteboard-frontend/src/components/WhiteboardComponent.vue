@@ -67,7 +67,6 @@
                    v-on:drawingBC="remoteLineMove"
                    v-on:drawEndBC="remoteLineEnd"
                    v-on:lineDeleteBC="remoteLineDelete"
-                   v-on:setCallback="setCallback"
                    :whiteboard-id="this.$route.params.id"
   ></SocketComponent>
 </template>
@@ -144,13 +143,9 @@ export default {
   },
 
   methods: {
-    setCallback(callback){
-      this.$emit('setCallback', callback);
-    },
     onJoinedWhiteboard(status) {
       if (status === 'ok') {
         this.whiteboardJoined = true;
-        console.log("join whiteboard");
         this.initBoard()
       } else if (status === "ko") {
         console.log("ERRORE nel connettersi alla lavagna")
@@ -163,13 +158,11 @@ export default {
     initBoard: function () {
       this.board = $('.drawSvg')
       this.cursor = $('#cursor')
-      console.log("init board - fuori axios");
       axios.get(`http://localhost:4000/whiteboard/${this.$route.params.id}`, {
         params: {
           accessToken: localStorage.getItem("accessToken")
         }
       }).then(result => {
-        console.log("init board - dentro axios");
         const traits = result.data.whiteboardData.traits;
         this.$emit('setLoading', {loading:false, err: false});
         if (traits) {

@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/whiteboard/:id',
     name: 'Whiteboard',
-    component: WhiteboardView,
+    component: WhiteboardView
   },
   {
     path: '/login',
