@@ -67,7 +67,6 @@ export default {
     mounted: function () {
     },
     unmounted() {
-        console.log("Esco");
         socket.emit("leftWhiteboard");
     }
 

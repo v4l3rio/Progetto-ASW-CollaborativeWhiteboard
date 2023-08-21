@@ -14,6 +14,7 @@
       </button>
       <ActiveUserInWhiteboard/>
       <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
+      <PanTool ref="panTool" @toggle-pan="this.togglePan"></PanTool>
     </div>
 
     <div class="canvas rounded shadow ">
@@ -38,6 +39,7 @@
       <div id="cursor" v-bind:style='{ "background-color": lineColor }'></div>
 
     </div>
+
 
     <div class="toolbar" :style="{ right: toolBarRight }">
 
@@ -72,9 +74,9 @@
 </template>
 
 <script>
-import Interpolation from "@/components/whiteboard/Interpolation.vue";
+import Interpolation from "@/components/whiteboard/plugins/Interpolation.vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
-import UndoStack from "@/components/whiteboard/UndoStack.vue";
+import UndoStack from "@/components/whiteboard/plugins/UndoStack.vue";
 import SocketComponent from "@/components/whiteboard/SocketComponent.vue";
 import Spinner from "@/components/common/Spinner.vue";
 import BigGlowingSpinner from "@/components/common/BigGlowingSpinner.vue";
@@ -82,6 +84,7 @@ import axios from "axios";
 import Alert from "@/components/common/Alert.vue";
 import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
 import ActiveUserInWhiteboard from "@/components/whiteboard/ActiveUserInWhiteboard.vue";
+import PanTool from "@/components/whiteboard/plugins/PanTool.vue";
 
 require('../../assets/css/freehandDraw.css')
 
@@ -91,7 +94,9 @@ const $$ = document.querySelectorAll.bind(document);
 
 export default {
   name: 'WhiteboardComponent',
-  components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
+  components: {
+    PanTool,
+    ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
   emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit"],
   props: [
     'title',
@@ -102,6 +107,7 @@ export default {
   ],
   data() {
     return {
+      panSelected: false,
       whiteboardJoined: false,
       board: '',
       cursor: '',
@@ -143,6 +149,9 @@ export default {
   },
 
   methods: {
+    togglePan() {
+      this.panSelected = !this.panSelected;
+    },
     onJoinedWhiteboard(status) {
       if (status === 'ok') {
         this.whiteboardJoined = true;
@@ -173,6 +182,7 @@ export default {
           this.error = false;
         }
         this.loading = false;
+        this.$refs.panTool.setCanvas(this.$refs.svg)
       }).catch(error => {
         console.log(error)
         this.showAlert(error.response?.data?.message)
@@ -192,7 +202,7 @@ export default {
 
     lineStart: function (e) {
 
-      if (!this.whiteboardJoined) {return}
+      if ((!this.whiteboardJoined) || (this.panSelected === true)) {return}
 
       this.undo = true;
 
@@ -207,10 +217,11 @@ export default {
 
     lineMove: function (e) {
 
-      if (!this.whiteboardJoined) {return}
+
+
+      if (!this.whiteboardJoined || this.panSelected) {return}
 
       let pointToAdd = this.getViewBoxCoordinates(e);
-      const rect = this.board.getBoundingClientRect();
 
       if (this.gesture === true) {
         this.addPointToLine(pointToAdd);
@@ -221,8 +232,11 @@ export default {
       this.cursorX = pointToAdd.x;
       this.cursorY = pointToAdd.y;
 
+      const rect = this.board.getBoundingClientRect();
+
       this.cursor.style.top = e.clientY - rect.y - this.radius + 'px'
       this.cursor.style.left = e.clientX - rect.x - this.radius + 'px'
+
 
       this.onCanvas = true
     },
@@ -245,7 +259,7 @@ export default {
 
     lineEnd: function (e) {
 
-      if (!this.whiteboardJoined) {return}
+      if (!this.whiteboardJoined || this.panSelected) {return}
 
       const pointToAdd = this.getViewBoxCoordinates(e);
       this.addPointToLine(pointToAdd);

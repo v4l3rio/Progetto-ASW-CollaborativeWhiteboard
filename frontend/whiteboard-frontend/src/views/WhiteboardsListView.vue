@@ -62,7 +62,7 @@
 import CardPlaceholderComponent from "@/components/whiteboards/CardPlaceholderComponent.vue"
 import CardComponent from "@/components/whiteboards/WhiteboardsList.vue"
 import AddWhiteboardComponent from "@/components/whiteboards/AddWhiteboardComponent.vue"
-import ImportWhiteboardComponent from "@/components/whiteboard/ImportWhiteboardComponent.vue"
+import ImportWhiteboardComponent from "@/components/whiteboard/plugins/ImportWhiteboardComponent.vue"
 
 import axios from "axios";
 import ModalWithButton from "@/components/whiteboards/ModalWithButton.vue";
