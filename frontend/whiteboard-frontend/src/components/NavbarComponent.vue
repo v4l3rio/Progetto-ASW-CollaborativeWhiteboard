@@ -70,7 +70,7 @@
 </template>
 <script>
 import axios from "axios";
-import {socket} from "@/scripts/socket";
+import {socket, state} from "@/scripts/socket";
 import BootstrapIcon from "@/components/BootstrapIcon.vue";
 import NavbarUserDropdown from "@/components/NavbarUserDropdown.vue";
 export default {
@@ -123,7 +123,13 @@ export default {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 }).then(() => {
-                    socket.emit("joinApplication", localStorage.getItem('accessToken'));
+                    socket.emit("joinApplication", localStorage.getItem('accessToken'), (callback) => {
+                      if(callback.status === 'ok'){
+                        socket.connected = true;
+                      } else {
+                        socket.connected = false;
+                      }
+                    });
                     this.isLogged = true;
                     this.first_name = localStorage.getItem("name")
                     this.username = localStorage.getItem("username")

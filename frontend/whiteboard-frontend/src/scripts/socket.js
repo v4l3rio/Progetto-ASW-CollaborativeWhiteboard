@@ -1,9 +1,6 @@
-import { reactive } from "vue";
 import { io } from "socket.io-client";
 
-export const state = reactive({
-    connected: false,
-});
+export let connected = false;
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = "http://localhost:4000";
