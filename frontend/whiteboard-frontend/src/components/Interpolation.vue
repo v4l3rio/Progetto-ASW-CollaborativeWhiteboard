@@ -36,7 +36,6 @@ export default {
         interpolate: function (x, y, id) {
             if (performance.now() - this.testInterpolation > this.testInterpolationPeriod) {
                 this.testInterpolation = performance.now();
-                console.log(this.interpolatingPoints[id]);
                 if (this.interpolatingPoints[id]) {
                     this.interpolatingPoints[id]?.push(x,y)
                     const path = this.interpolatingPaths[id]
@@ -46,7 +45,6 @@ export default {
         },
 
         deleteInterpolatingPath(id) {
-            //document.getElementById(id).remove();
             delete this.interpolatingPoints[id]
             delete this.interpolatingPaths[id]
         },

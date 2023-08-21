@@ -33,7 +33,6 @@ export default {
                     this.paths += traitToPaths(trait, this.svg, id).outerHTML
                 }
             }
-            //this.svg.setAttribute("viewBox", `0 0 ${this.svg.clientWidth} ${this.svg.clientHeight}`)
         }
     },
     props: {
