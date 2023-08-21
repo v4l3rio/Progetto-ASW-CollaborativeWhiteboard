@@ -11,7 +11,7 @@
       </a>
         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end"
             style="position: absolute; inset: 0 0 auto auto; margin: 0; transform: translate3d(0px, 34px, 0px);">
-            <li><router-link to="/addwhiteboard" class="dropdown-item">New Project</router-link></li>
+            <li><router-link to="/whiteboards" class="dropdown-item">New Project</router-link></li>
             <li><router-link to="/profile" class="dropdown-item">Settings</router-link></li>
             <li><hr class="dropdown-divider active"></li>
             <li><a class="dropdown-item  link-danger" role="button" @click="logout">Logout</a></li>
