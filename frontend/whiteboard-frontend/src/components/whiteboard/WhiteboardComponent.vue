@@ -21,8 +21,8 @@
 
       <!-- Canvas size is defined in CSS, search for ".canvas" -->
 
-      <svg class="drawSvg" :width="canvasWidth"
-           :height="canvasHeight" viewBox="0 0 1000 1000" ref="svg"
+      <svg xmlns="http://www.w3.org/2000/svg" class="drawSvg" :width="canvasWidth"
+           :height="canvasHeight" viewBox="0 0 1000 1000" ref="svg" :style="{'background-color' : bgColor}"
            @mousedown="lineStart"
            @touchstart="lineStart"
            @mousemove="lineMove"
@@ -31,7 +31,6 @@
            @touchend="lineEnd"
       >
 
-        <rect id="bg" width="100%" height="100%" v-bind:fill="bgColor"></rect>
         <Interpolation ref="interpolation"></Interpolation>
         <g v-html="paths"></g>
       </svg>
@@ -382,8 +381,6 @@ export default {
       this.$emit('changeBgColor', color)
 
       this.setActiveColor('.bgColor li')
-
-      $('.drawSvg #bg').setAttribute('fill', this.bgColor)
 
       arrayMove(this.bgColors, index, 0)
 
