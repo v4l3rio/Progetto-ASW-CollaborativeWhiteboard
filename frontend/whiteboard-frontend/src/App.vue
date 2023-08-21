@@ -1,7 +1,7 @@
 <template>
-  <NavbarComponent v-on:join-application="this.onJoinApplication" ref="navbar"></NavbarComponent>
+  <NavbarComponent ref="navbar"></NavbarComponent>
    <NotificationComponent v-on:notification="this.onLiveNotification"></NotificationComponent>
-   <router-view v-on:setCallback="this.setCallback" ref='router' v-on:updateNotificationBadge="this.onVisualizeNotification" v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
+   <router-view v-on:updateNotificationBadge="this.onVisualizeNotification" v-on:onLogin="this.onLogin" v-on:onBadToken="this.onBadToken" v-on:onChangedInfo="this.onChangedInfo"/>
  </template>
 
  <style>
@@ -28,11 +28,6 @@
  import NavbarComponent from "@/components/NavbarComponent.vue"
  export default {
    name: "App",
-   data() {
-     return {
-       callback: undefined
-     }
-   },
    components: {NotificationComponent, NavbarComponent},
      methods: {
        onLogin() {
@@ -50,14 +45,6 @@
        },
        onLiveNotification(){
          this.$refs.navbar.updateNotificationNumber();
-       },
-       onJoinApplication(){
-         if(this.callback){
-           this.callback();
-         }
-       },
-       setCallback(callback){
-          this.callback = callback;
        }
      }
  }

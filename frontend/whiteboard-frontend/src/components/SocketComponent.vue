@@ -29,12 +29,9 @@ export default {
         this.connected = false;
     },
     methods:{
-      connect(){
-        this.$emit('setCallback', this.connectCallback);
-      },
-        connectCallback() {
+        connect() {
             socket.emit("joinWhiteboard", this.accessToken, this.whiteboardId, (response) => {
-              this.$emit('whiteboardJoined', response.status);
+                this.$emit('whiteboardJoined', response.status);
             });
             socket.on("drawStartBC", (line, newId) => {
               this.$emit('drawStartBC', {id: newId, point:{x: line.cursorX, y: line.cursorY}, color: line.color});
