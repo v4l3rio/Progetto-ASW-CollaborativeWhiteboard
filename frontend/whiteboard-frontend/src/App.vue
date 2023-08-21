@@ -30,7 +30,8 @@
    name: "App",
    data() {
      return {
-       callback: undefined
+       callback: undefined,
+       connected: false,
      }
    },
    components: {NotificationComponent, NavbarComponent},
@@ -52,12 +53,17 @@
          this.$refs.navbar.updateNotificationNumber();
        },
        onJoinApplication(){
+         this.connected = true;
          if(this.callback){
            this.callback();
          }
        },
        setCallback(callback){
-          this.callback = callback;
+         if(this.connected){
+           callback();
+         } else {
+           this.callback = callback;
+         }
        }
      }
  }

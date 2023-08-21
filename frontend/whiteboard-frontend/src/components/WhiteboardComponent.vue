@@ -93,7 +93,7 @@ const $$ = document.querySelectorAll.bind(document);
 export default {
   name: 'WhiteboardComponent',
   components: {ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
-  emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit"],
+  emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit", 'setCallback'],
   props: [
     'title',
     'colors',
