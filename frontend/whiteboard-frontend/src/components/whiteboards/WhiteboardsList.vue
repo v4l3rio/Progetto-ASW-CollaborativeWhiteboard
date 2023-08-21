@@ -6,7 +6,7 @@
                     <h6 class="card-title d-inline text-start"><strong>{{whiteboard.name}}</strong></h6>
                     <div class="dropdown text-end d-inline-flex align-items-center mx-auto">
                         <button class="btn btn-outline-light" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="z-index: 2;">
-                            <img src="../assets/icons/three-dots-vertical.svg" width="20" height="20"/>
+                            <img src="../../assets/icons/three-dots-vertical.svg" width="20" height="20"/>
                         </button>
                         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 34.4px, 0px);">
                             <li><a class="dropdown-item" role="button" @click="openWhiteboard(whiteboard._id)">Open</a></li>
@@ -22,8 +22,8 @@
     </div>
 </template>
 <script>
-import StaticWhiteboard from "@/components/StaticWhiteboard.vue";
-import SearchModal from "@/components/SearchModal.vue";
+import StaticWhiteboard from "@/components/whiteboards/StaticWhiteboard.vue";
+import SearchModal from "@/components/whiteboards/SearchModal.vue";
 
 export default {
     name: 'CardComponent',

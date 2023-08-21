@@ -8,7 +8,7 @@
       </div>
       <div class="col logo-container">
         <router-link to="/" class="col-md-3 mb-2 mb-md-0">
-          <img class="logo" src="../assets/icons/Logo.png" width="675" height="190" alt="Site Logo">
+          <img class="logo" src="../../assets/icons/Logo.png" width="675" height="190" alt="Site Logo">
         </router-link>
       </div>
 
@@ -71,8 +71,8 @@
 <script>
 import axios from "axios";
 import {socket, state} from "@/scripts/socket";
-import BootstrapIcon from "@/components/BootstrapIcon.vue";
-import NavbarUserDropdown from "@/components/NavbarUserDropdown.vue";
+import BootstrapIcon from "@/components/common/BootstrapIcon.vue";
+import NavbarUserDropdown from "@/components/navbar/NavbarUserDropdown.vue";
 export default {
     name: 'NavbarComponent',
     props: ['loginStatus'],
@@ -87,7 +87,7 @@ export default {
             defaultRefreshTimeoutMs: 5 * 60 * 1000,
             username: '',
             links: [{href: "/", name: "Home", loginNeeded: false},
-              {href: "/addwhiteboard", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ],
+              {href: "/whiteboards", name: "Whiteboards", loginNeeded: true}, {href: "/profile", name: "Profile", loginNeeded: true}, ],
             linkToNotification: '/notifications',
             unreadMessage:  0
         }

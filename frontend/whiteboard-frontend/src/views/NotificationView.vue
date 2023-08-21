@@ -29,7 +29,7 @@ import axios from "axios";
 import {Toast} from "bootstrap";
 
 export default {
-  name: "NotificationPageComponent",
+  name: "NotificationView",
   data() {
     return {
       notification: [],

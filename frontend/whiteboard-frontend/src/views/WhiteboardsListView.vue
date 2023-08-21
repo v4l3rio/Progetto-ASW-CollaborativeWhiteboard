@@ -59,18 +59,18 @@
     </div>
 </template>
 <script>
-import CardPlaceholderComponent from "@/components/CardPlaceholderComponent.vue"
-import CardComponent from "@/components/CardComponent.vue"
-import AddWhiteboardComponent from "@/components/AddWhiteboardComponent.vue"
-import ImportWhiteboardComponent from "@/components/ImportWhiteboardComponent.vue"
+import CardPlaceholderComponent from "@/components/whiteboards/CardPlaceholderComponent.vue"
+import CardComponent from "@/components/whiteboards/WhiteboardsList.vue"
+import AddWhiteboardComponent from "@/components/whiteboards/AddWhiteboardComponent.vue"
+import ImportWhiteboardComponent from "@/components/whiteboard/ImportWhiteboardComponent.vue"
 
 import axios from "axios";
-import ModalWithButton from "@/components/ModalWithButton.vue";
-import Alert from "@/components/Alert.vue";
-import SearchModal from "@/components/SearchModal.vue";
+import ModalWithButton from "@/components/whiteboards/ModalWithButton.vue";
+import Alert from "@/components/common/Alert.vue";
+import SearchModal from "@/components/whiteboards/SearchModal.vue";
 
 export default {
-    name: 'AddWhiteboardView',
+    name: 'WhiteboardsListView',
     data() {
         return {
             isReady: false,

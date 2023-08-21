@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import {interpolate} from "@/scripts/interpolation";
+import {interpolate} from "@/scripts/whiteboard/interpolation";
 
 export default {
     name: "Interpolation",

@@ -15,7 +15,7 @@
           </div>
         </header>
         <router-link
-            :to="isLogged ? '/addwhiteboard' : '/login'"
+            :to="isLogged ? '/whiteboards' : '/login'"
             custom
             v-slot="{ navigate }"
         >
@@ -49,10 +49,10 @@
 <script>
 
 
-import Carousel from "@/components/Carousel.vue";
+import Carousel from "@/components/common/Carousel.vue";
 
 export default {
-    name: 'HomepageComponent',
+    name: 'HomepageView',
   components: {Carousel},
     data() {
        return {

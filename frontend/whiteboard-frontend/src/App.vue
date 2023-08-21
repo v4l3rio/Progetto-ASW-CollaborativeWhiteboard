@@ -24,8 +24,8 @@
  @import'~bootstrap/dist/css/bootstrap.css';
  </style>
  <script>
- import NotificationComponent from "@/components/NotificationComponent.vue";
- import NavbarComponent from "@/components/NavbarComponent.vue"
+ import NotificationComponent from "@/components/notification/NotificationComponent.vue";
+ import NavbarComponent from "@/components/navbar/NavbarComponent.vue"
  export default {
    name: "App",
    components: {NotificationComponent, NavbarComponent},

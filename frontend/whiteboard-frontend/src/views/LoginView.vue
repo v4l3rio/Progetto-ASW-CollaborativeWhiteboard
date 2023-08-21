@@ -22,8 +22,8 @@
 </template>
 <script>
 import axios from "axios";
-import EmailFormComponent from "@/components/EmailFormComponent.vue"
-import PasswordFormComponent from "@/components/PasswordFormComponent.vue";
+import EmailFormComponent from "@/components/forms/EmailFormComponent.vue"
+import PasswordFormComponent from "@/components/forms/PasswordFormComponent.vue";
 export default {
     name: 'LoginView',
     components: {
@@ -56,7 +56,7 @@ export default {
                 localStorage.setItem('name', response.data.name);
                 localStorage.setItem('userId', response.data.userId);
                 localStorage.setItem('username', response.data.username);
-                this.$router.replace({ path: '/addwhiteboard' })
+                this.$router.replace({ path: '/whiteboards' })
                 this.$emit("onLogin");
             }).catch(error => {
                 this.isInvalid = true;

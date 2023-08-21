@@ -59,11 +59,11 @@
 </template>
 
 <script>
-import Spinner from "@/components/Spinner.vue";
+import Spinner from "@/components/common/Spinner.vue";
 import axios from "axios";
-import Identicon from "@/components/Identicon.vue";
+import Identicon from "@/components/common/Identicon.vue";
 import {socket} from "@/scripts/socket";
-import Alert from "@/components/Alert.vue";
+import Alert from "@/components/common/Alert.vue";
 
 const $ = document.querySelector.bind(document);
 

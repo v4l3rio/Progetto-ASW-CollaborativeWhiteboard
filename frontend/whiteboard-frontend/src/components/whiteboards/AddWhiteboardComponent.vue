@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import FAB from "@/components/FAB.vue";
+import FAB from "@/components/whiteboards/FAB.vue";
 
 export default {
   name: 'AddWhiteboardComponent',

@@ -1,16 +1,16 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import WhiteboardView from '../views/WhiteboardView.vue'
 import LoginView from '../views/LoginView.vue'
-import AddWhiteboardView from '../views/AddWhiteboardView.vue'
-import HomepageComponent from "@/components/HomepageComponent.vue";
+import WhiteboardsListView from '../views/WhiteboardsListView.vue'
+import HomepageView from "@/views/HomepageView.vue";
 import UserProfileView from '../views/UserProfileView.vue'
-import NotificationPageComponent from "@/components/NotificationPageComponent.vue";
+import NotificationView from "@/views/NotificationView.vue";
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomepageComponent
+    component: HomepageView
   },
   {
     path: '/whiteboard/:id',
@@ -23,9 +23,9 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/addWhiteboard',
-    name: 'Files',
-    component: AddWhiteboardView
+    path: '/whiteboards',
+    name: 'Whiteboards',
+    component: WhiteboardsListView
   },
   {
     path: '/register',
@@ -40,7 +40,7 @@ const routes = [
   {
     path: '/notifications',
     name: 'Notifications',
-    component: NotificationPageComponent
+    component: NotificationView
   }
 ]
 

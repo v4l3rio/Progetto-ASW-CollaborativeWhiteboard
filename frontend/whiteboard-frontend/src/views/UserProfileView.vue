@@ -79,8 +79,8 @@
 <script>
 
 import axios from "axios";
-import FooterComponent from "@/components/FooterComponent.vue"
-import IdenticonComponent from "@/components/Identicon.vue";
+import FooterComponent from "@/components/common/FooterComponent.vue"
+import IdenticonComponent from "@/components/common/Identicon.vue";
 export default {
   name: 'UserProfileView',
   components: {

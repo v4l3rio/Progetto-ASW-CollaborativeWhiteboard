@@ -9,7 +9,7 @@
 
 <script>
 import {socket} from "@/scripts/socket";
-import Identicon from "@/components/Identicon.vue";
+import Identicon from "@/components/common/Identicon.vue";
 
 export default {
 

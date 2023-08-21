@@ -1,5 +1,5 @@
 <template>
-    <button v-on:click="undoLine()" class="btn undoBtn"><img src="../assets/undo.svg" alt="Undo"></button>
+    <button v-on:click="undoLine()" class="btn undoBtn"><img src="../../assets/undo.svg" alt="Undo"></button>
 </template>
 
 <script>

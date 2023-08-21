@@ -5,7 +5,7 @@
                 <label for="floatingPassword">Password</label>
             </div>
             <button class="btn btn-outline-secondary" type="button" id="button-addon1" @click="showPassword">
-                <img :src="require('../assets/icons/' + image)" alt="show password"/>
+                <img :src="require('@/assets/icons/' + image)" alt="show password"/>
             </button>
         </div>
 </template>

@@ -10,7 +10,7 @@
         </ul> -->
 
     <div class="buttons" v-bind:class="{ showButtons: undo }">
-      <button v-on:click="download()" class="btn submitBtn"><img src="../assets/download.svg" alt="Download">
+      <button v-on:click="download()" class="btn submitBtn"><img src="../../assets/download.svg" alt="Download">
       </button>
       <ActiveUserInWhiteboard/>
       <UndoStack @undo-line="undoLine" ref="undoStack"></UndoStack>
@@ -72,18 +72,18 @@
 </template>
 
 <script>
-import Interpolation from "@/components/Interpolation.vue";
+import Interpolation from "@/components/whiteboard/Interpolation.vue";
 import {arrayMove, rgb2hex} from "@/scripts/utility";
-import UndoStack from "@/components/UndoStack.vue";
-import SocketComponent from "@/components/SocketComponent.vue";
-import Spinner from "@/components/Spinner.vue";
-import BigGlowingSpinner from "@/components/BigGlowingSpinner.vue";
+import UndoStack from "@/components/whiteboard/UndoStack.vue";
+import SocketComponent from "@/components/whiteboard/SocketComponent.vue";
+import Spinner from "@/components/common/Spinner.vue";
+import BigGlowingSpinner from "@/components/common/BigGlowingSpinner.vue";
 import axios from "axios";
-import Alert from "@/components/Alert.vue";
+import Alert from "@/components/common/Alert.vue";
 import {traitToPaths} from "@/scripts/whiteboard/pointsToSvg";
-import ActiveUserInWhiteboard from "@/components/ActiveUserInWhiteboard.vue";
+import ActiveUserInWhiteboard from "@/components/whiteboard/ActiveUserInWhiteboard.vue";
 
-require('../assets/css/freehandDraw.css')
+require('../../assets/css/freehandDraw.css')
 
 // hello jquery
 const $ = document.querySelector.bind(document);

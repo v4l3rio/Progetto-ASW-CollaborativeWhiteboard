@@ -22,8 +22,8 @@
 <script>
 
 
-import BootstrapIcon from "@/components/BootstrapIcon.vue";
-import IdenticonComponent from "@/components/Identicon.vue";
+import BootstrapIcon from "@/components/common/BootstrapIcon.vue";
+import IdenticonComponent from "@/components/common/Identicon.vue";
 export default {
   name: "NavbarUserDropdown",
   props: ['first_name'],
