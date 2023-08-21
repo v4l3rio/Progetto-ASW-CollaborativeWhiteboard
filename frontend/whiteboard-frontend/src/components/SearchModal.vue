@@ -154,7 +154,7 @@ export default {
 
                 axios.post('http://localhost:4000/profile/addNotification/', {
                     accessToken: localStorage.getItem("accessToken"),
-                    notification: {type: 'Whiteboard Sharing',body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false},
+                    notification: {type: 'Whiteboard Sharing',time: new Date(),body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false},
                     username: username
                 })
 
