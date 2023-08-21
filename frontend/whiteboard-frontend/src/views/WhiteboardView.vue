@@ -10,6 +10,7 @@
                              v-on:changeBgColor="changeBgColor"
                              v-on:drawSubmit="saveDrawing"
                              v-on:setLoading="setLoading"
+                             v-on:setCallback="setCallback"
         >
         </WhiteboardComponent>
     </div>
@@ -47,6 +48,9 @@ export default {
     },
 
     methods: {
+        setCallback(callback){
+          this.$emit('setCallback', callback);
+        },
         changeLineColor: function (color) {
             this.drawProps.lineColor = color;
         },

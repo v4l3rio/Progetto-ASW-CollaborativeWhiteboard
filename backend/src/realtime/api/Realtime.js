@@ -39,14 +39,16 @@ exports.Realtime = class Realtime {
         this.io.on('connection', (socket) => {
             if (socket.handshake.query.accessToken) {
                 this.log(`${socket.id} has connected through socket.IO`, LogType.CONNECTED)
-                socket.on("joinApplication", (accessToken) => {
+                socket.on("joinApplication", (accessToken, callback) => {
                     this.controller.checkToken(accessToken, (err, result) => {
                         if(err){
                             // todo manage unauthorized access
                             this.log("Error connecting: " + err, LogType.ERR)
+                            callback({status: 'ko'});
                             socket.disconnect();
                         } else{
                             this.joinApplication(socket, result.username);
+                            callback({status: 'ok'});
                         }
                     })
                 })
