@@ -70,7 +70,6 @@
 </template>
 <script>
 import axios from "axios";
-import IdenticonComponent from "@/components/Identicon.vue";
 import {socket} from "@/scripts/socket";
 import BootstrapIcon from "@/components/BootstrapIcon.vue";
 import NavbarUserDropdown from "@/components/NavbarUserDropdown.vue";
@@ -80,7 +79,6 @@ export default {
     components: {
       NavbarUserDropdown,
       BootstrapIcon,
-        IdenticonComponent
     },
     data() {
         return {
