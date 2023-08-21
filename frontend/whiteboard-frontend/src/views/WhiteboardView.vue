@@ -46,7 +46,7 @@ export default {
 
         }
     },
-    emits: ['setCallback'],
+
     methods: {
         setCallback(callback){
           this.$emit('setCallback', callback);
