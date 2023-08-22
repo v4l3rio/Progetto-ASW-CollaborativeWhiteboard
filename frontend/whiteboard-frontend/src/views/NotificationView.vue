@@ -61,7 +61,7 @@ export default {
         this.notification = response.data.notification;
 
         this.notification.sort(function (x, y) {
-          return (x.visualized === y.visualized) ? 0 : x ? -1 : 1;
+          return new Date(y.time) - new Date(x.time);
         });
 
         this.notification.filter(function (el) {
