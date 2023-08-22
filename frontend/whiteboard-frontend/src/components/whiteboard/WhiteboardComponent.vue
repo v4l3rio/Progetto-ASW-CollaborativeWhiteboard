@@ -48,9 +48,9 @@
 
         <transition-group class="stroke" name="color-list" tag="ul">
           <li v-for="(stroke, $index) in strokes" v-bind:style='{ "background-color": "white" }' v-bind:value="stroke"
-              v-on:click="changeLineWidth(stroke, $index)" v-bind:key="stroke">
+              v-on:click="changeLineWidth(stroke, $index)" v-bind:key="stroke" v-bind:class="{ 'activeColor': (this.stroke === stroke)}">
             <div class="container d-flex align-items-center justify-content-center" style="height: 100%; border:none;">
-              <span style="border-radius: 50%;" v-bind:style='{ "width": stroke + "px", "height":stroke +"px","background-color":this.lineColor }'></span>
+              <span style="border-radius: 50%; position: absolute" v-bind:style='{ "width": stroke + "px", "height":stroke +"px","background-color":this.lineColor }'></span>
             </div>
           </li>
         </transition-group>
@@ -352,6 +352,7 @@ export default {
 
       for (let color of allColors) {
         color.classList.remove('activeColor')
+        console.log(color);
       }
 
       setTimeout(function () {
@@ -414,8 +415,6 @@ export default {
       window.scrollTo({top: 0, behavior: 'smooth'});
 
       this.$emit('changeStroke', stroke)
-
-      this.setActiveColor('.stroke li')
 
       // changing circle position
       arrayMove(this.strokes, index, 0)
