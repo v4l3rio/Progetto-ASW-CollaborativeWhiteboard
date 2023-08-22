@@ -11,7 +11,7 @@ exports.traitToPaths = function (trait, svg, id) {
         trait.points.forEach(point => {
             pathString += 'L' + point.x + ',' + point.y;
         })
-        return createPath(id, pathString, trait.color, LINE_WIDTH);
+        return createPath(id, pathString, trait.color, trait.stroke ? trait.stroke : LINE_WIDTH);
     }
     return {}
 

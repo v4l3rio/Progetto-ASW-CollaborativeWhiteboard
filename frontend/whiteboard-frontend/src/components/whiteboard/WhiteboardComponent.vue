@@ -274,7 +274,7 @@ export default {
       const pointToAdd = this.getViewBoxCoordinates(e);
       this.addPointToLine(pointToAdd);
 
-      this.$refs.socket.drawEnd(this.lineToSend, this.lineColor);
+      this.$refs.socket.drawEnd(this.lineToSend, this.lineColor, this.stroke);
 
       this.cursor.style.opacity = .5
       const id = this.$refs.socket.drawingId;  // taken from the socket component, just updated with the new id
@@ -324,7 +324,7 @@ export default {
         })
 
         const id = data.id;
-        this.createPath(id, remoteLine, data.color, this.stroke);
+        this.createPath(id, remoteLine, data.color, data.stroke);
         remoteLine = "";
         data.points = [];
       }

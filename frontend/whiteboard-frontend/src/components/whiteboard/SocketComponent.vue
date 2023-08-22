@@ -43,28 +43,28 @@ export default {
         this.$emit('whiteboardJoined', response.status);
       });
       socket.on("drawStartBC", (line, newId) => {
-        this.$emit('drawStartBC', {id: newId, point: {x: line.cursorX, y: line.cursorY}, color: line.color});
+        this.$emit('drawStartBC', {id: newId, point: {x: line.cursorX, y: line.cursorY}, color: line.color, stroke: line.stroke});
       });
       socket.on("drawingBC", (line, lineId) => {
         this.$emit('drawingBC', {id: lineId, point: {x: line.cursorX, y: line.cursorY}})
       });
       socket.on("drawEndBC", (line, lineId) => {
-        this.$emit('drawEndBC', {id: lineId, points: line.points, color: line.color});
+        this.$emit('drawEndBC', {id: lineId, points: line.points, color: line.color, stroke: line.stroke});
       });
       socket.on("lineDeleteBC", (lineId) => {
         this.$emit("lineDeleteBC", {id: lineId});
       });
     },
-    drawStart(cursorX, cursorY, color) {
-      socket.emit("drawStart", {cursorX, cursorY, color}, localStorage.getItem("accessToken"), (response) => {
+    drawStart(cursorX, cursorY, color, stroke) {
+      socket.emit("drawStart", {cursorX, cursorY, color, stroke}, localStorage.getItem("accessToken"), (response) => {
         this.drawingId = response.newId;
       });
     },
     drawing(cursorX, cursorY) {
       socket.emit("drawing", {cursorX, cursorY}, this.drawingId, localStorage.getItem("accessToken"));
     },
-    drawEnd(lineToSend, color) {
-      socket.emit("drawEnd", {points: lineToSend, color}, this.drawingId, localStorage.getItem("accessToken"));
+    drawEnd(lineToSend, color, stroke) {
+      socket.emit("drawEnd", {points: lineToSend, color, stroke}, this.drawingId, localStorage.getItem("accessToken"));
     },
     undoLine(id) {
       socket.emit("lineDelete", id, localStorage.getItem("accessToken"));
