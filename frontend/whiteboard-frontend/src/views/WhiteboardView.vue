@@ -6,8 +6,11 @@
                              v-bind:bgColors="drawProps.bgColors"
                              v-bind:lineColor="drawProps.lineColor"
                              v-bind:bgColor="drawProps.bgColor"
+                             v-bind:strokes="drawProps.strokes"
+                             v-bind:stroke="drawProps.stroke"
                              v-on:changeLineColor="changeLineColor"
                              v-on:changeBgColor="changeBgColor"
+                             v-on:changeStroke="changeStrokeWidth"
                              v-on:drawSubmit="saveDrawing"
                              v-on:setLoading="setLoading"
         >
@@ -39,8 +42,10 @@ export default {
                     title: "Freehand SVG Draw",
                     colors: ['#EAEAEA', '#292929', '#00A0FF', '#FF29AA', '#FFE500', '#FF3030', '#12EB0A'],
                     bgColors: ['#FFFFFF', '#292929', '#00A0FF', '#FF29AA', '#FFE500', '#FF3030', '#12EB0A'],
+                    strokes: [2 ,5, 10, 15, 20, 25, 30],
                     lineColor: "#292929",
-                    bgColor: "#FFFFFF"
+                    bgColor: "#FFFFFF",
+                    stroke: 10
                 }
 
         }
@@ -51,6 +56,9 @@ export default {
             this.drawProps.lineColor = color;
         },
 
+      changeStrokeWidth: function (stroke) {
+          this.drawProps.stroke = stroke;
+      },
         changeBgColor: function (color) {
             this.drawProps.bgColor = color;
         },

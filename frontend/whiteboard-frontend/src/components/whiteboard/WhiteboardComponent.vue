@@ -46,11 +46,19 @@
 
         <div class="panelUp mobile"></div>
 
+        <transition-group class="stroke" name="color-list" tag="ul">
+          <li v-for="(stroke, $index) in strokes" v-bind:style='{ "background-color": "white" }' v-bind:value="stroke"
+              v-on:click="changeLineWidth(stroke, $index)" v-bind:key="stroke">
+            <div class="container d-flex align-items-center justify-content-center" style="height: 100%; border:none;">
+              <span style="border-radius: 50%;" v-bind:style='{ "width": stroke + "px", "height":stroke +"px","background-color":this.lineColor }'></span>
+            </div>
+          </li>
+        </transition-group>
+
         <transition-group class="lineColor" name="color-list" tag="ul">
           <li v-for="(color, $index) in colors" v-bind:style='{ "background-color": color }'
               v-on:click="changeLineColor(color, $index)" v-bind:key="color"></li>
         </transition-group>
-
 
         <transition-group class="bgColor" name="color-list" tag="ul">
           <li v-for="(color, $index) in bgColors" v-bind:key="color"
@@ -96,13 +104,15 @@ export default {
   components: {
     PanTool,
     ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
-  emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit"],
+  emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit", 'changeStroke'],
   props: [
     'title',
     'colors',
     'bgColors',
+    'strokes',
     'lineColor',
     'bgColor',
+    'stroke'
   ],
   data() {
     return {
@@ -113,7 +123,7 @@ export default {
       colorNum: 0,
       gesture: false,
       line: '',
-      radius: 2.5,
+      radius: 3,
       width: 8,
       undo: true,
       onCanvas: false, // mouseout event is not firing, dunno why,
@@ -192,6 +202,7 @@ export default {
       this.gesture = false
       this.setActiveColorMounted('.lineColor li', this.colors, this.lineColor)
       this.setActiveColorMounted('.bgColor li', this.bgColors, this.bgColor)
+      this.setActiveStrokeMounted('.stroke li', this.strokes, this.stroke)
     },
 
     showAlert(text) {
@@ -268,7 +279,7 @@ export default {
       this.cursor.style.opacity = .5
       const id = this.$refs.socket.drawingId;  // taken from the socket component, just updated with the new id
 
-      this.createPath(id, this.line, this.lineColor, this.width);
+      this.createPath(id, this.line, this.lineColor, this.stroke);
 
       this.gesture = false;
       this.line = '';
@@ -313,7 +324,7 @@ export default {
         })
 
         const id = data.id;
-        this.createPath(id, remoteLine, data.color, this.width);
+        this.createPath(id, remoteLine, data.color, this.stroke);
         remoteLine = "";
         data.points = [];
       }
@@ -346,6 +357,19 @@ export default {
       setTimeout(function () {
         target.classList.add('activeColor')
       }, 10)
+    },
+
+    setActiveStrokeMounted: function(li, arr, stroke) {
+      let allLi = $$(li)
+      let strokeIndex = arr.indexOf(stroke)
+      for (let li of allLi) {
+        let liStroke = li.value;
+        if (liStroke === stroke) {
+          li.classList.add('activeColor')
+
+          arrayMove(arr, strokeIndex, 0)
+        }
+      }
     },
 
     setActiveColorMounted: function (li, arr, color) {
@@ -384,6 +408,17 @@ export default {
 
       arrayMove(this.bgColors, index, 0)
 
+    },
+
+    changeLineWidth: function (stroke, index){
+      window.scrollTo({top: 0, behavior: 'smooth'});
+
+      this.$emit('changeStroke', stroke)
+
+      this.setActiveColor('.stroke li')
+
+      // changing circle position
+      arrayMove(this.strokes, index, 0)
     },
 
 

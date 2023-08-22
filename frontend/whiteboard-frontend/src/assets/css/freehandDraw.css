@@ -103,6 +103,7 @@
     transition: all .3s ease-out;
 }
 
+
 .draw .toolbar .bgColor li{
     border-radius: 8px;
 }
@@ -239,12 +240,13 @@
         border-radius: 6px 6px 6px 6px;
     }
 
-    .lineColor .activeColor{
-        right: 35%;
-    }
 
     .bgColor .activeColor{
-        left: 35%;
+        left:70%
+    }
+
+    .stroke .activeColor{
+        right: 70%;
     }
 
     .draw .toolbar .activeColor::after{
