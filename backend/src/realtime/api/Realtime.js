@@ -19,7 +19,7 @@ exports.Realtime = class Realtime {
         // Create an io server and allow for CORS from http://localhost:3000 with GET and POST methods
         this.io = new Server(server, {
             cors: {
-                origin: ['http://localhost:3000', "http://localhost:8080"],
+                origin: [`http://${process.env.FRONTEND_IP}:3000`, `http://${process.env.FRONTEND_IP}:8080`],
                 methods: ['GET', 'POST'],
             },
         });

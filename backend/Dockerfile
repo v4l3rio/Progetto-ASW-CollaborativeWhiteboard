@@ -4,4 +4,6 @@ WORKDIR /collaborative-whiteboard-app
 COPY package.json .
 RUN npm install
 COPY . .
-CMD npm start
+ENV DB_IP=db
+ENV FRONTEND_IP=localhost
+CMD npm run dev

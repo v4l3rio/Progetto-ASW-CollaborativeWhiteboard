@@ -103,7 +103,7 @@ export default {
           this.unreadMessage++;
         },
         loadUnreadNotification(){
-            axios.get('http://localhost:4000/profile/unreadNotifications/', {
+            axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/unreadNotifications/`, {
                 params: {
                     accessToken: localStorage.getItem("accessToken"),
                 }
@@ -116,7 +116,7 @@ export default {
         },
         reloadNavbar() {
             if (localStorage.getItem('accessToken') && !this.isLogged) {
-                axios.post('http://localhost:4000/auth/refresh', {
+                axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/refresh`, {
                     accessToken: localStorage.getItem('accessToken'),
                 }, {
                     headers: {
@@ -136,7 +136,7 @@ export default {
                     this.$forceUpdate();
                     // REFRESH TOKEN EVERY 8 minutes (or so)
                     setInterval(() => {
-                        axios.post('http://localhost:4000/auth/refresh', {
+                        axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/refresh`, {
                             accessToken: localStorage.getItem('accessToken'),
                         }, {
                             headers: {

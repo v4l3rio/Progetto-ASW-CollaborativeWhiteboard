@@ -47,7 +47,7 @@ export default {
         },
         submitForm() {
             const ref = this;
-            axios.post('http://localhost:4000/auth/login',
+            axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/login`,
             {
                 username: this.email,
                 password: this.password,

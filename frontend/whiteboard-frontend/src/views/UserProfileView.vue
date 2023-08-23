@@ -106,7 +106,7 @@ export default {
       window.scrollTo(0,0);
     },
     getUserData() {
-      axios.get('http://localhost:4000/userSetting/', {
+      axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/`, {
         params: {
           accessToken: localStorage.getItem("accessToken")
         }
@@ -123,7 +123,7 @@ export default {
       })
     },
     updateUserInfo() {
-      axios.put('http://localhost:4000/userSetting/updateInfo', {
+      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/updateInfo`, {
         accessToken: localStorage.getItem("accessToken"),
         first_name: this.name,
         last_name: this.surname,
@@ -146,7 +146,7 @@ export default {
 
     },
     updatePassword() {
-      axios.put('http://localhost:4000/userSetting/updatePassword', {
+      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}.4000/userSetting/updatePassword`, {
         accessToken: localStorage.getItem("accessToken"),
         password: this.$refs.newPassword.value,
         username: this.email
