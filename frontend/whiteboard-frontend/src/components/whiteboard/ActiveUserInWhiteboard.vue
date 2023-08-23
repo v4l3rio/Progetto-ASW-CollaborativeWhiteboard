@@ -2,7 +2,7 @@
     <ul class="row pb-3 activeUsers">
       <template v-for="(user,index) in this.onlineUsers" :key="user">
           <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="user"></Identicon></div>
-          <div class="col align-middle hideDesktop" v-if="true"><p>{{user}}</p></div>
+          <div class="col align-middle hideDesktop" v-if="hover[index]"><p>{{user}}</p></div>
       </template>
     </ul>
 </template>
