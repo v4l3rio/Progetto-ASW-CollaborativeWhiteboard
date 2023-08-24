@@ -31,13 +31,11 @@ export default {
             if(!this.onlineUsernames.includes(username)){
                 this.onlineUsernames.push(username);
             }
-            console.log(this.onlineUsernames)
         });
         socket.on("user-disconnected", (username) =>{
             if(this.onlineUsernames.includes(username)){
                 this.onlineUsernames.splice(this.onlineUsernames.indexOf(username),1);
             }
-          console.log(this.onlineUsernames)
 
         })
     },

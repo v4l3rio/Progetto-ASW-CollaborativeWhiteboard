@@ -148,7 +148,6 @@ export default {
 
         },
         setInviteWhiteboard(whiteboard) {
-            console.log(whiteboard);
             this.inviteId = whiteboard.id;
             this.whiteboardInviteName = whiteboard.name;
         },
@@ -161,7 +160,6 @@ export default {
                     accessToken: localStorage.getItem("accessToken"),
                     whiteboardName: this.whiteboardCreateName
                 }).then(response => {
-                    console.log(response.data.message);
                     this.whiteboardCreateName = "";
                     this.alertOn = false;
                     this.loading = false;
@@ -208,7 +206,6 @@ export default {
         },
         renameWhiteboard() {
             this.$refs.renameModal.close();
-            console.log(this.renameId)
             axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/updateWhiteboard`, {
                 accessToken: localStorage.getItem("accessToken"),
                 whiteboardId: this.renameId,
@@ -216,7 +213,6 @@ export default {
             }).then(response => {
                 this.getWhiteboards();
                 this.loading = false;
-                console.log(response.data.message);
                 this.whiteboardRenameName = "";
                 this.alertOn = false;
                 this.renameId = -1;

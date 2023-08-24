@@ -134,7 +134,6 @@ export default {
                     }
                 }).then(response => {
                     this.foundUsers = response.data.users;
-                    console.log(response.data.users);
                     this.loading = false;
                 }).catch(error => {
                     console.log(error);
@@ -143,13 +142,11 @@ export default {
             }
         },
         invite(username) {
-            console.log("Inviting " + username);
             axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/whiteboard/invite`, {
                 accessToken: localStorage.getItem("accessToken"),
                 username: username,
                 whiteboardId: this.whiteboardId
             }).then(result => {
-                console.log(result)
                 socket.emit("inviteCollaborator", localStorage.getItem("accessToken"), username);
 
                 axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/addNotification/`, {

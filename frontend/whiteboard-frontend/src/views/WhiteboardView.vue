@@ -64,7 +64,6 @@ export default {
         },
 
         saveDrawing: function (drawSvg) {
-            console.log(drawSvg)
         },
         setLoading(args) {
             this.loading = args.loading;

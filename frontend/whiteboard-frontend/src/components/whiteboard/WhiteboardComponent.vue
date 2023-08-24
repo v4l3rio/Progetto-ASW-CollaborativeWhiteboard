@@ -351,7 +351,6 @@ export default {
 
       for (let color of allColors) {
         color.classList.remove('activeColor')
-        console.log(color);
       }
 
       setTimeout(function () {
@@ -426,7 +425,6 @@ export default {
 
       let drawing = this.svgDataURL($('.drawSvg'))
 
-      console.log(drawing)
 
       document.body.appendChild(dl); // This line makes it work in Firefox.
       dl.setAttribute("href", drawing)
