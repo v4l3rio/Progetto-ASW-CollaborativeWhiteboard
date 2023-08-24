@@ -26,7 +26,7 @@ import StaticWhiteboard from "@/components/whiteboards/StaticWhiteboard.vue";
 import SearchModal from "@/components/whiteboards/SearchModal.vue";
 
 export default {
-    name: 'CardComponent',
+    name: 'WhiteboardCardsList',
     components: {SearchModal, StaticWhiteboard},
     props: ['whiteboards', 'shared'],
     emits:['card-deleted', 'card-renamed', 'invite-to-whiteboard'],

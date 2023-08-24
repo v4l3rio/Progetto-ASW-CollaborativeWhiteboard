@@ -2,7 +2,7 @@
     <div class="container text-start">
         <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}"></Alert>
 
-        <AddWhiteboardComponent v-bind:addProps="addProps" @add-whiteboard=""></AddWhiteboardComponent>
+        <WhiteboardsListComponent v-bind:addProps="addProps" @add-whiteboard=""></WhiteboardsListComponent>
 
         <SearchModal v-bind:name="whiteboardInviteName" v-bind:whiteboard-id="inviteId"
                      @invited="getWhiteboards"></SearchModal>
@@ -34,34 +34,34 @@
         </div>
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-            <CardComponent @card-deleted="openDeleteModal" @card-renamed="openRenameModal"
+            <WhiteboardCardsList @card-deleted="openDeleteModal" @card-renamed="openRenameModal"
                            @invite-to-whiteboard="setInviteWhiteboard"
                            v-bind:whiteboards="myWhiteboards"
                            v-bind:shared='false'
                            v-else-if="myWhiteboards?.length !== 0">
 
-            </CardComponent>
+            </WhiteboardCardsList>
             <div class="col align-self-center" v-else>Add a new whiteboard to start</div>
         </div>
       <hr class="mt-5 mb-5 justify-content-center" />
         <h1 class="h3 mb-3 mt-3">Shared with you</h1>
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <CardPlaceholderComponent v-if="!isReady"></CardPlaceholderComponent>
-            <CardComponent @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal"
+            <WhiteboardCardsList @card-deleted="deleteWhiteboard" @card-renamed="openRenameModal"
                            @invite-to-whiteboard="setInviteWhiteboard"
                            v-bind:whiteboards="sharedWhiteboards"
                            v-bind:shared='true'
                            v-else-if="sharedWhiteboards?.length !== 0">
 
-            </CardComponent>
+            </WhiteboardCardsList>
             <div class="col align-self-center pb-5" v-else>No one has shared slates with you yet</div>
         </div>
     </div>
 </template>
 <script>
 import CardPlaceholderComponent from "@/components/whiteboards/CardPlaceholderComponent.vue"
-import CardComponent from "@/components/whiteboards/WhiteboardsList.vue"
-import AddWhiteboardComponent from "@/components/whiteboards/AddWhiteboardComponent.vue"
+import WhiteboardCardsList from "@/components/whiteboards/WhiteboardCardsList.vue"
+import WhiteboardsListComponent from "@/components/whiteboards/WhiteboardsListComponent.vue"
 import ImportWhiteboardComponent from "@/components/whiteboard/plugins/ImportWhiteboardComponent.vue"
 
 import axios from "axios";
@@ -107,9 +107,9 @@ export default {
         SearchModal,
         Alert,
         ModalWithButton,
-        CardComponent,
+        WhiteboardCardsList,
         CardPlaceholderComponent,
-        AddWhiteboardComponent,
+        WhiteboardsListComponent,
     },
     methods: {
         getWhiteboards() {

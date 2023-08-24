@@ -325,7 +325,6 @@ export default {
 
         const id = data.id;
         this.createPath(id, remoteLine, data.color, data.stroke);
-        remoteLine = "";
         data.points = [];
       }
     },
