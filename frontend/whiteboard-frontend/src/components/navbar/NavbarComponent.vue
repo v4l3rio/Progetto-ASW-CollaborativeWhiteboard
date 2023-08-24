@@ -32,7 +32,7 @@
                 <a role="button" class="btn btn-outline-success" href="#/register">Sign Up</a>
             </div>
             <div v-else>
-              <NavbarUserDropdown :first_name="this.first_name" @logout="this.logout"></NavbarUserDropdown>
+              <NavbarUserDropdown :username="this.username" :first_name="this.first_name" @logout="this.logout"></NavbarUserDropdown>
             </div>
         </div>
       <div class="col-3 menu-mobile">
@@ -42,7 +42,7 @@
           </a>
         </div>
         <div v-else>
-          <NavbarUserDropdown :first_name="this.first_name" @logout="this.logout"></NavbarUserDropdown>
+          <NavbarUserDropdown :username="this.username" :first_name="this.first_name" @logout="this.logout"></NavbarUserDropdown>
         </div>
       </div>
       <div class="collapse menu-mobile" id="menuMobileCollapse" ref="collapse">

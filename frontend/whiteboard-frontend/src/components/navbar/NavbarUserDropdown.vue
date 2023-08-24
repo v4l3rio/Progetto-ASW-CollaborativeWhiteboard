@@ -6,7 +6,7 @@
             </div>
         </a>
       <a role="button" class="btn btn-light link-body-emphasis text-decoration-none hideDesktop" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="true">
-        <IdenticonComponent style="width: 30px; height: 30px;" :take-from-storage="true"></IdenticonComponent>
+        <IdenticonComponent :seed="username" style="width: 30px; height: 30px;"></IdenticonComponent>
         <p class="d-inline mx-2 mb-0 text-truncate" ><small>{{ first_name }}</small></p>
       </a>
         <ul class="dropdown-menu text-small" data-popper-placement="bottom-end"
@@ -26,7 +26,7 @@ import BootstrapIcon from "@/components/common/BootstrapIcon.vue";
 import IdenticonComponent from "@/components/common/Identicon.vue";
 export default {
   name: "NavbarUserDropdown",
-  props: ['first_name'],
+  props: ['first_name', 'username'],
   emits: ['logout'],
   components: {IdenticonComponent, BootstrapIcon},
   methods: {

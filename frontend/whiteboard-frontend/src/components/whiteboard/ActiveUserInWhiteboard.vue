@@ -1,8 +1,8 @@
 <template>
     <ul class="row pb-3 activeUsers">
-      <template v-for="(user,index) in this.onlineUsers" :key="user">
-          <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="user"></Identicon></div>
-          <div class="col align-middle hideDesktop" v-if="hover[index]"><p>{{user}}</p></div>
+      <template v-for="(username,index) in this.onlineUsernames" :key="username">
+          <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="username"></Identicon></div>
+          <div class="col align-middle hideDesktop" v-if="hover[index]"><p>{{username}}</p></div>
       </template>
     </ul>
 </template>
@@ -17,32 +17,32 @@ export default {
     components: {Identicon},
     data() {
         return {
-            onlineUsers: [],
+            onlineUsernames: [],
             hover: [],
         };
     },
     created() {
         socket.on('allConnectedUsers', (usernames) => {
-            this.onlineUsers = usernames;
+            this.onlineUsernames = usernames;
         })
     },
     mounted() {
         socket.on("user-connected", (username) => {
-            if(!this.onlineUsers.includes(username)){
-                this.onlineUsers.push(username);
+            if(!this.onlineUsernames.includes(username)){
+                this.onlineUsernames.push(username);
             }
-            console.log(this.onlineUsers)
+            console.log(this.onlineUsernames)
         });
         socket.on("user-disconnected", (username) =>{
-            if(this.onlineUsers.includes(username)){
-                this.onlineUsers.splice(this.onlineUsers.indexOf(username),1);
+            if(this.onlineUsernames.includes(username)){
+                this.onlineUsernames.splice(this.onlineUsernames.indexOf(username),1);
             }
-          console.log(this.onlineUsers)
+          console.log(this.onlineUsernames)
 
         })
     },
     unmounted() {
-        this.onlineUsers = [];
+        this.onlineUsernames = [];
     }
 }
 </script>

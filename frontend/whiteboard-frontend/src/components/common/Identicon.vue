@@ -24,19 +24,13 @@ export default {
     },
     methods: {
         update() {
-          const computed = localStorage.getItem("base64");
-            if (computed === null || !this.takeFromStorage) {
+            if (!this.base64) {
                 sha256(this.seed).then(res => {
                     this.base64 = new Identicon(res, {
                         background: [255, 255, 255, 0],
                         format: 'svg'
                     }).toString();
-                    if (this.takeFromStorage) {
-                      localStorage.setItem("base64", this.base64);
-                    }
                  });
-            } else {
-                this.base64 = computed;
             }
         }
     },
