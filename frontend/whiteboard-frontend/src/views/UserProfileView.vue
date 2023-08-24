@@ -147,7 +147,7 @@ export default {
 
     },
     updatePassword() {
-      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}.4000/userSetting/updatePassword`, {
+      axios.put(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/updatePassword`, {
         accessToken: localStorage.getItem("accessToken"),
         password: this.$refs.newPassword.value,
         username: this.email
@@ -163,11 +163,7 @@ export default {
       })
     },
     checkChanges() {
-      if (this.name !== this.currentName || this.surname !== this.currentSurname) {
-        this.isEnabled = true
-      } else {
-        this.isEnabled = false
-      }
+      this.isEnabled = this.name !== this.currentName || this.surname !== this.currentSurname;
     },
   },
   mounted: function () {
