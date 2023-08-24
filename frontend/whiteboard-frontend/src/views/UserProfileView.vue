@@ -87,6 +87,7 @@ export default {
     FooterComponent,
     IdenticonComponent
 },
+  emits: ['onChangedInfo'],
   data() {
     return {
       email: localStorage.getItem('username'),

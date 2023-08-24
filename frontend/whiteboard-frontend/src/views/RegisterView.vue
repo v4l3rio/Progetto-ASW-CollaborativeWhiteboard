@@ -72,6 +72,7 @@ export default {
         EmailFormComponent,
         PasswordFormComponent
     },
+    emits: ['onLogin'],
     methods: {
         checkPasswords: function () {
             if (this.password !== this.confirmPassword) {
@@ -85,7 +86,7 @@ export default {
         },
         submitForm: function () {
             const ref = this;
-            var req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/register`, {
+            const req = axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/auth/register`, {
                 username:this.username,
                 password:this.password,
                 first_name:this.name,
