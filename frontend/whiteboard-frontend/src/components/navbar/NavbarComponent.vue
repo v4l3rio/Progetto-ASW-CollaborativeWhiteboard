@@ -2,7 +2,7 @@
     <nav class="row nav-container mb-4 no-gutters">
       <div class="col-3 menu-mobile">
         <a class="menu-mobile-button" data-bs-toggle="collapse" href="#menuMobileCollapse"
-           role="button" aria-expanded="false" aria-controls="menuMobileCollapse">
+           role="button" aria-expanded="false" aria-controls="menuMobileCollapse" ref="mobileCollapseBtn">
           <BootstrapIcon icon="bi bi-list" size="2.3rem" color="black"></BootstrapIcon>
         </a>
       </div>
@@ -97,7 +97,8 @@ export default {
     },
     methods: {
         collapse() {
-            this.$refs.collapse.classList.remove("show")
+            this.$refs.mobileCollapseBtn.click();
+
         },
         updateNotificationNumber(){
           this.unreadMessage++;
@@ -124,11 +125,7 @@ export default {
                     }, withCredentials: true
                 }).then(() => {
                     socket.emit("joinApplication", localStorage.getItem('accessToken'), (callback) => {
-                      if(callback.status === 'ok'){
-                        socket.connected = true;
-                      } else {
-                        socket.connected = false;
-                      }
+                      socket.connected = callback.status === 'ok';
                     });
                     this.isLogged = true;
                     this.first_name = localStorage.getItem("name")
@@ -164,7 +161,6 @@ export default {
             localStorage.removeItem("name")
             localStorage.removeItem("userId")
             localStorage.removeItem("username")
-            localStorage.removeItem("base64")
             this.first_name = ''
             this.isLogged = false
             this.$router.replace({ path: '/' })
