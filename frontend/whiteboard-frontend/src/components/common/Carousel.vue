@@ -6,9 +6,13 @@
   </div>
 </template>
 <script>
-
+import {Carousel} from "bootstrap"
+const $ = document.querySelector.bind(document);
 export default {
     name: "Carousel",
+  mounted() {
+    new Carousel($("#carouselExampleSlidesOnly")).cycle()
+  }
 }
 </script>
 <style scoped>
