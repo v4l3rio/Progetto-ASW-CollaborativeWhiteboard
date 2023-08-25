@@ -62,7 +62,7 @@ export default defineComponent({
     },
     mouseMove(e) {
       if (this.moving) {
-        this.point = this.getViewBoxCoordinates(e);
+        this.point = this.getCoordinates(e);
 
         const moveGlobal = this.point.matrixTransform(this.canvas.getScreenCTM().inverse());
         this.move(moveGlobal.x - this.startGlobal.x, moveGlobal.y - this.startGlobal.y)
@@ -70,13 +70,13 @@ export default defineComponent({
     },
     mouseDown(e) {
       this.moving = true;
-      this.startClient = this.getViewBoxCoordinates(e);
+      this.startClient = this.getCoordinates(e);
       this.startGlobal = this.startClient.matrixTransform(this.canvas.getScreenCTM().inverse());
     },
     mouseUp() {
       this.moving = false;
     },
-    getViewBoxCoordinates(event) {
+    getCoordinates(event) {
       const screenPoint = this.canvas.createSVGPoint();
       event.preventDefault();
       if (event.clientX && event.clientY) {

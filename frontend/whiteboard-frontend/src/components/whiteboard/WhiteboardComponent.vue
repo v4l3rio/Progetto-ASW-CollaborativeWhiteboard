@@ -98,12 +98,13 @@ require('../../assets/css/freehandDraw.css')
 // hello jquery
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+const strokeToDotRadius = 2.7;
 
 export default {
   name: 'WhiteboardComponent',
   components: {
     PanTool,
-    ActiveUserInWhiteboard, Alert, BigGlowingSpinner, Spinner, SocketComponent, UndoStack, Interpolation},
+    ActiveUserInWhiteboard, Alert, BigGlowingSpinner, SocketComponent, UndoStack, Interpolation},
   emits: ['setLoading', 'changeLineColor', "changeBgColor", "drawSubmit", 'changeStroke'],
   props: [
     'title',
@@ -123,8 +124,7 @@ export default {
       colorNum: 0,
       gesture: false,
       line: '',
-      radius: 3,
-      width: 8,
+      radius: this.stroke/strokeToDotRadius,
       undo: true,
       onCanvas: false, // mouseout event is not firing, dunno why,
       lineToSend: [],
@@ -413,6 +413,7 @@ export default {
       window.scrollTo({top: 0, behavior: 'smooth'});
 
       this.$emit('changeStroke', stroke)
+      this.radius = stroke/ strokeToDotRadius;
 
       // changing circle position
       arrayMove(this.strokes, index, 0)
