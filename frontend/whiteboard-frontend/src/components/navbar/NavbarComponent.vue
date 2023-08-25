@@ -224,7 +224,7 @@ li {
   min-height: 77px;
 }
 
-@media (max-width: 930px) {
+@media (max-width: 1002px) {
 
   .menu-mobile {
     display: flex;
