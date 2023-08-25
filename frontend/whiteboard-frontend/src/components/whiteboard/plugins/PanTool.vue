@@ -34,10 +34,18 @@ export default defineComponent({
         this.canvas.addEventListener("mousedown", this.mouseDown)
         this.canvas.addEventListener("mousemove", this.mouseMove)
         this.canvas.addEventListener("mouseup", this.mouseUp)
+        //-------
+        this.canvas.addEventListener("touchstart", this.mouseDown)
+        this.canvas.addEventListener("touchmove", this.mouseMove)
+        this.canvas.addEventListener("touchend", this.mouseUp)
       } else {
         this.canvas.removeEventListener("mousedown", this.mouseDown)
         this.canvas.removeEventListener("mousemove", this.mouseMove)
         this.canvas.removeEventListener("mouseup", this.mouseUp)
+        //-------
+        this.canvas.removeEventListener("touchstart", this.mouseDown)
+        this.canvas.removeEventListener("touchmove", this.mouseMove)
+        this.canvas.removeEventListener("touchend", this.mouseUp)
       }
     },
     move(dx, dy) {
@@ -54,8 +62,7 @@ export default defineComponent({
     },
     mouseMove(e) {
       if (this.moving) {
-        this.point.x = e.clientX;
-        this.point.y = e.clientY;
+        this.point = this.getViewBoxCoordinates(e);
 
         const moveGlobal = this.point.matrixTransform(this.canvas.getScreenCTM().inverse());
         this.move(moveGlobal.x - this.startGlobal.x, moveGlobal.y - this.startGlobal.y)
@@ -63,13 +70,26 @@ export default defineComponent({
     },
     mouseDown(e) {
       this.moving = true;
-      this.startClient.x = e.clientX;
-      this.startClient.y = e.clientY;
+      this.startClient = this.getViewBoxCoordinates(e);
       this.startGlobal = this.startClient.matrixTransform(this.canvas.getScreenCTM().inverse());
     },
     mouseUp() {
       this.moving = false;
+    },
+    getViewBoxCoordinates(event) {
+      const screenPoint = this.canvas.createSVGPoint();
+      event.preventDefault();
+      if (event.clientX && event.clientY) {
+        screenPoint.x = event.clientX;
+        screenPoint.y = event.clientY;
+      } else if (event.changedTouches[0].clientX && event.changedTouches[0].clientY) {
+        screenPoint.x = event.changedTouches[0].clientX;
+        screenPoint.y = event.changedTouches[0].clientY;
+      }
+
+      return screenPoint;
     }
+
   }
 })
 </script>
