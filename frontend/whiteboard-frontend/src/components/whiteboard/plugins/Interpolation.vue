@@ -1,7 +1,7 @@
 <template>
     <path v-for="(path) in this.interpolatingPaths"
           v-bind="{d: path.points, stroke: path.color,'stroke-opacity': this.strokeOpacity,
-                    'stroke-width': this.strokeWidth}"
+                    'stroke-width': path.stroke}"
           fill="none"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -21,16 +21,15 @@ export default {
             testInterpolation: 0,
             testInterpolationPeriod: 100, // temporarily, will be done by emitting less frequent data on sender side
             strokeOpacity: 0.5,
-            strokeWidth: 6,
         }
     },
     methods: {
         init: function () {
             this.testInterpolation = performance.now();
         },
-        createInterpolatingPath: function (id, color) {
+        createInterpolatingPath: function (id, color, stroke) {
             this.interpolatingPoints[id] = []
-            this.interpolatingPaths[id] = {points:[], color:color};
+            this.interpolatingPaths[id] = {points:[], color:color, stroke: stroke};
         },
 
         interpolate: function (x, y, id) {

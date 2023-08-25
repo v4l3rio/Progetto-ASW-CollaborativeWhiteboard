@@ -217,7 +217,7 @@ export default {
       this.undo = true;
 
       let pointToAdd = this.getViewBoxCoordinates(e);
-      this.$refs.socket.drawStart(pointToAdd.x, pointToAdd.y, this.lineColor)
+      this.$refs.socket.drawStart(pointToAdd.x, pointToAdd.y, this.lineColor, this.stroke)
       this.addPointToLine(pointToAdd);
 
       this.cursor.style.opacity = 0.5
@@ -301,7 +301,7 @@ export default {
 
     remoteLineStart: function (data) {
       if (data.id !== undefined) {
-        this.$refs.interpolation.createInterpolatingPath(data.id, data.color);
+        this.$refs.interpolation.createInterpolatingPath(data.id, data.color, data.stroke);
       }
     },
     remoteLineMove: function (data) {
