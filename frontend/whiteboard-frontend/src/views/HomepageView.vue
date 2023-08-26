@@ -80,7 +80,6 @@ export default {
   padding-top: 1vh;
 }
 
-
 * {
     transition: all 0.3s ease;
     -webkit-animation-fill-mode: both;
@@ -89,7 +88,7 @@ export default {
 .wrap {
   display: block;
   width: 100%;
-  height: 250px;
+  height: 100%;
   text-align: center;
   margin-top: 30px;
   zoom: 150%;

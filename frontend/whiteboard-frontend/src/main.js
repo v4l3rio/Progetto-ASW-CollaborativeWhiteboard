@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import 'bootstrap';
 import store from "core-js/internals/shared-store";
-import VueCookies from 'vue-cookies'
 import axios from "axios";
 
 const app = createApp(App);
