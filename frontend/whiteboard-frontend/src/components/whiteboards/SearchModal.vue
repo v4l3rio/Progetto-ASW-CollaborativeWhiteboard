@@ -3,48 +3,49 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Invite to Whiteboard {{name}}</h5>
+                    <h5 class="modal-title">Invite to Whiteboard {{ name }}</h5>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
-                    <Alert v-if="alertOn" :text="alertText" :close-click="() => {alertOn = false;}" :type="this.alertType"></Alert>
+                    <Alert v-if="alertOn" :text="alertText" :close-click="() => { alertOn = false; }" :type="this.alertType">
+                    </Alert>
                     <span>Search users to add to this whiteboard</span>
                     <div class="m-1">
                         <Spinner v-if="this.loading"></Spinner>
                     </div>
 
                     <div class="mb-3">
-                            <div class="dropdown">
-                                <label class="form-label" for="dropdownSearch">Username</label>
-                                <div class="row">
-                                    <input id="dropdownSearch" aria-expanded="true" autocomplete="off" class="form-control"
-                                           data-bs-toggle="dropdown" placeholder="name@example.com"
-                                           type="text" @click="click" @focusin="focusIn" @focusout="focusOut"
-                                            @input="inputChange">
-                                    <ul aria-labelledby="dropdownSearch" class="dropdown-menu">
-                                        <li v-for="user in foundUsers" :key="user.username">
+                        <div class="dropdown">
+                            <label class="form-label" for="dropdownSearch">Username</label>
+                            <div class="row">
+                                <input id="dropdownSearch" aria-expanded="true" autocomplete="off" class="form-control"
+                                    data-bs-toggle="dropdown" placeholder="name@example.com" type="text" @click="click"
+                                    @focusin="focusIn" @focusout="focusOut" @input="inputChange">
+                                <ul aria-labelledby="dropdownSearch" class="dropdown-menu">
+                                    <li v-for="user in foundUsers" :key="user.username">
 
-                                                <a class="dropdown-item" role="button"
-                                                   v-bind:class="{disabled: user.alreadyIn}" @click="invite(user.username)">
-                                                    <div class="m-1 d-inline-block align-top" style="width: 30px;">
-                                                        <Identicon :seed="user.username"></Identicon>
+                                        <a class="dropdown-item" role="button" v-bind:class="{ disabled: user.alreadyIn }"
+                                            @click="invite(user.username)">
+                                            <div class="m-1 d-inline-block align-top" style="width: 30px;">
+                                                <Identicon :seed="user.username"></Identicon>
+                                            </div>
+                                            <div class="d-inline-block">
+                                                <div class="list-group" style="width: 18rem;">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                                                        <span v-if="user.alreadyIn" class="small text-secondary">(Already on
+                                                            the whiteboard)</span>
+                                                        <p class="card-text">{{ user.username }}</p>
                                                     </div>
-                                                    <div class="d-inline-block">
-                                                        <div class="list-group" style="width: 18rem;">
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
-                                                                <span v-if="user.alreadyIn" class="small text-secondary">(Already on the whiteboard)</span>
-                                                                <p class="card-text">{{user.username}}</p>
-                                                            </div>
-                                                        </div>
+                                                </div>
 
-                                                    </div>
+                                            </div>
 
-                                                </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
+                        </div>
 
 
                     </div>
@@ -62,14 +63,14 @@
 import Spinner from "@/components/common/Spinner.vue";
 import axios from "axios";
 import Identicon from "@/components/common/Identicon.vue";
-import {socket} from "@/scripts/socket";
+import { socket } from "@/scripts/socket";
 import Alert from "@/components/common/Alert.vue";
 
 const $ = document.querySelector.bind(document);
 
 export default {
     name: "SearchModal",
-    components: {Alert, Identicon, Spinner},
+    components: { Alert, Identicon, Spinner },
     data() {
         return {
             dropDownOn: false,
@@ -90,13 +91,13 @@ export default {
     },
     emits: ["invited"],
     methods: {
-        focusIn(){
+        focusIn() {
             this.inputChange();
             this.isFocus = true;
             this.dropDownOn = true;
             this.enterFocus = true;
         },
-        focusOut(){
+        focusOut() {
             this.isFocus = false;
             this.dropDownOn = false;
         },
@@ -130,7 +131,7 @@ export default {
                 axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/users`, {
                     params: {
                         accessToken: localStorage.getItem("accessToken"),
-                        filters: {username: query, whiteboardId: this.whiteboardId}
+                        filters: { username: query, whiteboardId: this.whiteboardId }
                     }
                 }).then(response => {
                     this.foundUsers = response.data.users;
@@ -151,7 +152,7 @@ export default {
 
                 axios.post(`http://${process.env.VUE_APP_BACKEND_IP}:4000/profile/addNotification/`, {
                     accessToken: localStorage.getItem("accessToken"),
-                    notification: {type: 'Whiteboard Sharing',time: new Date(),body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false},
+                    notification: { type: 'Whiteboard Sharing', time: new Date(), body: localStorage.getItem("username") + " invited you to collaborate on one of his whiteboards!", visualized: false },
                     username: username
                 })
 
@@ -171,6 +172,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

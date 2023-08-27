@@ -28,7 +28,7 @@
         </router-link>
       </div>
         <div class="canvasContainer">
-         <img class="imgHomeDesktop m-1" src="../assets/home/homeall.png">
+         <img class="imgHomeDesktop m-1" src="../assets/home/homeall.png" alt="Drawing examples">
         </div>
       <div class="carousel-container">
         <Carousel>
