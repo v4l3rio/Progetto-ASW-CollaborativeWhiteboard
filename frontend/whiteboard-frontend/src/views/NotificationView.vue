@@ -1,23 +1,22 @@
 <template>
   <div class="row p-2" v-if="notification.length === 0">
     <h2>There are no notifications to display</h2>
-      <img src="../assets/nothing_here.png" class="center">
+    <img src="../assets/nothing_here.png" alt="no notification image" class="center">
   </div>
   <div class="row p-2" v-for="notif in notification">
     <div class="d-flex justify-content-center align-items-center w-100">
       <div class="toast position-relative">
         <div class="toast-header">
           <i class="bi bi-bell-fill" style="padding-right: 5px"></i>
-          <strong class="me-auto">{{notif.type ? notif.type : "Generic Notification"}}</strong>
-          <small>{{formatDate(new Date(notif.time))}}</small>
-          <button type="button" class="btn-close" @click="this.deleteNotification(notif._id)"
-                  aria-label="Close"></button>
+          <strong class="me-auto">{{ notif.type ? notif.type : "Generic Notification" }}</strong>
+          <small>{{ formatDate(new Date(notif.time)) }}</small>
+          <button type="button" class="btn-close" @click="this.deleteNotification(notif._id)" aria-label="Close"></button>
         </div>
         <div class="toast-body">
           {{ notif.body }}
         </div>
         <span v-if="!notif.visualized"
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">New!</span>
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">New!</span>
       </div>
     </div>
   </div>
@@ -26,7 +25,7 @@
 <script>
 
 import axios from "axios";
-import {Toast} from "bootstrap";
+import { Toast } from "bootstrap";
 
 export default {
   name: "NotificationView",
@@ -110,6 +109,7 @@ export default {
 .toast {
   display: block !important;
 }
+
 .center {
   display: block;
   margin-left: auto;

@@ -18,8 +18,8 @@
                         <div class="dropdown">
                             <label class="form-label" for="dropdownSearch">Username</label>
                             <div class="row">
-                                <input id="dropdownSearch" aria-expanded="true" autocomplete="off" class="form-control"
-                                    data-bs-toggle="dropdown" placeholder="name@example.com" type="text" @click="click"
+                                <input id="dropdownSearch" autocomplete="off" class="form-control"
+                                    data-bs-toggle="dropdown" placeholder="name@example.com" type="search" @click="click"
                                     @focusin="focusIn" @focusout="focusOut" @input="inputChange">
                                 <ul aria-labelledby="dropdownSearch" class="dropdown-menu">
                                     <li v-for="user in foundUsers" :key="user.username">

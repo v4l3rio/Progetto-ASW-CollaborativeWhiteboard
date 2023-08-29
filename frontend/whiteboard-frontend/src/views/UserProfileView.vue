@@ -1,10 +1,10 @@
 <template>
   <form class="container">
     <div class="alert alert-success mb-3" role="alert" :hidden="!this.isValid">
-      Updated succesfully!        
+      Updated succesfully!
     </div>
     <div class="alert alert-danger mb-3" role="alert" :hidden="!this.isInvalid">
-      Something went wrong       
+      Something went wrong
     </div>
     <div class="row border rounded g-3 text-start mb-5">
       <div class="col m-3">
@@ -14,7 +14,7 @@
       <div class="col m-3">
         <div class="row d-flex justify-content-center">
           <div class="col-3 ">
-            <IdenticonComponent style="width: 75px; height: 75px;"  v-bind:seed="email"></IdenticonComponent>
+            <IdenticonComponent style="width: 75px; height: 75px;" v-bind:seed="email"></IdenticonComponent>
           </div>
         </div>
       </div>
@@ -27,15 +27,17 @@
       <div class="col m-3">
         <p><strong>Email</strong></p>
         <div class="input-group mb-3">
-          <input disabled v-model="email" type="email" class="form-control" placeholder="email" aria-label="Email" aria-describedby="basic-addon1">
+          <input disabled v-model="email" type="email" class="form-control" placeholder="email" aria-label="Email">
         </div>
-        <p calss="mb-2"><strong>Name</strong></p>
+        <p clsss="mb-2"><strong>Name</strong></p>
         <div class="input-group flex-nowrap mb-3">
-          <input @input="checkChanges" v-model="name" type="text" class="form-control" placeholder="first name" aria-label="First name" aria-describedby="addon-wrapping">
+          <input @input="checkChanges" v-model="name" type="text" class="form-control" placeholder="first name"
+            aria-label="First name">
         </div>
         <p><strong>Surname</strong></p>
         <div class="input-group flex-nowrap mb-3">
-          <input @input="checkChanges" v-model="surname" type="text" class="form-control" placeholder="Last name" aria-label="Last name" aria-describedby="addon-wrapping">
+          <input @input="checkChanges" v-model="surname" type="text" class="form-control" placeholder="Last name"
+            aria-label="Last name">
         </div>
         <button type="button" class="btn btn-primary" @click="updateUserInfo" :disabled="!isEnabled">Update</button>
       </div>
@@ -48,30 +50,35 @@
       <div class="col m-3">
         <p><strong>Password</strong></p>
         <div class="input-group mb-3">
-          <input disabled v-model="password" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="addon-wrapping">
+          <input disabled v-model="password" type="password" class="form-control" placeholder="Password"
+            aria-label="Password">
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Change Password</button>
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Change
+          Password</button>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-hidden="true">
+          <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update your password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <div class="modal-header">
+                <h5 class="modal-title">Update your password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Insert a new password</p>
+                <div class="input-group flex-nowrap mb-3">
+                  <span class="input-group-text" id="modalNameInput">Password</span>
+                  <input type="password" ref="newPassword" class="form-control" placeholder="New user password"
+                    aria-label="New user password">
                 </div>
-                <div class="modal-body">
-                  <p>Insert a new password</p>
-                  <div class="input-group flex-nowrap mb-3">
-                      <span class="input-group-text" id="modalNameInput">Password</span>
-                      <input type="password" ref="newPassword" class="form-control" placeholder="New user password" aria-label="New user password" aria-describedby="addon-wrapping">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeBtn">Close</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="updatePassword">Update Password</button>
-                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeBtn">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="updatePassword">Update
+                  Password</button>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
       </div>
     </div>
   </form>
@@ -86,7 +93,7 @@ export default {
   components: {
     FooterComponent,
     IdenticonComponent
-},
+  },
   emits: ['onChangedInfo'],
   data() {
     return {
@@ -104,7 +111,7 @@ export default {
   },
   methods: {
     scrollToTop() {
-      window.scrollTo(0,0);
+      window.scrollTo(0, 0);
     },
     getUserData() {
       axios.get(`http://${process.env.VUE_APP_BACKEND_IP}:4000/userSetting/`, {
@@ -156,7 +163,7 @@ export default {
         this.isInvalid = false
         this.scrollToTop()
       }).catch(error => {
-          console.log(error)
+        console.log(error)
         this.isValid = false
         this.isInvalid = true
         this.scrollToTop()

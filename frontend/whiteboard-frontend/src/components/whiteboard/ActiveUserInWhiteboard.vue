@@ -1,7 +1,7 @@
 <template>
     <ul class="row pb-3 activeUsers">
       <template v-for="(username,index) in this.onlineUsernames" :key="username">
-          <div class="col" @mouseover="hover[index] = true" @mouseleave="hover[index] = false" style="height: 40px"><Identicon :seed="username"></Identicon></div>
+          <div class="col" @mouseover="hover[index] = true" @mouxseleave="hover[index] = false" style="height: 40px"><Identicon :seed="username"></Identicon></div>
           <div class="col align-middle hideDesktop" v-if="hover[index]"><p>{{username}}</p></div>
       </template>
     </ul>

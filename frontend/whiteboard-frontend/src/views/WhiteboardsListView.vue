@@ -10,7 +10,7 @@
                          :click="createWhiteboard" button-text="Create">
             <p>Insert a name for the whiteboard</p>
             <div class="input-group flex-nowrap mb-3">
-                <span class="input-group-text" id="modalNameInput">Whiteboard name</span>
+                <span class="input-group-text" id="whiteboardName">Whiteboard name</span>
                 <input type="text" v-model="whiteboardCreateName" class="form-control" placeholder="Whiteboard Name"
                        aria-label="Whiteboard Name" aria-describedby="addon-wrapping">
             </div>
