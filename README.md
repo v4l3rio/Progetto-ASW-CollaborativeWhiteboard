@@ -6,6 +6,8 @@ The purpose of the project is to create a collaborative whiteboard using real ti
 
 ### Dependencies
 
+- NodeJS
+- NPM
 - Docker
 - Vue-cli
 
